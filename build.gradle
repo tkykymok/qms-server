@@ -72,6 +72,13 @@ subprojects {
         }
     }
 
+    // main-service と file-service に対して shared モジュールを追加
+    if (name == 'main-service') {
+        dependencies {
+            implementation project(':shared')
+        }
+    }
+
     // main-service 特有の設定
     project(':main-service') {
         bootRun {
