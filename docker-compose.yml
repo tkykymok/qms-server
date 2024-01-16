@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    build: # build指定を追加
+      context: . # Dockerfileのディレクトリを指定
+      dockerfile: db/Dockerfile # Dockerfileのパスを指定
+    container_name: qms-db # コンテナ名を指定
+    environment: # 環境変数を設定
+      - MYSQL_USER=${MYSQL_USER} # データベースのユーザー名
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD} # ユーザーのパスワード
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} # ルートユーザーのパスワード
+      - MYSQL_DB=${MYSQL_DB} # データベース名
+      - TZ=${TZ} # タイムゾーン
+    ports: # ポート番号を指定（ホスト:コンテナ）
+      - 3306:3306
+    volumes: # マッピングを指定
+      - mysql_data:/var/lib/mysql # データ永続化用のマウント
+      - ./db/initdb.d:/docker-entrypoint-initdb.d # 初期化用SQLのマウント
+
+  main-service:
+    build:
+      context: .
+      dockerfile: main-service/Dockerfile
+    container_name: main-service # コンテナ名を指定
+    environment: # 環境変数を設定
+      - SPRING_PROFILES_ACTIVE=dev
+      - DATABASE_URL=${DATABASE_URL} # データベースのURL
+      - MYSQL_USER=${MYSQL_USER} # データベースのユーザー名
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD} # ユーザーのパスワード
+    tty: true # コンテナを終了させないために設定
+    working_dir: /app # 作業ディレクトリを指定
+    volumes: # マッピングを指定
+      - ./main-service/build:/app/main-service/build
+      - ./main-service/src:/app/main-service/src
+      - ./build.gradle:/app/build.gradle
+      - ./gradlew:/app/gradlew
+      - ./gradle:/app/gradle
+      - ./settings.gradle:/app/settings.gradle
+    ports: # ポート番号を指定（ホスト:コンテナ）
+      - 8080:8080 # 実行用
+      - 5005:5005 # デバッグ用
+    depends_on: # postgresコンテナ起動後にspringコンテナを起動
+      - db
+volumes:
+  mysql_data:

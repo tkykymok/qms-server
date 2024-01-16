@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.1' apply false
+    id 'io.spring.dependency-management' version '1.1.4' apply false
+    id "nu.studer.jooq" version "8.2.1" apply false
+}
+
+group = 'com.ty'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+
+subprojects {
+    // 全てのサブプロジェクトに共通の設定
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'nu.studer.jooq'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+//        implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.0'
+
+        // jooq
+        implementation 'org.springframework.boot:spring-boot-starter-jooq'
+        jooqGenerator 'com.mysql:mysql-connector-j'
+        jooqGenerator 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+    }
+
+    // jOOQ共通設定
+    jooq {
+        version = '3.19.1'
+        configurations {
+            // プロジェクト名を取得
+            def projectName = project.name.replaceAll("-", "")
+            // 環境変数を取得
+            def databaseUrl = System.getenv('DATABASE_URL')
+            def postgresUser = System.getenv('MYSQL_USER')
+            def postgresPassword = System.getenv('MYSQL_PASSWORD')
+
+            main {
+                generationTool {
+                    jdbc {
+                        url = databaseUrl
+                        user = postgresUser
+                        password = postgresPassword
+                    }
+                    generator {
+                        name = "org.jooq.codegen.JavaGenerator"
+                        database {
+                            inputSchema = 'qmsdb'
+                            includes = '.*'
+                        }
+                        target {
+                            packageName = "com.ty.${projectName}.infrastructure.jooq"
+                            directory = "${project.buildDir}/generated/source/jooq/main"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // main-service 特有の設定
+    project(':main-service') {
+        bootRun {
+            mainClass = 'com.ty.mainservice.MainServiceApplication'
+            jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005']
+        }
+
+        dependencies {
+        }
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
