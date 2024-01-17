@@ -16,7 +16,8 @@ CREATE TABLE `customers`
 (
     `customer_id`     BIGINT PRIMARY KEY COMMENT '顧客ID',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
-    `name`            VARCHAR(255) COMMENT '顧客名',
+    `last_name`       VARCHAR(255) COMMENT '顧客姓',
+    `fist_name`       VARCHAR(255) COMMENT '顧客名',
     `email`           VARCHAR(255) COMMENT 'メールアドレス',
     `gender`          INT COMMENT '性別',
     `birthday`        DATE COMMENT '生年月日',
@@ -80,7 +81,8 @@ CREATE TABLE `favorite_stores`
 CREATE TABLE `staffs`
 (
     `staff_id`        BIGINT PRIMARY KEY COMMENT 'スタッフID',
-    `name`            VARCHAR(255) COMMENT 'スタッフ名',
+    `last_name`            VARCHAR(255) COMMENT 'スタッフ姓',
+    `first_name`            VARCHAR(255) COMMENT 'スタッフ名',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
@@ -267,7 +269,7 @@ VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', '9:00-18:00', ST_GeomFr
 
 
 -- customersテーブルにレコードを5つ挿入
-INSERT INTO `customers` (`customer_id`, `cognito_user_id`, `name`, `email`, `gender`, `birthday`)
+INSERT INTO `customers` (`customer_id`, `cognito_user_id`, `last_name`, `email`, `gender`, `birthday`)
 VALUES (0, null, 'guest', null, null, null),
        (1, 'cognito1', 'Customer A', 'customerA@example.com', 1, '1990-01-01'),
        (2, 'cognito2', 'Customer B', 'customerB@example.com', 2, '1991-02-02'),
@@ -335,7 +337,7 @@ VALUES (2, 3, 1),
        (2, 19, 1);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`staff_id`, `name`, `cognito_user_id`)
+INSERT INTO `staffs` (`staff_id`, `last_name`, `cognito_user_id`)
 VALUES (1, '山田', 'cognitoA'),
        (2, '鈴木', 'cognitoB'),
        (3, '坂本', 'cognitoC'),
