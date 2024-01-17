@@ -1,4 +1,4 @@
-package com.ty.mainservice.infrastructure.config;
+package com.qms.mainservice.infrastructure.config;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
