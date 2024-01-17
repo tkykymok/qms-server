@@ -5,7 +5,7 @@ GRANT ALL PRIVILEGES ON qmsdb.* TO 'qms'@'%';
 FLUSH PRIVILEGES;
 
 -- 既存のテーブル定義を削除
-DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales_histories`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
+DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
     FOREIGN_KEY_CHECKS = 0;
@@ -14,51 +14,70 @@ SET
 -- customers / 顧客
 CREATE TABLE `customers`
 (
-    `customer_id`     BIGINT PRIMARY KEY COMMENT '顧客ID',
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
-    `last_name`       VARCHAR(255) COMMENT '顧客姓',
-    `fist_name`       VARCHAR(255) COMMENT '顧客名',
+    `last_name`       VARCHAR(255) NOT NULL COMMENT '顧客姓',
+    `first_name`      VARCHAR(255) NOT NULL COMMENT '顧客名',
     `email`           VARCHAR(255) COMMENT 'メールアドレス',
     `gender`          INT COMMENT '性別',
     `birthday`        DATE COMMENT '生年月日',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
 );
 
 -- companies / 会社
 CREATE TABLE `companies`
 (
-    `company_id`      BIGINT PRIMARY KEY COMMENT '企業ID',
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `company_name`    VARCHAR(255) NOT NULL COMMENT '企業名',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
 );
 
 -- stores / 店舗
 CREATE TABLE `stores`
 (
-    `store_id`        BIGINT PRIMARY KEY COMMENT '店舗ID',
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `company_id`      BIGINT COMMENT '企業ID',
     `store_name`      VARCHAR(255) COMMENT '店舗名',
     `address`         VARCHAR(255) COMMENT '住所',
     `location`        GEOMETRY    NOT NULL COMMENT '位置情報',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
     `business_hours`  VARCHAR(255) COMMENT '営業時間',
+    `homepage_url`    VARCHAR(255) COMMENT 'ホームページURL',
     `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                  DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                  DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`)
+    FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`)
+);
+
+-- store_business_hours / 店舗営業時間
+CREATE TABLE `store_business_hours`
+(
+    `store_id`        BIGINT COMMENT '店舗ID',
+    `day_of_week`     INT COMMENT '曜日（0=日曜, 1=月曜, ..., 6=土曜）',
+    `open_time`       TIME COMMENT '開店時間',
+    `close_time`      TIME COMMENT '閉店時間',
+    `closed`          BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '定休日の場合はTRUE',
+    `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
+    `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    PRIMARY KEY (`store_id`, `day_of_week`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
 -- favorite_stores / お気に入り店舗
@@ -68,27 +87,27 @@ CREATE TABLE `favorite_stores`
     `store_id`        BIGINT COMMENT '店舗ID',
     `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                  DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                  DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
     PRIMARY KEY (`customer_id`, `store_id`),
-    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
 -- staffs / スタッフ
 CREATE TABLE `staffs`
 (
-    `staff_id`        BIGINT PRIMARY KEY COMMENT 'スタッフID',
-    `last_name`            VARCHAR(255) COMMENT 'スタッフ姓',
-    `first_name`            VARCHAR(255) COMMENT 'スタッフ名',
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `last_name`       VARCHAR(255) COMMENT 'スタッフ姓',
+    `first_name`      VARCHAR(255) COMMENT 'スタッフ名',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
 );
 
@@ -99,16 +118,16 @@ CREATE TABLE `store_staffs`
     `store_id`        BIGINT COMMENT '店舗ID',
     `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                  DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                  DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
     PRIMARY KEY (`staff_id`, `store_id`),
-    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`staff_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
+    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
--- active_staffs / アクティブスタッフ
+-- active_staffs / 活動スタッフ
 CREATE TABLE `active_staffs`
 (
     `store_id`             BIGINT COMMENT '店舗ID',
@@ -118,19 +137,37 @@ CREATE TABLE `active_staffs`
     `break_end_datetime`   DATETIME COMMENT '休憩終了日時',
     `created_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`           INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`           BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`           INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`           BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
     PRIMARY KEY (`store_id`, `staff_id`),
-    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`staff_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
+    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
+);
+
+-- menus / メニュー
+CREATE TABLE `menus`
+(
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `store_id`        BIGINT COMMENT '店舗ID',
+    `store_menu_id`   INT COMMENT '店舗メニューID',
+    `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
+    `price`           DECIMAL(10, 0) COMMENT '価格',
+    `time`            INT          NOT NULL DEFAULT 0 COMMENT '所要時間',
+    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
+    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
 -- reservations / 予約
 CREATE TABLE `reservations`
 (
-    `reservation_id`         BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '予約ID',
+    `id`                     BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `customer_id`            BIGINT       NOT NULL COMMENT '顧客ID',
     `store_id`               BIGINT       NOT NULL COMMENT '店舗ID',
     `staff_id`               BIGINT COMMENT 'スタッフID',
@@ -144,200 +181,130 @@ CREATE TABLE `reservations`
     `cancel_type`            INT COMMENT 'キャンセルタイプ',
     `created_at`             DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`             DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`             INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`             BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type`        VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`             INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`             BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type`        VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`),
-    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`staff_id`)
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
+    FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`)
 );
 
 -- reservation_menus / 予約メニュー
 CREATE TABLE `reservation_menus`
 (
     `reservation_id`  BIGINT COMMENT '予約ID',
-    `store_id`        BIGINT COMMENT '店舗ID',
     `menu_id`         BIGINT COMMENT 'メニューID',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    PRIMARY KEY (`reservation_id`, `store_id`, `menu_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`),
-    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`reservation_id`)
+    PRIMARY KEY (`reservation_id`, `menu_id`),
+    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`),
+    FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`)
 );
 
--- sales_histories / 売上履歴
-CREATE TABLE `sales_histories`
+-- sales / 売上
+CREATE TABLE `sales`
 (
-    `sales_history_id` BIGINT PRIMARY KEY COMMENT '売上履歴ID',
-    `reservation_id`   BIGINT COMMENT '予約ID',
-    `menu_name`        VARCHAR(255) COMMENT 'メニュー名',
-    `price`            DECIMAL(10, 2) COMMENT '価格',
-    `created_at`       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`       INT                   DEFAULT 0 COMMENT '作成者',
-    `created_by_type`  VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`       INT                   DEFAULT 0 COMMENT '更新者',
-    `updated_by_type`  VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`reservation_id`)
-);
-
--- menus / メニュー
-CREATE TABLE `menus`
-(
-    `store_id`        BIGINT COMMENT '店舗ID',
-    `menu_id`         BIGINT COMMENT 'メニューID',
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `reservation_id`  BIGINT COMMENT '予約ID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
-    `price`           DECIMAL(10, 2) COMMENT '価格',
-    `time`            INT          NOT NULL DEFAULT 0 COMMENT '所要時間',
+    `sales_amount`    DECIMAL(10, 0) COMMENT '売上金額',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    PRIMARY KEY (`store_id`, `menu_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
-);
-
--- menu_sets / メニューセット
-CREATE TABLE `menu_sets`
-(
-    `set_id`          BIGINT COMMENT 'セットID',
-    `store_id`        BIGINT COMMENT '店舗ID',
-    `set_name`        VARCHAR(255) COMMENT 'セット名',
-    `set_price`       DECIMAL(10, 2) COMMENT 'セット価格',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    PRIMARY KEY (`set_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
-);
-
--- menu_set_details / メニューセット詳細
-CREATE TABLE `menu_set_details`
-(
-    `set_id`          BIGINT COMMENT 'セットID',
-    `store_id`        BIGINT COMMENT '店舗ID',
-    `menu_id`         BIGINT COMMENT 'メニューID',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    PRIMARY KEY (`set_id`, `store_id`, `menu_id`),
-    FOREIGN KEY (`set_id`) REFERENCES `menu_sets` (`set_id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`store_id`)
+    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
 
 -- notifications / 通知
 CREATE TABLE `notifications`
 (
-    `notification_id`      BIGINT PRIMARY KEY COMMENT '通知ID',
+    `id`                   BIGINT PRIMARY KEY COMMENT 'ID',
     `customer_id`          BIGINT COMMENT '顧客ID',
+    `notification_type`    INT          NOT NULL COMMENT '通知タイプ',
     `reservation_id`       BIGINT COMMENT '予約ID',
-    `notification_type`    INT COMMENT '通知タイプ',
     `notification_content` TEXT COMMENT '通知内容',
     `notification_status`  INT COMMENT '通知ステータス',
     `created_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`           INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by`           BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`           INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by`           BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
-    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`reservation_id`)
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
 
 -- companiesテーブルにレコードを2つ挿入
-INSERT INTO `companies` (`company_id`, `company_name`)
+INSERT INTO `companies` (`id`, `company_name`)
 VALUES (1, 'Company A'),
        (2, 'Company B');
 
 -- storesテーブルにレコードを2つ挿入
-INSERT INTO `stores` (`store_id`, `company_id`, `store_name`, `address`, `phone_number`, `business_hours`, `location`)
+INSERT INTO `stores` (`id`, `company_id`, `store_name`, `address`, `phone_number`, `business_hours`, `location`)
 VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', '9:00-18:00', ST_GeomFromText('POINT(135.0000 35.0000)')),
        (2, 2, 'store_ B1', 'Address B1', '098-765-4321', '10:00-19:00', ST_GeomFromText('POINT(136.0000 36.0000)'));
 
+-- store_business_hoursテーブルにレコードを挿入
+INSERT INTO `store_business_hours` (`store_id`, `day_of_week`, `open_time`, `close_time`, `closed`)
+VALUES (1, 0, '09:00', '18:00', FALSE), -- 日曜日
+       (1, 1, '09:00', '18:00', FALSE), -- 月曜日
+       (1, 2, '09:00', '18:00', FALSE), -- 火曜日
+       (1, 3, '09:00', '18:00', FALSE), -- 水曜日
+       (1, 4, '09:00', '18:00', FALSE), -- 木曜日
+       (1, 5, '09:00', '20:00', FALSE), -- 金曜日
+       (1, 6, NULL, NULL, TRUE),        -- 土曜日（定休日）
+
+       (2, 0, '10:00', '19:00', FALSE), -- 日曜日
+       (2, 1, '10:00', '19:00', FALSE), -- 月曜日
+       (2, 2, '10:00', '19:00', FALSE), -- 火曜日
+       (2, 3, '10:00', '19:00', FALSE), -- 水曜日
+       (2, 4, '10:00', '19:00', FALSE), -- 木曜日
+       (2, 5, NULL, NULL, TRUE),        -- 金曜日（定休日）
+       (2, 6, '10:00', '19:00', FALSE);
+-- 土曜日
 
 -- customersテーブルにレコードを5つ挿入
-INSERT INTO `customers` (`customer_id`, `cognito_user_id`, `last_name`, `email`, `gender`, `birthday`)
-VALUES (0, null, 'guest', null, null, null),
-       (1, 'cognito1', 'Customer A', 'customerA@example.com', 1, '1990-01-01'),
-       (2, 'cognito2', 'Customer B', 'customerB@example.com', 2, '1991-02-02'),
-       (3, 'cognito3', 'Customer C', 'customerC@example.com', 1, '1992-03-03'),
-       (4, 'cognito4', 'Customer D', 'customerD@example.com', 2, '1993-04-04'),
-       (5, 'cognito5', 'Customer E', 'customerE@example.com', 1, '1994-05-05'),
-       (6, 'cognito6', 'Customer F', 'customerF@example.com', 2, '1995-06-06'),
-       (7, 'cognito7', 'Customer G', 'customerG@example.com', 1, '1996-07-07'),
-       (8, 'cognito8', 'Customer H', 'customerH@example.com', 2, '1997-08-08'),
-       (9, 'cognito9', 'Customer I', 'customerI@example.com', 1, '1998-09-09'),
-       (10, 'cognito10', 'Customer J', 'customerJ@example.com', 2, '1999-10-10');
+INSERT INTO `customers` (`id`, `cognito_user_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`)
+VALUES (1, 'cognito1', 'Customer A', '-', 'customerA@example.com', 1, '1990-01-01'),
+       (2, 'cognito2', 'Customer B', '-', 'customerB@example.com', 2, '1991-02-02'),
+       (3, 'cognito3', 'Customer C', '-', 'customerC@example.com', 1, '1992-03-03'),
+       (4, 'cognito4', 'Customer D', '-', 'customerD@example.com', 2, '1993-04-04'),
+       (5, 'cognito5', 'Customer E', '-', 'customerE@example.com', 1, '1994-05-05'),
+       (6, 'cognito6', 'Customer F', '-', 'customerF@example.com', 2, '1995-06-06'),
+       (7, 'cognito7', 'Customer G', '-', 'customerG@example.com', 1, '1996-07-07'),
+       (8, 'cognito8', 'Customer H', '-', 'customerH@example.com', 2, '1997-08-08'),
+       (9, 'cognito9', 'Customer I', '-', 'customerI@example.com', 1, '1998-09-09'),
+       (10, 'cognito10', 'Customer J', '-', 'customerJ@example.com', 2, '1999-10-10');
 
+-- favorite_storesテーブルにレコードを5つ挿入
+INSERT INTO `menus` (`id`, `store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `created_by`, `updated_by`)
+VALUES (1, 1, 101, 'カット', 3000.00, 60, 1, 1),
+       (2, 1, 102, 'カラーリング', 5000.00, 90, 1, 1),
+       (3, 2, 201, 'パーマ', 4500.00, 120, 2, 2);
 
 -- reservationsテーブルにレコードを5つ挿入
-INSERT INTO `reservations` (`reservation_id`, `customer_id`, `store_id`, `staff_id`, `reservation_number`,
-                            `reserved_datetime`, `service_start_datetime`, `service_end_datetime`, `status`,
-                            `arrival_flag`, `cancel_type`)
-VALUES (1, 1, 1, null, 101, '2023-01-01 10:00:00', '2023-01-01 10:00:00', '2023-01-01 11:00:00', 2, false, null),
-       (2, 2, 1, null, 102, '2023-01-02 10:00:00', '2023-01-02 10:00:00', '2023-01-02 11:00:00', 2, false, null),
+INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_datetime`, `status`,
+                            `created_by`, `updated_by`)
+VALUES (1, 1, 1, 1001, '2024-01-20 10:00:00', 1, 1, 1),
+       (2, 1, 2, 1002, '2024-01-21 11:00:00', 1, 1, 1),
+       (3, 2, 3, 2001, '2024-01-22 15:00:00', 1, 2, 2);
 
-       (3, 3, 2, null, 101, '2023-01-03 10:00:00', '2023-01-03 10:00:00', '2023-01-03 10:10:00', 2, false, null),
-       (4, 4, 2, null, 102, '2023-01-03 10:00:00', '2023-01-03 10:00:00', '2023-01-03 10:11:00', 2, false, null),
-       (5, 5, 2, null, 103, '2023-01-03 10:00:00', '2023-01-03 10:00:00', '2023-01-03 10:12:00', 2, false, null),
-
-       (6, 3, 2, null, 104, '2023-02-03 10:00:00', '2023-02-03 10:00:00', '2023-02-03 10:12:00', 2, false, null),
-       (7, 4, 2, null, 105, '2023-02-03 10:00:00', '2023-02-03 10:00:00', '2023-02-03 10:13:00', 2, false, null),
-       (8, 5, 2, null, 106, '2023-02-03 10:00:00', '2023-02-03 10:00:00', '2023-02-03 10:14:00', 2, false, null),
-
-       (9, 3, 2, null, 107, '2023-03-03 10:00:00', '2023-03-03 10:00:00', '2023-03-03 10:14:00', 2, false, null),
-       (10, 4, 2, null, 108, '2023-03-03 10:00:00', '2023-03-03 10:00:00', '2023-03-03 10:15:00', 2, false, null),
-       (11, 5, 2, null, 109, '2023-03-03 10:00:00', '2023-03-03 10:00:00', '2023-03-03 10:16:00', 2, false, null),
-
-       (12, 3, 2, 3, 101, now(), now(), null, 1, false, null),
-       (13, 4, 2, 4, 102, now(), now(), null, 1, false, null),
-       (14, 5, 2, null, 103, now(), null, null, 0, false, null),
-       (15, 6, 2, null, 106, now(), null, null, 0, false, null),
-       (16, 7, 2, null, 107, now(), null, null, 0, false, null),
-       (17, 8, 2, null, 108, now(), null, null, 0, false, null),
-       (18, 9, 2, null, 109, now(), null, null, 0, false, null),
-       (19, 10, 2, null, 110, now(), null, null, 0, false, null);
-
-
-INSERT INTO `menus` (`store_id`, `menu_id`, `menu_name`, `price`, `time`)
-VALUES (1, 1, 'Menu 1', 1000, 15),
-       (2, 1, 'Menu 2', 1500, 15);
-
-
-INSERT INTO `reservation_menus` (`store_id`, `reservation_id`, `menu_id`)
-VALUES (2, 3, 1),
-       (2, 4, 1),
-       (2, 5, 1),
-       (2, 6, 1),
-       (2, 7, 1),
-       (2, 8, 1),
-       (2, 9, 1),
-       (2, 10, 1),
-       (2, 11, 1),
-       (2, 12, 1),
-       (2, 13, 1),
-       (2, 14, 1),
-       (2, 15, 1),
-       (2, 16, 1),
-       (2, 17, 1),
-       (2, 18, 1),
-       (2, 19, 1);
+-- reservation_menus / 予約メニュー
+INSERT INTO `reservation_menus` (`reservation_id`, `menu_id`, `created_by`, `updated_by`)
+VALUES (1, 1, 1, 1),
+       (1, 2, 1, 1),
+       (2, 3, 1, 1),
+       (3, 1, 2, 2),
+       (3, 2, 2, 2);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`staff_id`, `last_name`, `cognito_user_id`)
+INSERT INTO `staffs` (`id`, `last_name`, `cognito_user_id`)
 VALUES (1, '山田', 'cognitoA'),
        (2, '鈴木', 'cognitoB'),
        (3, '坂本', 'cognitoC'),
@@ -358,7 +325,44 @@ VALUES (1, 2),
        (7, 1),
        (8, 1);
 
-
+-- active_staffsテーブルへのデータ投入
 INSERT INTO `active_staffs` (`staff_id`, `store_id`, `order`, `break_start_datetime`, `break_end_datetime`)
 VALUES (1, 2, 1, null, null),
        (2, 2, 2, null, null);
+
+
+-- 以下、一旦未使用 複数メニューを選択した場合にセット価格になる場合があったら使用する
+/**
+-- menu_sets / メニューセット
+CREATE TABLE `menu_sets`
+(
+    `id`              BIGINT PRIMARY KEY COMMENT 'ID',
+    `store_id`        BIGINT COMMENT '店舗ID',
+    `set_name`        VARCHAR(255) COMMENT 'セット名',
+    `set_price`       DECIMAL(10, 2) COMMENT 'セット価格',
+    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
+);
+
+-- menu_set_details / メニューセット詳細
+CREATE TABLE `menu_set_details`
+(
+    `set_id`          BIGINT COMMENT 'セットID',
+    `store_id`        BIGINT COMMENT '店舗ID',
+    `menu_id`         BIGINT COMMENT 'メニューID',
+    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
+    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    PRIMARY KEY (`set_id`, `store_id`, `menu_id`),
+    FOREIGN KEY (`set_id`) REFERENCES `menu_sets` (`id`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
+);
+*/
