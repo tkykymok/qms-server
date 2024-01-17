@@ -1,4 +1,4 @@
-package com.ty.shared.application.usecase;
+package com.qms.shared.application.usecase;
 
 import java.io.IOException;
 

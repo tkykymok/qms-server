@@ -5,7 +5,7 @@ plugins {
     id "nu.studer.jooq" version "8.2.1" apply false
 }
 
-group = 'com.ty'
+group = 'com.qms'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -63,7 +63,7 @@ subprojects {
                             includes = '.*'
                         }
                         target {
-                            packageName = "com.ty.${projectName}.infrastructure.jooq"
+                            packageName = "com.qms.${projectName}.infrastructure.jooq"
                             directory = "${project.buildDir}/generated/source/jooq/main"
                         }
                     }
@@ -82,7 +82,7 @@ subprojects {
     // main-service 特有の設定
     project(':main-service') {
         bootRun {
-            mainClass = 'com.ty.mainservice.MainServiceApplication'
+            mainClass = 'com.qms.mainservice.MainServiceApplication'
             jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005']
         }
 

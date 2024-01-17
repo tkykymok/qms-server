@@ -1,4 +1,4 @@
-package com.ty.shared.domain.model;
+package com.qms.shared.domain.model;
 
 
 import java.io.Serializable;
