@@ -1,14 +1,18 @@
-CREATE DATABASE IF NOT EXISTS qmsdb;
-USE qmsdb;
+CREATE
+DATABASE IF NOT EXISTS qmsdb;
+USE
+qmsdb;
 
-GRANT ALL PRIVILEGES ON qmsdb.* TO 'qms'@'%';
-FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON qmsdb.* TO
+'qms'@'%';
+FLUSH
+PRIVILEGES;
 
 -- 既存のテーブル定義を削除
 DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
-    FOREIGN_KEY_CHECKS = 0;
+FOREIGN_KEY_CHECKS = 0;
 
 
 -- customers / 顧客
@@ -178,8 +182,8 @@ CREATE TABLE `reservations`
     `service_start_datetime` DATETIME COMMENT 'サービス開始日時',
     `service_end_datetime`   DATETIME COMMENT 'サービス終了日時',
     `status`                 INT          NOT NULL DEFAULT 0 COMMENT 'ステータス',
-    `arrival_flag`           BOOLEAN      NOT NULL DEFAULT 0 COMMENT '到着フラグ',
-    `cancel_type`            INT COMMENT 'キャンセルタイプ',
+    `notified`               BOOLEAN      NOT NULL DEFAULT 0 COMMENT '順番通知フラグ',
+    `arrived`                BOOLEAN      NOT NULL DEFAULT 0 COMMENT '到着フラグ',
     `created_at`             DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`             DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`             BIGINT                DEFAULT 0 COMMENT '作成者',
@@ -224,18 +228,19 @@ CREATE TABLE `sales`
 -- notifications / 通知
 CREATE TABLE `notifications`
 (
-    `id`                   BIGINT PRIMARY KEY COMMENT 'ID',
-    `customer_id`          BIGINT COMMENT '顧客ID',
-    `notification_type`    INT          NOT NULL COMMENT '通知タイプ',
-    `reservation_id`       BIGINT COMMENT '予約ID',
-    `notification_content` TEXT COMMENT '通知内容',
-    `notification_status`  INT COMMENT '通知ステータス',
-    `created_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`           BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`           BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type`      VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `id`                BIGINT PRIMARY KEY COMMENT 'ID',
+    `store_id`          BIGINT COMMENT '店舗ID',
+    `customer_id`       BIGINT COMMENT '顧客ID',
+    `notification_type` INT          NOT NULL COMMENT '通知タイプ',
+    `reservation_id`    BIGINT COMMENT '予約ID',
+    `content`           TEXT COMMENT '通知内容',
+    `status`            INT COMMENT '通知ステータス',
+    `created_at`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`        BIGINT                DEFAULT 0 COMMENT '作成者',
+    `created_by_type`   VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`        BIGINT                DEFAULT 0 COMMENT '更新者',
+    `updated_by_type`   VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
     FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );

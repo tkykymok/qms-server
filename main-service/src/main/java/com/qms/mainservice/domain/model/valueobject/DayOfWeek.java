@@ -1,5 +1,8 @@
 package com.qms.mainservice.domain.model.valueobject;
 
+import lombok.Getter;
+
+@Getter
 public enum DayOfWeek {
     SUNDAY("日曜日", 1),
     MONDAY("月曜日", 2),
@@ -15,14 +18,6 @@ public enum DayOfWeek {
     DayOfWeek(String text, int value) {
         this.text = text;
         this.value = value;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public int getValue() {
-        return value;
     }
 
     public String getShortText() {
