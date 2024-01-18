@@ -1,18 +1,18 @@
 CREATE
-DATABASE IF NOT EXISTS qmsdb;
+    DATABASE IF NOT EXISTS qmsdb;
 USE
-qmsdb;
+    qmsdb;
 
 GRANT ALL PRIVILEGES ON qmsdb.* TO
-'qms'@'%';
+    'qms'@'%';
 FLUSH
-PRIVILEGES;
+    PRIVILEGES;
 
 -- 既存のテーブル定義を削除
 DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
-FOREIGN_KEY_CHECKS = 0;
+    FOREIGN_KEY_CHECKS = 0;
 
 
 -- customers / 顧客
@@ -104,6 +104,7 @@ CREATE TABLE `favorite_stores`
 CREATE TABLE `staffs`
 (
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `company_id`      BIGINT       NOT NULL COMMENT '所属企業ID',
     `last_name`       VARCHAR(255) COMMENT 'スタッフ姓',
     `first_name`      VARCHAR(255) COMMENT 'スタッフ名',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
@@ -112,7 +113,8 @@ CREATE TABLE `staffs`
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
+    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`)
 );
 
 -- store_staffs / 店舗スタッフ
@@ -311,15 +313,15 @@ VALUES (1, 1, 15, 1, 1),
        (3, 2, 15, 2, 2);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`id`, `last_name`, `cognito_user_id`)
-VALUES (1, '山田', 'cognitoA'),
-       (2, '鈴木', 'cognitoB'),
-       (3, '坂本', 'cognitoC'),
-       (4, '田中', 'cognitoD'),
-       (5, '小島', 'cognitoE'),
-       (6, '後藤', 'cognitoF'),
-       (7, 'ダミー1', 'cognitoG'),
-       (8, 'ダミー2', 'cognitoH');
+INSERT INTO `staffs` (`id`,`company_id`, `last_name`, `cognito_user_id`)
+VALUES (1, 1, '山田', 'cognitoA'),
+       (2, 1, '鈴木', 'cognitoB'),
+       (3, 1, '坂本', 'cognitoC'),
+       (4, 1, '田中', 'cognitoD'),
+       (5, 1, '小島', 'cognitoE'),
+       (6, 1, '後藤', 'cognitoF'),
+       (7, 2, 'ダミー1', 'cognitoG'),
+       (8, 2, 'ダミー2', 'cognitoH');
 
 -- store_staffテーブルへのデータ投入
 INSERT INTO `store_staffs` (`staff_id`, `store_id`)
