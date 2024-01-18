@@ -46,8 +46,9 @@ CREATE TABLE `companies`
 CREATE TABLE `stores`
 (
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    `company_id`      BIGINT NOT NULL COMMENT '企業ID',
+    `company_id`      BIGINT       NOT NULL COMMENT '企業ID',
     `store_name`      VARCHAR(255) NOT NULL COMMENT '店舗名',
+    `postalCode`      VARCHAR(7) COMMENT '郵便番号',
     `address`         VARCHAR(255) COMMENT '住所',
     `location`        GEOMETRY     NOT NULL COMMENT '位置情報',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
@@ -131,7 +132,7 @@ CREATE TABLE `active_staffs`
 (
     `store_id`             BIGINT COMMENT '店舗ID',
     `staff_id`             BIGINT       NOT NULL COMMENT 'スタッフID',
-    `order`                INT          NOT NULL COMMENT '順番',
+    `sort_order`           INT          NOT NULL COMMENT '順番',
     `break_start_datetime` DATETIME COMMENT '休憩開始日時',
     `break_end_datetime`   DATETIME COMMENT '休憩終了日時',
     `created_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
@@ -325,7 +326,7 @@ VALUES (1, 2),
        (8, 1);
 
 -- active_staffsテーブルへのデータ投入
-INSERT INTO `active_staffs` (`staff_id`, `store_id`, `order`, `break_start_datetime`, `break_end_datetime`)
+INSERT INTO `active_staffs` (`staff_id`, `store_id`, `sort_order`, `break_start_datetime`, `break_end_datetime`)
 VALUES (1, 2, 1, null, null),
        (2, 2, 2, null, null);
 

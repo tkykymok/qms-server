@@ -32,6 +32,9 @@ subprojects {
         runtimeOnly 'com.mysql:mysql-connector-j'
 //        implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.0'
 
+        implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+
         // jooq
         implementation 'org.springframework.boot:spring-boot-starter-jooq'
         jooqGenerator 'com.mysql:mysql-connector-j'
