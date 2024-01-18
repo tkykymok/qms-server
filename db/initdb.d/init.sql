@@ -46,19 +46,18 @@ CREATE TABLE `companies`
 CREATE TABLE `stores`
 (
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    `company_id`      BIGINT COMMENT '企業ID',
-    `store_name`      VARCHAR(255) COMMENT '店舗名',
+    `company_id`      BIGINT NOT NULL COMMENT '企業ID',
+    `store_name`      VARCHAR(255) NOT NULL COMMENT '店舗名',
     `address`         VARCHAR(255) COMMENT '住所',
-    `location`        GEOMETRY    NOT NULL COMMENT '位置情報',
+    `location`        GEOMETRY     NOT NULL COMMENT '位置情報',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
-    `business_hours`  VARCHAR(255) COMMENT '営業時間',
     `homepage_url`    VARCHAR(255) COMMENT 'ホームページURL',
-    `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
+    `created_by_type` VARCHAR(45)  NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` VARCHAR(45)  NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
     FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`)
 );
 
@@ -149,18 +148,19 @@ CREATE TABLE `active_staffs`
 -- menus / メニュー
 CREATE TABLE `menus`
 (
-    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `store_id`        BIGINT COMMENT '店舗ID',
     `store_menu_id`   INT COMMENT '店舗メニューID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
     `price`           DECIMAL(10, 0) COMMENT '価格',
     `time`            INT          NOT NULL DEFAULT 0 COMMENT '所要時間',
+    `disabled`        BOOLEAN      NOT NULL DEFAULT 0 COMMENT '無効フラグ',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    PRIMARY KEY (`store_id`, `store_menu_id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
@@ -193,22 +193,21 @@ CREATE TABLE `reservations`
 CREATE TABLE `reservation_menus`
 (
     `reservation_id`  BIGINT COMMENT '予約ID',
-    `menu_id`         BIGINT COMMENT 'メニューID',
+    `store_menu_id`   INT COMMENT '店舗メニューID',
+    `time`            INT          NOT NULL DEFAULT 0 COMMENT '所要時間',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
     `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
     `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
-    PRIMARY KEY (`reservation_id`, `menu_id`),
-    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`),
-    FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`)
+    PRIMARY KEY (`reservation_id`, `store_menu_id`),
+    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
 
 -- sales / 売上
 CREATE TABLE `sales`
 (
-    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `reservation_id`  BIGINT COMMENT '予約ID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
     `sales_amount`    DECIMAL(10, 0) COMMENT '売上金額',
@@ -246,9 +245,9 @@ VALUES (1, 'Company A'),
        (2, 'Company B');
 
 -- storesテーブルにレコードを2つ挿入
-INSERT INTO `stores` (`id`, `company_id`, `store_name`, `address`, `phone_number`, `business_hours`, `location`)
-VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', '9:00-18:00', ST_GeomFromText('POINT(135.0000 35.0000)')),
-       (2, 2, 'store_ B1', 'Address B1', '098-765-4321', '10:00-19:00', ST_GeomFromText('POINT(136.0000 36.0000)'));
+INSERT INTO `stores` (`id`, `company_id`, `store_name`, `address`, `phone_number`, `location`)
+VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', ST_GeomFromText('POINT(135.0000 35.0000)')),
+       (2, 2, 'store_ B1', 'Address B1', '098-765-4321', ST_GeomFromText('POINT(136.0000 36.0000)'));
 
 -- store_business_hoursテーブルにレコードを挿入
 INSERT INTO `store_business_hours` (`store_id`, `day_of_week`, `open_time`, `close_time`, `closed`)
@@ -282,11 +281,11 @@ VALUES (1, 'cognito1', 'Customer A', '-', 'customerA@example.com', 1, '1990-01-0
        (9, 'cognito9', 'Customer I', '-', 'customerI@example.com', 1, '1998-09-09'),
        (10, 'cognito10', 'Customer J', '-', 'customerJ@example.com', 2, '1999-10-10');
 
--- favorite_storesテーブルにレコードを5つ挿入
-INSERT INTO `menus` (`id`, `store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `created_by`, `updated_by`)
-VALUES (1, 1, 101, 'カット', 3000.00, 60, 1, 1),
-       (2, 1, 102, 'カラーリング', 5000.00, 90, 1, 1),
-       (3, 2, 201, 'パーマ', 4500.00, 120, 2, 2);
+-- menuテーブルにレコードを3つ挿入
+INSERT INTO `menus` (`store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `created_by`, `updated_by`)
+VALUES (1, 101, 'カット', 3000, 15, 1, 1),
+       (1, 102, 'カラーリング', 5000, 15, 1, 1),
+       (2, 201, 'パーマ', 4500, 15, 2, 2);
 
 -- reservationsテーブルにレコードを5つ挿入
 INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_datetime`, `status`,
@@ -296,12 +295,12 @@ VALUES (1, 1, 1, 1001, '2024-01-20 10:00:00', 1, 1, 1),
        (3, 2, 3, 2001, '2024-01-22 15:00:00', 1, 2, 2);
 
 -- reservation_menus / 予約メニュー
-INSERT INTO `reservation_menus` (`reservation_id`, `menu_id`, `created_by`, `updated_by`)
-VALUES (1, 1, 1, 1),
-       (1, 2, 1, 1),
-       (2, 3, 1, 1),
-       (3, 1, 2, 2),
-       (3, 2, 2, 2);
+INSERT INTO `reservation_menus` (`reservation_id`, `store_menu_id`, `time`, `created_by`, `updated_by`)
+VALUES (1, 1, 15, 1, 1),
+       (1, 2, 15, 1, 1),
+       (2, 3, 15, 1, 1),
+       (3, 1, 15, 2, 2),
+       (3, 2, 15, 2, 2);
 
 -- staffsテーブルへのデータ投入
 INSERT INTO `staffs` (`id`, `last_name`, `cognito_user_id`)
