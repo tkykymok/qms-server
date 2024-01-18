@@ -214,6 +214,7 @@ CREATE TABLE `reservation_menus`
 -- sales / 売上
 CREATE TABLE `sales`
 (
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `reservation_id`  BIGINT COMMENT '予約ID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
     `sales_amount`    DECIMAL(10, 0) COMMENT '売上金額',

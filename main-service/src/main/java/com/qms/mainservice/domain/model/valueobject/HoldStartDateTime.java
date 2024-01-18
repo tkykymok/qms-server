@@ -8,4 +8,8 @@ public record HoldStartDateTime(LocalDateTime value) implements ValueObject {
     public static HoldStartDateTime of(LocalDateTime value) {
         return new HoldStartDateTime(value);
     }
+
+    public static HoldStartDateTime now() {
+        return new HoldStartDateTime(LocalDateTime.now());
+    }
 }

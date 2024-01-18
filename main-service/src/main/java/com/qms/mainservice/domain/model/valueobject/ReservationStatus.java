@@ -8,7 +8,7 @@ public enum ReservationStatus {
     IN_PROGRESS("対応中", 1),
     DONE("案内済", 2),
     PENDING("保留", 5),
-    CANCELLED("キャンセル", 9);
+    CANCELED("キャンセル", 9);
 
     private final String text;
     private final int value;

@@ -4,8 +4,12 @@ import com.qms.shared.domain.model.ValueObject;
 
 import java.time.LocalTime;
 
-public record Time(LocalTime value) implements ValueObject {
-    public static Time of(LocalTime value) {
+public record Time(Integer value) implements ValueObject {
+    public static Time of(Integer value) {
         return new Time(value);
+    }
+
+    public Time addTime(Time other) {
+        return Time.of(this.value + other.value);
     }
 }

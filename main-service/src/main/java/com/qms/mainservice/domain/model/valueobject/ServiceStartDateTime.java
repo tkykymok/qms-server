@@ -8,4 +8,8 @@ public record ServiceStartDateTime(LocalDateTime value) implements ValueObject {
     public static ServiceStartDateTime of(LocalDateTime value) {
         return new ServiceStartDateTime(value);
     }
+
+    public static ServiceStartDateTime now() {
+        return new ServiceStartDateTime(LocalDateTime.now());
+    }
 }

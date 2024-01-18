@@ -8,4 +8,8 @@ public record ServiceEndDateTime(LocalDateTime value) implements ValueObject {
     public static ServiceEndDateTime of(LocalDateTime value) {
         return new ServiceEndDateTime(value);
     }
+
+    public static ServiceEndDateTime now() {
+        return new ServiceEndDateTime(LocalDateTime.now());
+    }
 }
