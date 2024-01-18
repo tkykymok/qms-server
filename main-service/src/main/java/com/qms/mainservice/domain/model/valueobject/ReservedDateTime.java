@@ -8,4 +8,8 @@ public record ReservedDateTime(LocalDateTime value) implements ValueObject {
     public static ReservedDateTime of(LocalDateTime value) {
         return new ReservedDateTime(value);
     }
+
+    public static ReservedDateTime now() {
+        return new ReservedDateTime(LocalDateTime.now());
+    }
 }
