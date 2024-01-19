@@ -178,7 +178,7 @@ CREATE TABLE `reservations`
     `customer_id`            BIGINT       NOT NULL COMMENT '顧客ID',
     `store_id`               BIGINT       NOT NULL COMMENT '店舗ID',
     `reservation_number`     INT          NOT NULL COMMENT '予約番号',
-    `reserved_datetime`      DATETIME     NOT NULL COMMENT '予約日時',
+    `reserved_date`          DATE         NOT NULL COMMENT '予約日',
     `staff_id`               BIGINT COMMENT 'スタッフID',
     `service_start_datetime` DATETIME COMMENT 'サービス開始日時',
     `service_end_datetime`   DATETIME COMMENT 'サービス終了日時',
@@ -298,11 +298,11 @@ VALUES (1, 101, 'カット', 3000, 15, 1, 1),
        (2, 201, 'パーマ', 4500, 15, 2, 2);
 
 -- reservationsテーブルにレコードを5つ挿入
-INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_datetime`, `status`,
+INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_date`, `status`,
                             `created_by`, `updated_by`)
-VALUES (1, 1, 1, 1001, '2024-01-20 10:00:00', 1, 1, 1),
-       (2, 1, 2, 1002, '2024-01-21 11:00:00', 1, 1, 1),
-       (3, 2, 3, 2001, '2024-01-22 15:00:00', 1, 2, 2);
+VALUES (1, 1, 1, 1001, now(), 1, 1, 1),
+       (2, 1, 2, 1002, now(), 1, 1, 1),
+       (3, 2, 3, 2001, now(), 1, 2, 2);
 
 -- reservation_menus / 予約メニュー
 INSERT INTO `reservation_menus` (`reservation_id`, `store_menu_id`, `time`, `created_by`, `updated_by`)
@@ -313,7 +313,7 @@ VALUES (1, 1, 15, 1, 1),
        (3, 2, 15, 2, 2);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`id`,`company_id`, `last_name`, `cognito_user_id`)
+INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `cognito_user_id`)
 VALUES (1, 1, '山田', 'cognitoA'),
        (2, 1, '鈴木', 'cognitoB'),
        (3, 1, '坂本', 'cognitoC'),
