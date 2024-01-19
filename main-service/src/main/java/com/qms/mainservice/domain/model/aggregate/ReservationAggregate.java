@@ -2,20 +2,21 @@ package com.qms.mainservice.domain.model.aggregate;
 
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
-import com.qms.mainservice.domain.model.entity.Sales;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class ReservationAggregate extends AggregateRoot<ReservationId> {
 
-    /** 予約 */
+    // 予約
     private CustomerId customerId; // 顧客ID
     private StoreId storeId; // 店舗ID
     private ReservationNumber reservationNumber; // 予約番号
-    private ReservedDateTime reservedDateTime; // 予約日時
+    private ReservedDate reservedDate; // 予約日
     private StaffId staffId; // 対応スタッフID
     private ServiceStartDateTime serviceStartDateTime; // 対応開始日時
     private ServiceEndDateTime serviceEndDateTime; // 対応終了日時
@@ -24,10 +25,8 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
     private Flag notified; // 通知フラグ
     private Flag arrived; // 到着フラグ
     private VersionKey version; // バージョン
-    /** 予約メニュー */
+    // 予約メニューList
     List<ReservationMenu> reservationMenus;
-    /** 売上 */
-    Sales sales;
 
     private ReservationAggregate() {
     }
@@ -52,7 +51,7 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
         reservationAggregate.customerId = customerId;
         reservationAggregate.storeId = storeId;
         reservationAggregate.reservationNumber = reservationNumber;
-        reservationAggregate.reservedDateTime = ReservedDateTime.now();
+        reservationAggregate.reservedDate = ReservedDate.now();
         reservationAggregate.status = ReservationStatus.WAITING;
         reservationAggregate.notified = Flag.OFF();
         reservationAggregate.arrived = Flag.OFF();
@@ -119,7 +118,7 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
             CustomerId customerId,
             StoreId storeId,
             ReservationNumber reservationNumber,
-            ReservedDateTime reservedDateTime,
+            ReservedDate reservedDate,
             StaffId staffId,
             ServiceStartDateTime serviceStartDateTime,
             ServiceEndDateTime serviceEndDateTime,
@@ -128,15 +127,14 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
             Flag notified,
             Flag arrived,
             VersionKey version,
-            List<ReservationMenu> reservationMenus,
-            Sales sales
+            List<ReservationMenu> reservationMenus
     ) {
         ReservationAggregate reservationAggregate = new ReservationAggregate();
         reservationAggregate.id = reservationId;
         reservationAggregate.customerId = customerId;
         reservationAggregate.storeId = storeId;
         reservationAggregate.reservationNumber = reservationNumber;
-        reservationAggregate.reservedDateTime = reservedDateTime;
+        reservationAggregate.reservedDate = reservedDate;
         reservationAggregate.staffId = staffId;
         reservationAggregate.serviceStartDateTime = serviceStartDateTime;
         reservationAggregate.serviceEndDateTime = serviceEndDateTime;
@@ -146,7 +144,6 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
         reservationAggregate.arrived = arrived;
         reservationAggregate.version = version;
         reservationAggregate.reservationMenus = reservationMenus;
-        reservationAggregate.sales = sales;
         return reservationAggregate;
     }
 

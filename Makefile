@@ -9,7 +9,7 @@ remake:
 	@make init
 
 gen-jooq:
-	docker exec -it spring-demo /bin/sh -c "./gradlew generateJooq"
+	docker exec -it main-service /bin/sh -c "./gradlew generateJooq"
 
 create-queue:
 	aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name test-queue

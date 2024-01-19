@@ -7,6 +7,10 @@ public record Flag(boolean value) implements ValueObject {
         return new Flag(value);
     }
 
+    public static Flag fromValue(int value) {
+        return new Flag(value == 1);
+    }
+
     public static Flag OFF() {
         return new Flag(false);
     }
