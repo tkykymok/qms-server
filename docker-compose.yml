@@ -33,6 +33,7 @@ services:
     volumes: # マッピングを指定
       - ./main-service/build:/app/main-service/build
       - ./main-service/src:/app/main-service/src
+      - ./shared/src:/app/shared/src
       - ./build.gradle:/app/build.gradle
       - ./gradlew:/app/gradlew
       - ./gradle:/app/gradle
