@@ -4,18 +4,17 @@ import com.qms.mainservice.domain.model.entity.ActiveStaff;
 import com.qms.mainservice.domain.model.valueobject.ReservationId;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.domain.model.valueobject.Time;
+import com.qms.shared.domain.model.AggregateRoot;
 
 import java.util.List;
 
-public class ReservationListAggregate {
-    // 店舗ID
-    private StoreId storeId;
+public class ReservationsAggregate extends AggregateRoot<StoreId> {
     // 活動スタッフ一覧
     private List<ActiveStaff> activeStaffs;
     // 予約一覧
     private List<ReservationAggregate> reservations;
 
-    private ReservationListAggregate() {
+    private ReservationsAggregate() {
     }
 
     // 最後尾の待ち時間を算出する
@@ -29,16 +28,16 @@ public class ReservationListAggregate {
     }
 
     // DBから取得したデータをドメインオブジェクトに変換する
-    public static ReservationListAggregate reconstruct(
+    public static ReservationsAggregate reconstruct(
             StoreId storeId,
             List<ActiveStaff> activeStaffs,
             List<ReservationAggregate> reservations
     ) {
-        ReservationListAggregate reservationListAggregate = new ReservationListAggregate();
-        reservationListAggregate.storeId = storeId;
-        reservationListAggregate.activeStaffs = activeStaffs;
-        reservationListAggregate.reservations = reservations;
-        return reservationListAggregate;
+        ReservationsAggregate reservationsAggregate = new ReservationsAggregate();
+        reservationsAggregate.id = storeId;
+        reservationsAggregate.activeStaffs = activeStaffs;
+        reservationsAggregate.reservations = reservations;
+        return reservationsAggregate;
     }
 
 
