@@ -6,9 +6,11 @@ import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.domain.repository.reservation.ReservationRepository;
 import com.qms.shared.application.usecase.Usecase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservationsOutput> {
 
@@ -18,6 +20,12 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
         // 店舗IDから当日の予約一覧を取得する
         List<ReservationAggregate> result =
                 reservationRepository.findAllByStoreIdAndReservedDate(input, ReservedDate.now());
+        if (result.isEmpty()) {
+            // 予約一覧が存在しない場合は空の予約一覧を返す
+            return FetchReservationsOutput.builder()
+                    .reservations(List.of())
+                    .build();
+        }
 
         List<ReservationOutput> reservationOutputs = result.stream()
                 .map(reservationAggregate -> ReservationOutput.builder()

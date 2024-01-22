@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static com.qms.mainservice.infrastructure.jooq.Tables.RESERVATIONS;
 import static com.qms.mainservice.infrastructure.jooq.Tables.RESERVATION_MENUS;
 
+@Repository
 @RequiredArgsConstructor
 public class JooqReservationRepository implements ReservationRepository {
 
@@ -46,7 +48,8 @@ public class JooqReservationRepository implements ReservationRepository {
                 .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
                 .fetch();
 
-        return null;
+        return reservationRecords
+                .map(record -> recordToReservationAggregate(record, reservationMenuMap));
     }
 
     @Override
