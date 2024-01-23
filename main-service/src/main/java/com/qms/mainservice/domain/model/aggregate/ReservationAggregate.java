@@ -26,7 +26,7 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
     private Flag arrived; // 到着フラグ
     private VersionKey version; // バージョン
     // 予約メニューList
-    List<ReservationMenu> reservationMenus;
+    private List<ReservationMenu> reservationMenus;
 
     private ReservationAggregate() {
     }
@@ -36,14 +36,14 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
      *
      * @param storeId           店舗ID
      * @param customerId        顧客ID
-     * @param menus             メニュー一覧
+     * @param storeMenuIds      店舗メニューID一覧
      * @param reservationNumber 予約番号
      * @return 予約
      */
     public static ReservationAggregate create(
             StoreId storeId,
             CustomerId customerId,
-            List<Menu> menus,
+            List<StoreMenuId> storeMenuIds,
             ReservationNumber reservationNumber
     ) {
         // 予約を作成する
@@ -58,8 +58,8 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
         reservationAggregate.version = VersionKey.newVersion();
 
         // 予約メニューを作成する
-        reservationAggregate.reservationMenus = menus.stream()
-                .map(ReservationMenu::create)
+        reservationAggregate.reservationMenus = storeMenuIds.stream()
+                .map(storeMenuId -> ReservationMenu.create(reservationAggregate.id, storeId, storeMenuId))
                 .toList();
 
         return reservationAggregate;

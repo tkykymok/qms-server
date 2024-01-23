@@ -12,4 +12,25 @@ public class Menu extends CompositeKeyBaseEntity<MenuKey> {
     private Time time;
     private Flag disabled;
 
+    private Menu() {
+    }
+
+    // DBから取得したデータをドメインオブジェクトに変換する
+    public static Menu reconstruct(
+            StoreId storeId,
+            StoreMenuId storeMenuId,
+            MenuName menuName,
+            Price price,
+            Time time,
+            Flag disabled
+    ) {
+        Menu menu = new Menu();
+        menu.key = MenuKey.of(storeId, storeMenuId);
+        menu.menuName = menuName;
+        menu.price = price;
+        menu.time = time;
+        menu.disabled = disabled;
+        return menu;
+    }
+
 }

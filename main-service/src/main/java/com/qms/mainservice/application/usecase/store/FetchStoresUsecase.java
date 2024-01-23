@@ -1,5 +1,6 @@
 package com.qms.mainservice.application.usecase.store;
 
+import com.qms.mainservice.infrastructure.repository.store.JooqStoreRepository;
 import com.qms.shared.application.usecase.Usecase;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FetchStoresUsecase extends Usecase<FetchStoresInput, FetchStoresOutput> {
 
-
+    private final JooqStoreRepository jooqStoreRepository;
 
     @Override
     public FetchStoresOutput execute(FetchStoresInput input) {
@@ -23,6 +24,8 @@ public class FetchStoresUsecase extends Usecase<FetchStoresInput, FetchStoresOut
 
         System.out.println("Longitude: " + point.getX());
         System.out.println("Latitude: " + point.getY());
+
+        jooqStoreRepository.findStoreDetailsByLocation(point, 2000);
 
 
         return null;
