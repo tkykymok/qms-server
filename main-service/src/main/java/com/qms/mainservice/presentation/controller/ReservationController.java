@@ -4,6 +4,7 @@ import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutp
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.reservation.ReservationPresenter;
+import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class ReservationController {
 
     // 予約一覧を取得する
     @GetMapping("/list")
-    public ResponseEntity<?> getReservations() {
+    public ResponseEntity<GetReservationsResponse> getReservations() {
         // 店舗ID
         StoreId storeId = StoreId.of(1L);
 
