@@ -62,7 +62,7 @@ subprojects {
                     generator {
                         name = "org.jooq.codegen.JavaGenerator"
                         database {
-                            inputSchema = 'qmsdb'
+                            inputSchema = 'qms_db'
                             includes = '.*'
                         }
                         target {
