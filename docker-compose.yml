@@ -9,7 +9,8 @@ services:
     environment: # 環境変数を設定
       - MYSQL_USER=${MYSQL_USER} # データベースのユーザー名
       - MYSQL_PASSWORD=${MYSQL_PASSWORD} # ユーザーのパスワード
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} # ルートユーザーのパスワード
+      - MYSQL_ROOT_USER=root # ルートユーザーのユーザー名
+      - MYSQL_ROOT_PASSWORD=root # ルートユーザーのパスワード
       - MYSQL_DB=${MYSQL_DB} # データベース名
       - TZ=${TZ} # タイムゾーン
     ports: # ポート番号を指定（ホスト:コンテナ）

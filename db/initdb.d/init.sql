@@ -1,15 +1,11 @@
-CREATE
-    DATABASE IF NOT EXISTS qmsdb;
-USE
-    qmsdb;
+DROP DATABASE IF EXISTS qms_db;
+CREATE DATABASE qms_db;
+USE qms_db;
 
-GRANT ALL PRIVILEGES ON qmsdb.* TO
-    'qms'@'%';
-FLUSH
-    PRIVILEGES;
+GRANT ALL PRIVILEGES ON qms_db.* TO 'qms'@'%';
 
--- 既存のテーブル定義を削除
-DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
+# -- 既存のテーブル定義を削除
+# DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
     FOREIGN_KEY_CHECKS = 0;
@@ -52,7 +48,7 @@ CREATE TABLE `stores`
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `company_id`      BIGINT       NOT NULL COMMENT '企業ID',
     `store_name`      VARCHAR(255) NOT NULL COMMENT '店舗名',
-    `postalCode`      VARCHAR(7) COMMENT '郵便番号',
+    `postal_code`     VARCHAR(7) COMMENT '郵便番号',
     `address`         VARCHAR(255) COMMENT '住所',
     `location`        GEOMETRY     NOT NULL COMMENT '位置情報',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
@@ -256,8 +252,9 @@ VALUES (1, 'Company A'),
 
 -- storesテーブルにレコードを2つ挿入
 INSERT INTO `stores` (`id`, `company_id`, `store_name`, `address`, `phone_number`, `location`)
-VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', ST_GeomFromText('POINT(135.0000 35.0000)')),
-       (2, 2, 'store_ B1', 'Address B1', '098-765-4321', ST_GeomFromText('POINT(136.0000 36.0000)'));
+VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', ST_GeomFromText('POINT(139.7581848 35.6798787)')),
+       (2, 1, 'store_ A2', 'Address A2', '123-456-7890', ST_GeomFromText('POINT(139.7574348 35.6797699)')),
+       (3, 2, 'store_ B1', 'Address B1', '098-765-4321', ST_GeomFromText('POINT(136.0000 36.0000)'));
 
 -- store_business_hoursテーブルにレコードを挿入
 INSERT INTO `store_business_hours` (`store_id`, `day_of_week`, `open_time`, `close_time`, `closed`)
