@@ -37,7 +37,7 @@ public class JooqStoreRepository implements StoreRepository {
         Result<Record> storeRecords = dsl.select()
                 .from(STORES)
                 .where(String.format("ST_Distance_Sphere(POINT(%f, %f), POINT(longitude, latitude)) <= %d",
-                        point.getY(), point.getY(), distance))
+                        point.getX(), point.getY(), distance))
                 .fetch();
 
         // 店舗営業時間一覧を取得する
