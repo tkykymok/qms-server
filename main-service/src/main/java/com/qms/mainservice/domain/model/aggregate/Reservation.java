@@ -31,6 +31,8 @@ public class Reservation extends AggregateRoot<ReservationId> {
     private Flag notified; // 通知フラグ
     private Flag arrived; // 到着フラグ
     private VersionKey version; // バージョン
+    // 店舗情報
+    private Store store;
     // 予約メニューList
     private List<ReservationMenu> reservationMenus;
 
@@ -167,6 +169,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
             Flag notified,
             Flag arrived,
             VersionKey version,
+            Store store,
             List<ReservationMenu> reservationMenus
     ) {
         Reservation reservation = new Reservation();

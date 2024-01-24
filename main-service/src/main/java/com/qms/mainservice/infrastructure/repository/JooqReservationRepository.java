@@ -27,13 +27,23 @@ public class JooqReservationRepository implements ReservationRepository {
 
     @Override
     public Reservation findById(ReservationId id) {
+        // 予約IDに紐づく予約を取得する
+
+        // 予約IDに紐づく予約メニュー一覧を取得する
+
         return null;
     }
 
     @Override
     public List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate) {
+        // 予約一覧を取得する
+        Result<Record> reservationRecords = dsl.select()
+                .from(RESERVATIONS)
+                .where(RESERVATIONS.STORE_ID.eq(storeId.value()))
+                .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
+                .fetch();
 
-        // ReservedDateに紐づく予約メニュー一覧を取得し、予約IDをキーにMapに格納する
+        // 店舗 & ReservedDateに紐づく予約メニュー一覧を取得し、予約IDをキーにMapに格納する
         Map<Long, Result<Record>> reservationMenuMap = dsl.select()
                 .from(RESERVATION_MENUS)
                 .innerJoin(RESERVATIONS).on(RESERVATION_MENUS.RESERVATION_ID.eq(RESERVATIONS.ID))
@@ -44,13 +54,6 @@ public class JooqReservationRepository implements ReservationRepository {
                         and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value())))
                 .fetch()
                 .intoGroups(RESERVATION_MENUS.RESERVATION_ID);
-
-        // 予約一覧を取得する
-        Result<Record> reservationRecords = dsl.select()
-                .from(RESERVATIONS)
-                .where(RESERVATIONS.STORE_ID.eq(storeId.value()))
-                .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
-                .fetch();
 
         return reservationRecords
                 .map(record -> recordToReservation(record, reservationMenuMap));
@@ -92,6 +95,7 @@ public class JooqReservationRepository implements ReservationRepository {
                 Flag.fromValue(record.get(RESERVATIONS.NOTIFIED).intValue()),
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),
                 VersionKey.of(record.get(RESERVATIONS.VERSION)),
+                null,
                 reservationMenusMap.get(record.get(RESERVATIONS.ID))
                         .map(this::recordsToReservationMenu)
         );

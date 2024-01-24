@@ -6,6 +6,7 @@ import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutp
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
+import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,19 +44,13 @@ public class ReservationController {
     }
 
     // 予約の待ち時間を取得する
-    @GetMapping("/wait-time/{reservationId}")
-    public ResponseEntity<?> getReservationWaitTime(@PathVariable("reservationId") Long reservationId) {
+    @GetMapping("/detail/{reservationId}")
+    public ResponseEntity<GetReservationDetailResponse> getReservationDetail(
+            @PathVariable("reservationId") Long reservationId) {
         System.out.println(reservationId);
 
         return null;
     }
-
-
-
-
-
-
-
 
 
 }

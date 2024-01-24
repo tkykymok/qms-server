@@ -20,6 +20,9 @@ public record ReservationOutput(
         Flag notified, // 通知フラグ
         Flag arrived, // 到着フラグ
         VersionKey version, // バージョン
+        // 店舗情報
+        StoreName storeName, // 店舗名
+        HomePageUrl homePageUrl, // ホームページURL
         // 予約メニュー
         MenuName menuName, // メニュー名
         Price price, // 価格
