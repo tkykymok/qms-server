@@ -49,8 +49,8 @@ public class StoreReservationOverview extends AggregateRoot<StoreId> {
         // 最後尾の予約が処理される時刻を取得する(現在時刻から何分後か)
         return staffAvailability.stream()
                 .max(StaffAvailability::compareTo)
-                .orElseThrow(() -> new DomainException("スタッフの次の利用可能時刻を保持する優先度キューが空です")
-                ).getNextAvailableTime();
+                .orElseThrow(() -> new DomainException("スタッフの次の利用可能時刻を保持する優先度キューが空です"))
+                .getNextAvailableTime();
     }
 
     // 該当予約の待ち時間を算出する(予約ID)
