@@ -1,10 +1,10 @@
-package com.qms.mainservice.infrastructure.repository.reservation;
+package com.qms.mainservice.infrastructure.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
-import com.qms.mainservice.domain.repository.reservation.ReservationRepository;
+import com.qms.mainservice.domain.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;

@@ -1,4 +1,4 @@
-package com.qms.mainservice.domain.repository.reservation;
+package com.qms.mainservice.domain.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.valueobject.ReservationId;

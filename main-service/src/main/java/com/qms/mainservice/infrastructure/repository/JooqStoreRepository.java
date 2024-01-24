@@ -1,9 +1,9 @@
-package com.qms.mainservice.infrastructure.repository.store;
+package com.qms.mainservice.infrastructure.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
-import com.qms.mainservice.domain.repository.store.StoreRepository;
+import com.qms.mainservice.domain.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;

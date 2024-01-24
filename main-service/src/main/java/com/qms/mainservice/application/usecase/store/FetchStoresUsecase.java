@@ -1,7 +1,7 @@
 package com.qms.mainservice.application.usecase.store;
 
 import com.qms.mainservice.domain.model.aggregate.Store;
-import com.qms.mainservice.infrastructure.repository.store.JooqStoreRepository;
+import com.qms.mainservice.infrastructure.repository.JooqStoreRepository;
 import com.qms.shared.application.usecase.Usecase;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;

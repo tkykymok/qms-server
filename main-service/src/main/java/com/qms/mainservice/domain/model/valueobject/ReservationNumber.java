@@ -1,6 +1,6 @@
 package com.qms.mainservice.domain.model.valueobject;
 
-import com.qms.mainservice.domain.repository.reservation.ReservationRepository;
+import com.qms.mainservice.domain.repository.ReservationRepository;
 import com.qms.shared.domain.model.ValueObject;
 
 public record ReservationNumber(Integer value) implements ValueObject {

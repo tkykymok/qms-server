@@ -1,4 +1,4 @@
-package com.qms.mainservice.domain.repository.store;
+package com.qms.mainservice.domain.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Store;
 import org.locationtech.jts.geom.Point;
