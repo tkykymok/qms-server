@@ -8,13 +8,13 @@ import com.qms.shared.domain.model.AggregateRoot;
 
 import java.util.List;
 
-public class ReservationsAggregate extends AggregateRoot<StoreId> {
+public class WaitTimeCalculator extends AggregateRoot<StoreId> {
     // 活動スタッフ一覧
     private List<ActiveStaff> activeStaffs;
     // 予約一覧
-    private List<ReservationAggregate> reservations;
+    private List<Reservation> reservations;
 
-    private ReservationsAggregate() {
+    private WaitTimeCalculator() {
     }
 
     // 最後尾の待ち時間を算出する
@@ -28,16 +28,16 @@ public class ReservationsAggregate extends AggregateRoot<StoreId> {
     }
 
     // DBから取得したデータをドメインオブジェクトに変換する
-    public static ReservationsAggregate reconstruct(
+    public static WaitTimeCalculator reconstruct(
             StoreId storeId,
             List<ActiveStaff> activeStaffs,
-            List<ReservationAggregate> reservations
+            List<Reservation> reservations
     ) {
-        ReservationsAggregate reservationsAggregate = new ReservationsAggregate();
-        reservationsAggregate.id = storeId;
-        reservationsAggregate.activeStaffs = activeStaffs;
-        reservationsAggregate.reservations = reservations;
-        return reservationsAggregate;
+        WaitTimeCalculator waitTimeCalculator = new WaitTimeCalculator();
+        waitTimeCalculator.id = storeId;
+        waitTimeCalculator.activeStaffs = activeStaffs;
+        waitTimeCalculator.reservations = reservations;
+        return waitTimeCalculator;
     }
 
 

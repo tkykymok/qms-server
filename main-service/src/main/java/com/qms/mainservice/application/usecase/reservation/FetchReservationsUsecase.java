@@ -1,6 +1,6 @@
 package com.qms.mainservice.application.usecase.reservation;
 
-import com.qms.mainservice.domain.model.aggregate.ReservationAggregate;
+import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.valueobject.ReservedDate;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.domain.repository.reservation.ReservationRepository;
@@ -18,7 +18,7 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
 
     public FetchReservationsOutput execute(StoreId input) {
         // 店舗IDから当日の予約一覧を取得する
-        List<ReservationAggregate> result =
+        List<Reservation> result =
                 reservationRepository.findAllByStoreIdAndReservedDate(input, ReservedDate.now());
         if (result.isEmpty()) {
             // 予約一覧が存在しない場合は空の予約一覧を返す
@@ -28,20 +28,20 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
         }
 
         List<ReservationOutput> reservationOutputs = result.stream()
-                .map(reservationAggregate -> ReservationOutput.builder()
-                        .reservationId(reservationAggregate.getId()) // 予約ID
-                        .customerId(reservationAggregate.getCustomerId()) // 顧客ID
-                        .storeId(reservationAggregate.getStoreId()) // 店舗ID
-                        .reservationNumber(reservationAggregate.getReservationNumber()) // 予約番号
-                        .reservedDate(reservationAggregate.getReservedDate()) // 予約日
-                        .staffId(reservationAggregate.getStaffId()) // 対応スタッフID
-                        .serviceStartDateTime(reservationAggregate.getServiceStartDateTime()) // 対応開始日時
-                        .serviceEndDateTime(reservationAggregate.getServiceEndDateTime()) // 対応終了日時
-                        .holdStartDateTime(reservationAggregate.getHoldStartDateTime()) // 保留開始日時
-                        .status(reservationAggregate.getStatus()) // 予約ステータス
-                        .notified(reservationAggregate.getNotified()) // 通知フラグ
-                        .arrived(reservationAggregate.getArrived()) // 到着フラグ
-                        .version(reservationAggregate.getVersion()) // バージョン
+                .map(reservation -> ReservationOutput.builder()
+                        .reservationId(reservation.getId()) // 予約ID
+                        .customerId(reservation.getCustomerId()) // 顧客ID
+                        .storeId(reservation.getStoreId()) // 店舗ID
+                        .reservationNumber(reservation.getReservationNumber()) // 予約番号
+                        .reservedDate(reservation.getReservedDate()) // 予約日
+                        .staffId(reservation.getStaffId()) // 対応スタッフID
+                        .serviceStartDateTime(reservation.getServiceStartDateTime()) // 対応開始日時
+                        .serviceEndDateTime(reservation.getServiceEndDateTime()) // 対応終了日時
+                        .holdStartDateTime(reservation.getHoldStartDateTime()) // 保留開始日時
+                        .status(reservation.getStatus()) // 予約ステータス
+                        .notified(reservation.getNotified()) // 通知フラグ
+                        .arrived(reservation.getArrived()) // 到着フラグ
+                        .version(reservation.getVersion()) // バージョン
                         .build())
                 .toList();
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class StoreAggregate extends AggregateRoot<StoreId> {
+public class Store extends AggregateRoot<StoreId> {
 
     // 店舗
     private CompanyId companyId; // 企業ID
@@ -26,11 +26,11 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
     // 店舗営業時間List
     private List<StoreBusinessHour> storeBusinessHours;
 
-    private StoreAggregate() {
+    private Store() {
     }
 
     // DBから取得したデータをドメインオブジェクトに変換する
-    public static StoreAggregate reconstruct(
+    public static Store reconstruct(
             StoreId storeId,
             CompanyId companyId,
             StoreName storeName,
@@ -42,18 +42,18 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
             HomePageUrl homePageUrl,
             List<StoreBusinessHour> storeBusinessHours
     ) {
-        StoreAggregate storeAggregate = new StoreAggregate();
-        storeAggregate.id = storeId;
-        storeAggregate.companyId = companyId;
-        storeAggregate.storeName = storeName;
-        storeAggregate.postalCode = postalCode;
-        storeAggregate.address = address;
-        storeAggregate.latitude = latitude;
-        storeAggregate.longitude = longitude;
-        storeAggregate.phoneNumber = phoneNumber;
-        storeAggregate.homePageUrl = homePageUrl;
-        storeAggregate.storeBusinessHours = storeBusinessHours;
-        return storeAggregate;
+        Store store = new Store();
+        store.id = storeId;
+        store.companyId = companyId;
+        store.storeName = storeName;
+        store.postalCode = postalCode;
+        store.address = address;
+        store.latitude = latitude;
+        store.longitude = longitude;
+        store.phoneNumber = phoneNumber;
+        store.homePageUrl = homePageUrl;
+        store.storeBusinessHours = storeBusinessHours;
+        return store;
     }
 
     // 店舗営業時間Listから平日の営業時間を取得する

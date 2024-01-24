@@ -1,6 +1,6 @@
 package com.qms.mainservice.infrastructure.repository.store;
 
-import com.qms.mainservice.domain.model.aggregate.StoreAggregate;
+import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.store.StoreRepository;
@@ -25,7 +25,7 @@ public class JooqStoreRepository implements StoreRepository {
     private final DSLContext dsl;
 
     @Override
-    public List<StoreAggregate> findStoreDetailsByLocation(Point point, int distance) {
+    public List<Store> findStoreDetailsByLocation(Point point, int distance) {
 
         // 店舗IDをキーに、店舗毎の営業時間をMapに格納する
         Map<Long, Result<Record>> storeBusinessHourMap = dsl.select()
@@ -42,11 +42,11 @@ public class JooqStoreRepository implements StoreRepository {
                 .fetch();
 
         // 店舗営業時間一覧を取得する
-        return storeRecords.map(record -> recordToStoreAggregate(record, storeBusinessHourMap));
+        return storeRecords.map(record -> recordToStore(record, storeBusinessHourMap));
     }
 
-    private StoreAggregate recordToStoreAggregate(Record record, Map<Long, Result<Record>> storeBusinessHourMap) {
-        return StoreAggregate.reconstruct(
+    private Store recordToStore(Record record, Map<Long, Result<Record>> storeBusinessHourMap) {
+        return Store.reconstruct(
                 StoreId.of(record.get(STORES.ID)),
                 CompanyId.of(record.get(STORES.COMPANY_ID)),
                 StoreName.of(record.get(STORES.STORE_NAME)),

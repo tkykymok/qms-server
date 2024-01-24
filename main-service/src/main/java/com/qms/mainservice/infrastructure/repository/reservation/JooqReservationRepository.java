@@ -1,6 +1,6 @@
 package com.qms.mainservice.infrastructure.repository.reservation;
 
-import com.qms.mainservice.domain.model.aggregate.ReservationAggregate;
+import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
@@ -12,7 +12,6 @@ import org.jooq.Result;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +24,12 @@ public class JooqReservationRepository implements ReservationRepository {
     private final DSLContext dsl;
 
     @Override
-    public ReservationAggregate findById(ReservationId id) {
+    public Reservation findById(ReservationId id) {
         return null;
     }
 
     @Override
-    public List<ReservationAggregate> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate) {
+    public List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate) {
 
         // ReservedDateに紐づく予約メニュー一覧を取得し、予約IDをキーにMapに格納する
         Map<Long, Result<Record>> reservationMenuMap = dsl.select()
@@ -52,7 +51,7 @@ public class JooqReservationRepository implements ReservationRepository {
                 .fetch();
 
         return reservationRecords
-                .map(record -> recordToReservationAggregate(record, reservationMenuMap));
+                .map(record -> recordToReservation(record, reservationMenuMap));
     }
 
     @Override
@@ -61,9 +60,9 @@ public class JooqReservationRepository implements ReservationRepository {
     }
 
 
-    // Record から ReservationAggregateを生成
-    private ReservationAggregate recordToReservationAggregate(Record record, Map<Long, Result<Record>> reservationMenusMap) {
-        return ReservationAggregate.reconstruct(
+    // Record から Reservationを生成
+    private Reservation recordToReservation(Record record, Map<Long, Result<Record>> reservationMenusMap) {
+        return Reservation.reconstruct(
                 ReservationId.of(record.get(RESERVATIONS.ID)),
                 CustomerId.of(record.get(RESERVATIONS.CUSTOMER_ID)),
                 StoreId.of(record.get(RESERVATIONS.STORE_ID)),

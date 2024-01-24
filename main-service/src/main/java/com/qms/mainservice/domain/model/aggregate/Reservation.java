@@ -1,6 +1,5 @@
 package com.qms.mainservice.domain.model.aggregate;
 
-import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
@@ -10,7 +9,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ReservationAggregate extends AggregateRoot<ReservationId> {
+public class Reservation extends AggregateRoot<ReservationId> {
 
     // 予約
     private CustomerId customerId; // 顧客ID
@@ -28,7 +27,7 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
     // 予約メニューList
     private List<ReservationMenu> reservationMenus;
 
-    private ReservationAggregate() {
+    private Reservation() {
     }
 
     /**
@@ -40,29 +39,29 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
      * @param reservationNumber 予約番号
      * @return 予約
      */
-    public static ReservationAggregate create(
+    public static Reservation create(
             StoreId storeId,
             CustomerId customerId,
             List<StoreMenuId> storeMenuIds,
             ReservationNumber reservationNumber
     ) {
         // 予約を作成する
-        ReservationAggregate reservationAggregate = new ReservationAggregate();
-        reservationAggregate.customerId = customerId;
-        reservationAggregate.storeId = storeId;
-        reservationAggregate.reservationNumber = reservationNumber;
-        reservationAggregate.reservedDate = ReservedDate.now();
-        reservationAggregate.status = ReservationStatus.WAITING;
-        reservationAggregate.notified = Flag.OFF();
-        reservationAggregate.arrived = Flag.OFF();
-        reservationAggregate.version = VersionKey.newVersion();
+        Reservation reservation = new Reservation();
+        reservation.customerId = customerId;
+        reservation.storeId = storeId;
+        reservation.reservationNumber = reservationNumber;
+        reservation.reservedDate = ReservedDate.now();
+        reservation.status = ReservationStatus.WAITING;
+        reservation.notified = Flag.OFF();
+        reservation.arrived = Flag.OFF();
+        reservation.version = VersionKey.newVersion();
 
         // 予約メニューを作成する
-        reservationAggregate.reservationMenus = storeMenuIds.stream()
-                .map(storeMenuId -> ReservationMenu.create(reservationAggregate.id, storeId, storeMenuId))
+        reservation.reservationMenus = storeMenuIds.stream()
+                .map(storeMenuId -> ReservationMenu.create(reservation.id, storeId, storeMenuId))
                 .toList();
 
-        return reservationAggregate;
+        return reservation;
     }
 
     /**
@@ -113,7 +112,7 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
     }
 
     // DBから取得したデータをドメインオブジェクトに変換する
-    public static ReservationAggregate reconstruct(
+    public static Reservation reconstruct(
             ReservationId reservationId,
             CustomerId customerId,
             StoreId storeId,
@@ -129,22 +128,22 @@ public class ReservationAggregate extends AggregateRoot<ReservationId> {
             VersionKey version,
             List<ReservationMenu> reservationMenus
     ) {
-        ReservationAggregate reservationAggregate = new ReservationAggregate();
-        reservationAggregate.id = reservationId;
-        reservationAggregate.customerId = customerId;
-        reservationAggregate.storeId = storeId;
-        reservationAggregate.reservationNumber = reservationNumber;
-        reservationAggregate.reservedDate = reservedDate;
-        reservationAggregate.staffId = staffId;
-        reservationAggregate.serviceStartDateTime = serviceStartDateTime;
-        reservationAggregate.serviceEndDateTime = serviceEndDateTime;
-        reservationAggregate.holdStartDateTime = holdStartDateTime;
-        reservationAggregate.status = status;
-        reservationAggregate.notified = notified;
-        reservationAggregate.arrived = arrived;
-        reservationAggregate.version = version;
-        reservationAggregate.reservationMenus = reservationMenus;
-        return reservationAggregate;
+        Reservation reservation = new Reservation();
+        reservation.id = reservationId;
+        reservation.customerId = customerId;
+        reservation.storeId = storeId;
+        reservation.reservationNumber = reservationNumber;
+        reservation.reservedDate = reservedDate;
+        reservation.staffId = staffId;
+        reservation.serviceStartDateTime = serviceStartDateTime;
+        reservation.serviceEndDateTime = serviceEndDateTime;
+        reservation.holdStartDateTime = holdStartDateTime;
+        reservation.status = status;
+        reservation.notified = notified;
+        reservation.arrived = arrived;
+        reservation.version = version;
+        reservation.reservationMenus = reservationMenus;
+        return reservation;
     }
 
 }

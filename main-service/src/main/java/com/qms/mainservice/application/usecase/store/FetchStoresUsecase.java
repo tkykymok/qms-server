@@ -1,6 +1,6 @@
 package com.qms.mainservice.application.usecase.store;
 
-import com.qms.mainservice.domain.model.aggregate.StoreAggregate;
+import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.infrastructure.repository.store.JooqStoreRepository;
 import com.qms.shared.application.usecase.Usecase;
 import lombok.RequiredArgsConstructor;
@@ -22,29 +22,29 @@ public class FetchStoresUsecase extends Usecase<FetchStoresInput, FetchStoresOut
         GeometryFactory geometryFactory = new GeometryFactory();
         Coordinate coordinate = new Coordinate(input.longitude(), input.latitude()); // 経度、緯度の順番
         Point point = geometryFactory.createPoint(coordinate);
-        List<StoreAggregate> storeAggregates = jooqStoreRepository.findStoreDetailsByLocation(point, 2000);
+        List<Store> stores = jooqStoreRepository.findStoreDetailsByLocation(point, 2000);
 
-        if (storeAggregates.isEmpty()) {
+        if (stores.isEmpty()) {
             return FetchStoresOutput.builder()
                     .stores(List.of())
                     .build();
         }
 
-        List<StoreOutput> storeOutputs = storeAggregates.stream()
-                .map(storeAggregate -> StoreOutput.builder()
-                        .storeId(storeAggregate.getId())
-                        .companyId(storeAggregate.getCompanyId())
-                        .storeName(storeAggregate.getStoreName())
-                        .postalCode(storeAggregate.getPostalCode())
-                        .address(storeAggregate.getAddress())
-                        .latitude(storeAggregate.getLatitude())
-                        .longitude(storeAggregate.getLongitude())
-                        .phoneNumber(storeAggregate.getPhoneNumber())
-                        .homePageUrl(storeAggregate.getHomePageUrl())
-                        .isClosed(storeAggregate.isClosed())
-                        .weekdayHours(storeAggregate.getWeekdayHours())
-                        .holidayHours(storeAggregate.getHolidayHours())
-                        .regularHolidays(storeAggregate.getRegularHolidays())
+        List<StoreOutput> storeOutputs = stores.stream()
+                .map(store -> StoreOutput.builder()
+                        .storeId(store.getId())
+                        .companyId(store.getCompanyId())
+                        .storeName(store.getStoreName())
+                        .postalCode(store.getPostalCode())
+                        .address(store.getAddress())
+                        .latitude(store.getLatitude())
+                        .longitude(store.getLongitude())
+                        .phoneNumber(store.getPhoneNumber())
+                        .homePageUrl(store.getHomePageUrl())
+                        .isClosed(store.isClosed())
+                        .weekdayHours(store.getWeekdayHours())
+                        .holidayHours(store.getHolidayHours())
+                        .regularHolidays(store.getRegularHolidays())
                         .build())
                 .toList();
 
