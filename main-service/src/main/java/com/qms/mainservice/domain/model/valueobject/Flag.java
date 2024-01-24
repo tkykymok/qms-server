@@ -2,8 +2,9 @@ package com.qms.mainservice.domain.model.valueobject;
 
 import com.qms.shared.domain.model.ValueObject;
 
-public record Flag(boolean value) implements ValueObject {
-    public static Flag of(boolean value) {
+public record Flag(Boolean value) implements ValueObject {
+    public static Flag of(Boolean value) {
+        if(value == null) return null;
         return new Flag(value);
     }
 

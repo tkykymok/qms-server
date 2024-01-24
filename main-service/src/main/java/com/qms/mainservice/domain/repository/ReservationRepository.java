@@ -13,5 +13,5 @@ public interface ReservationRepository {
 
     List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate);
 
-    ReservationNumber newReservationNumber();
+    ReservationNumber newReservationNumber(StoreId storeId);
 }

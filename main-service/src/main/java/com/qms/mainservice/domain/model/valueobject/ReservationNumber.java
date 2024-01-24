@@ -9,7 +9,7 @@ public record ReservationNumber(Integer value) implements ValueObject {
     }
 
     // 予約番号を採番する
-    public static ReservationNumber newReservationNumber(ReservationRepository repository) {
-        return  repository.newReservationNumber();
+    public static ReservationNumber newReservationNumber(ReservationRepository repository, StoreId storeId) {
+        return  repository.newReservationNumber(storeId);
     }
 }

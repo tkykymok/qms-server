@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public record Birthday(LocalDate value) implements ValueObject {
     public static Birthday of(LocalDate value) {
+        if(value == null) return null;
         return new Birthday(value);
     }
 }

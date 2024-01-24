@@ -19,17 +19,22 @@ public class FetchStoresUsecase extends Usecase<FetchStoresInput, FetchStoresOut
 
     @Override
     public FetchStoresOutput execute(FetchStoresInput input) {
+        // 座標をPointに変換する
         GeometryFactory geometryFactory = new GeometryFactory();
         Coordinate coordinate = new Coordinate(input.longitude(), input.latitude()); // 経度、緯度の順番
         Point point = geometryFactory.createPoint(coordinate);
+
+        // 指定の距離内に存在する店舗一覧を取得する
         List<Store> stores = jooqStoreRepository.findStoreDetailsByLocation(point, 2000);
 
+        // 店舗一覧が存在しない場合は空のListを返す
         if (stores.isEmpty()) {
             return FetchStoresOutput.builder()
                     .stores(List.of())
                     .build();
         }
 
+        // 店舗一覧をOutputに詰め替える
         List<StoreOutput> storeOutputs = stores.stream()
                 .map(store -> StoreOutput.builder()
                         .storeId(store.getId())

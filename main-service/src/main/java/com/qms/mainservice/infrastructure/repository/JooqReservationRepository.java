@@ -8,7 +8,9 @@ import com.qms.mainservice.domain.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -55,8 +57,22 @@ public class JooqReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public ReservationNumber newReservationNumber() {
-        return null;
+    public ReservationNumber newReservationNumber(StoreId storeId) {
+        // 店舗ごとの本日最新の予約の次の予約番号を取得する
+        Record1<Integer> maxReservationNumber = dsl
+                .select(DSL.max(RESERVATIONS.RESERVATION_NUMBER))
+                .from(RESERVATIONS)
+                .where(RESERVATIONS.STORE_ID.eq(storeId.value())
+                        .and(RESERVATIONS.RESERVED_DATE.eq(ReservedDate.now().value()))
+                )
+                .fetchOne();
+
+        int nextReservationNumber = 1;
+        if (maxReservationNumber != null && maxReservationNumber.value1() != null) {
+            nextReservationNumber = maxReservationNumber.value1() + 1;
+        }
+
+        return ReservationNumber.of(nextReservationNumber);
     }
 
 

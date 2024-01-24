@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public record ServiceEndDateTime(LocalDateTime value) implements ValueObject {
     public static ServiceEndDateTime of(LocalDateTime value) {
+        if(value == null) return null;
         return new ServiceEndDateTime(value);
     }
 

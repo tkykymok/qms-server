@@ -8,6 +8,7 @@ public record StoreBusinessHourKey(
         DayOfWeek dayOfWeek
 ) implements Serializable {
     public static StoreBusinessHourKey of(StoreId storeId, DayOfWeek dayOfWeek) {
+        if(storeId == null || dayOfWeek == null) return null;
         return new StoreBusinessHourKey(storeId, dayOfWeek);
     }
 }

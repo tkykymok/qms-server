@@ -7,6 +7,7 @@ public record MenuKey(
         StoreMenuId storeMenuId
 ) implements Serializable {
     public static MenuKey of(StoreId storeId, StoreMenuId storeMenuId) {
+        if(storeId == null || storeMenuId == null) return null;
         return new MenuKey(storeId, storeMenuId);
     }
 }

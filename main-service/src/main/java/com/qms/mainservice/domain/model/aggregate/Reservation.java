@@ -1,12 +1,19 @@
 package com.qms.mainservice.domain.model.aggregate;
 
+import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class Reservation extends AggregateRoot<ReservationId> {
@@ -109,6 +116,40 @@ public class Reservation extends AggregateRoot<ReservationId> {
      */
     public void updateStatusToCanceled() {
         this.status = ReservationStatus.CANCELED;
+    }
+
+    // メニュー名を取得する
+    public MenuName getMenuName() {
+        String menuNamesConcatenated = this.reservationMenus.stream()
+                .map(ReservationMenu::getMenu)
+                .map(Menu::getMenuName)
+                .map(MenuName::value)
+                .collect(Collectors.joining("、"));
+        return MenuName.of(menuNamesConcatenated);
+    }
+
+    // メニュー金額を取得する
+    public Price getPrice() {
+        return this.reservationMenus.stream()
+                .map(reservationMenu -> reservationMenu.getMenu().getPrice())
+                .reduce(Price.ZERO(), Price::add);
+    }
+
+    // 予約の所要時間を取得する
+    public Time getTime() {
+        // 予約メニューから得られる時間を合計
+        Time menuTime = this.reservationMenus.stream()
+                .map(reservationMenu -> reservationMenu.getMenu().getTime())
+                .reduce(Time.ZERO(), Time::add);
+
+        // 対応開始日時が設定されている場合、現在日時との差を計算して追加
+        if (serviceStartDateTime != null) {
+            Duration duration = Duration.between(serviceStartDateTime.value(), LocalDateTime.now());
+            Time additionalTime = Time.of((int) duration.toMinutes());  // または適切なTimeオブジェクトの生成方法に従ってください
+            return menuTime.add(additionalTime);
+        }
+
+        return menuTime;
     }
 
     // DBから取得したデータをドメインオブジェクトに変換する

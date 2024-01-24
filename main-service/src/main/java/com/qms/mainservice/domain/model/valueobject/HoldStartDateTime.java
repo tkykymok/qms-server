@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public record HoldStartDateTime(LocalDateTime value) implements ValueObject {
     public static HoldStartDateTime of(LocalDateTime value) {
+        if(value == null) return null;
         return new HoldStartDateTime(value);
     }
 
