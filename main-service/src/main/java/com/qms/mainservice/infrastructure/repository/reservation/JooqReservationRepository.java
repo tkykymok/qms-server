@@ -77,32 +77,27 @@ public class JooqReservationRepository implements ReservationRepository {
                 Flag.fromValue(record.get(RESERVATIONS.NOTIFIED).intValue()),
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),
                 VersionKey.of(record.get(RESERVATIONS.VERSION)),
-                recordsToReservationMenus(reservationMenusMap.get(record.get(RESERVATIONS.ID)))
+                reservationMenusMap.get(record.get(RESERVATIONS.ID))
+                        .map(this::recordsToReservationMenu)
         );
     }
 
     // Result から List<ReservationMenu>を生成
-    private List<ReservationMenu> recordsToReservationMenus(Result<Record> records) {
-        List<ReservationMenu> reservationMenus = new ArrayList<>();
-        for (Record record : records) {
-            var reservationMenu = ReservationMenu.reconstruct(
-                    ReservationId.of(record.get(RESERVATION_MENUS.RESERVATION_ID)),
-                    StoreId.of(record.get(RESERVATION_MENUS.STORE_ID)),
-                    StoreMenuId.of(record.get(RESERVATION_MENUS.STORE_MENU_ID)),
-                    // Menuを生成
-                    Menu.reconstruct(
-                            StoreId.of(record.get(MENUS.STORE_ID)),
-                            StoreMenuId.of(record.get(MENUS.STORE_MENU_ID)),
-                            MenuName.of(record.get(MENUS.MENU_NAME)),
-                            Price.of(BigDecimal.valueOf(record.get(MENUS.PRICE))),
-                            Time.of(record.get(MENUS.TIME)),
-                            Flag.fromValue(record.get(MENUS.DISABLED).intValue())
-                    )
-            );
-
-            reservationMenus.add(reservationMenu);
-        }
-        return reservationMenus;
+    private ReservationMenu recordsToReservationMenu(Record record) {
+        return ReservationMenu.reconstruct(
+                ReservationId.of(record.get(RESERVATION_MENUS.RESERVATION_ID)),
+                StoreId.of(record.get(RESERVATION_MENUS.STORE_ID)),
+                StoreMenuId.of(record.get(RESERVATION_MENUS.STORE_MENU_ID)),
+                // Menuを生成
+                Menu.reconstruct(
+                        StoreId.of(record.get(MENUS.STORE_ID)),
+                        StoreMenuId.of(record.get(MENUS.STORE_MENU_ID)),
+                        MenuName.of(record.get(MENUS.MENU_NAME)),
+                        Price.of(BigDecimal.valueOf(record.get(MENUS.PRICE))),
+                        Time.of(record.get(MENUS.TIME)),
+                        Flag.fromValue(record.get(MENUS.DISABLED).intValue())
+                )
+        );
     }
 
 

@@ -1,13 +1,13 @@
 package com.qms.mainservice.infrastructure.repository.store;
 
 import com.qms.mainservice.domain.model.aggregate.StoreAggregate;
+import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Repository;
 
@@ -41,27 +41,34 @@ public class JooqStoreRepository implements StoreRepository {
                 .fetch();
 
         // 店舗営業時間一覧を取得する
-
-
-        return null;
+        return storeRecords.map(record -> recordToStoreAggregate(record, storeBusinessHourMap));
     }
 
-//    private StoreAggregate recordToStoreAggregate(Record record, Map<Long, Result<Record>> storeBusinessHourMap) {
-//        return StoreAggregate.reconstruct(
-//                StoreId.of(record.get(STORES.ID)),
-//                CompanyId.of(record.get(STORES.COMPANY_ID)),
-//                StoreName.of(record.get(STORES.STORE_NAME)),
-//                PostalCode.of(record.get(STORES.POSTAL_CODE)),
-//                Address.of(record.get(STORES.ADDRESS)),
-//                Location.of(record.get(STORES.LOCATION)),
-//
-//        );
-//
-//
-//
-//    }
+    private StoreAggregate recordToStoreAggregate(Record record, Map<Long, Result<Record>> storeBusinessHourMap) {
+        return StoreAggregate.reconstruct(
+                StoreId.of(record.get(STORES.ID)),
+                CompanyId.of(record.get(STORES.COMPANY_ID)),
+                StoreName.of(record.get(STORES.STORE_NAME)),
+                PostalCode.of(record.get(STORES.POSTAL_CODE)),
+                Address.of(record.get(STORES.ADDRESS)),
+                Latitude.of(record.get(STORES.LATITUDE).doubleValue()),
+                Longitude.of(record.get(STORES.LONGITUDE).doubleValue()),
+                PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
+                HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
+                storeBusinessHourMap.get(record.get(STORES.ID))
+                        .map(this::recordToStoreBusinessHour)
+        );
+    }
 
-
+    private StoreBusinessHour recordToStoreBusinessHour(Record record) {
+        return StoreBusinessHour.reconstruct(
+                StoreId.of(record.get(STORE_BUSINESS_HOURS.STORE_ID)),
+                DayOfWeek.fromValue(record.get(STORE_BUSINESS_HOURS.DAY_OF_WEEK)),
+                OpenTime.of(record.get(STORE_BUSINESS_HOURS.OPEN_TIME)),
+                CloseTime.of(record.get(STORE_BUSINESS_HOURS.CLOSE_TIME)),
+                Flag.fromValue(record.get(STORE_BUSINESS_HOURS.CLOSED))
+        );
+    }
 
 
 }
