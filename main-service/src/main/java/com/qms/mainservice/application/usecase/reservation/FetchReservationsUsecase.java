@@ -12,17 +12,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservationsOutput> {
+public class FetchReservationsUsecase extends Usecase<StoreId, FetchLastWaitTimeOutput> {
 
     private final ReservationRepository reservationRepository;
 
-    public FetchReservationsOutput execute(StoreId input) {
+    public FetchLastWaitTimeOutput execute(StoreId input) {
         // 店舗IDから当日の予約一覧を取得する
         List<Reservation> result =
                 reservationRepository.findAllByStoreIdAndReservedDate(input, ReservedDate.now());
         if (result.isEmpty()) {
             // 予約一覧が存在しない場合は空の予約一覧を返す
-            return FetchReservationsOutput.builder()
+            return FetchLastWaitTimeOutput.builder()
                     .reservations(List.of())
                     .build();
         }
@@ -49,7 +49,7 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
                 .toList();
 
         // 予約一覧を返す
-        return FetchReservationsOutput.builder()
+        return FetchLastWaitTimeOutput.builder()
                 .reservations(reservationOutputs)
                 .build();
     }

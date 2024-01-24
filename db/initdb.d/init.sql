@@ -1,20 +1,20 @@
 DROP
-DATABASE IF EXISTS qms_db;
+    DATABASE IF EXISTS qms_db;
 CREATE
-DATABASE qms_db;
+    DATABASE qms_db;
 USE
-qms_db;
+    qms_db;
 
 GRANT ALL PRIVILEGES ON qms_db.* TO
-'qms'@'%';
+    'qms'@'%';
 FLUSH
-PRIVILEGES;
+    PRIVILEGES;
 
 -- 既存のテーブル定義を削除
 DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
-FOREIGN_KEY_CHECKS = 0;
+    FOREIGN_KEY_CHECKS = 0;
 
 
 -- customers / 顧客
@@ -59,7 +59,7 @@ CREATE TABLE `stores`
     `latitude`        DECIMAL(10, 7) COMMENT '緯度',
     `longitude`       DECIMAL(10, 7) COMMENT '経度',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
-    `home_page_url`    VARCHAR(255) COMMENT 'ホームページURL',
+    `home_page_url`   VARCHAR(255) COMMENT 'ホームページURL',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
@@ -144,7 +144,7 @@ CREATE TABLE `active_staffs`
     `sort_order`           INT          NOT NULL COMMENT '順番',
     `break_start_datetime` DATETIME COMMENT '休憩開始日時',
     `break_end_datetime`   DATETIME COMMENT '休憩終了日時',
-    `reservation_id`       BIGINT DEFAULT NULL COMMENT '予約ID',
+    `reservation_id`       BIGINT                DEFAULT NULL COMMENT '予約ID',
     `created_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`           BIGINT                DEFAULT 0 COMMENT '作成者',
@@ -262,10 +262,14 @@ VALUES (1, 'Company A'),
        (2, 'Company B');
 
 -- storesテーブルにレコードを2つ挿入
-INSERT INTO `stores` (`id`, `company_id`, `store_name`, `postal_code`, `address`, `phone_number`, `home_page_url`, `latitude`, `longitude`)
-VALUES (1, 1, 'store_ A1', '123-4567', '東京都千代田区千代田1-1', '123-456-7890', 'https://www.google.com/', 35.6798787, 139.7581848),
-       (2, 1, 'store_ A2', '123-4567', '東京都千代田区千代田1-2', '123-456-7890', 'https://www.google.com/', 35.6797699, 139.7574348),
-       (3, 2, 'store_ B1', '123-4567', '東京都千代田区千代田2-1', '098-765-4321', 'https://www.google.com/', 36.0000, 136.0000);
+INSERT INTO `stores` (`id`, `company_id`, `store_name`, `postal_code`, `address`, `phone_number`, `home_page_url`,
+                      `latitude`, `longitude`)
+VALUES (1, 1, 'store_ A1', '123-4567', '東京都千代田区千代田1-1', '123-456-7890', 'https://www.google.com/', 35.6798787,
+        139.7581848),
+       (2, 1, 'store_ A2', '123-4567', '東京都千代田区千代田1-2', '123-456-7890', 'https://www.google.com/', 35.6797699,
+        139.7574348),
+       (3, 2, 'store_ B1', '123-4567', '東京都千代田区千代田2-1', '098-765-4321', 'https://www.google.com/', 36.0000,
+        136.0000);
 
 -- store_business_hoursテーブルにレコードを挿入
 INSERT INTO `store_business_hours` (`store_id`, `day_of_week`, `open_time`, `close_time`, `closed`)
@@ -283,7 +287,8 @@ VALUES (1, 1, '09:00', '18:00', FALSE), -- 日曜日
        (2, 4, '10:00', '19:00', FALSE), -- 水曜日
        (2, 5, '10:00', '19:00', FALSE), -- 木曜日
        (2, 6, NULL, NULL, TRUE),        -- 金曜日（定休日）
-       (2, 7, '10:00', '19:00', FALSE); -- 土曜日
+       (2, 7, '10:00', '19:00', FALSE);
+-- 土曜日
 
 -- customersテーブルにレコードを5つ挿入
 INSERT INTO `customers` (`id`, `cognito_user_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`)
@@ -307,9 +312,14 @@ VALUES (1, 101, 'カット', 3000, 15, 1, 1),
 -- reservationsテーブルにレコードを5つ挿入
 INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_date`, `status`,
                             `created_by`, `updated_by`)
-VALUES (1, 1, 1, 1001, CURRENT_DATE(), 1, 1, 1),
-       (2, 1, 2, 1002, CURRENT_DATE(), 1, 1, 1),
-       (3, 2, 3, 2001, CURRENT_DATE(), 1, 2, 2);
+VALUES (1, 1, null, 1001, CURRENT_DATE(), 0, 1, 1),
+       (2, 1, null, 1002, CURRENT_DATE(), 0, 1, 1),
+       (3, 2, null, 2001, CURRENT_DATE(), 0, 2, 2),
+       (4, 1, null, 1003, CURRENT_DATE(), 0, 1, 1),
+       (5, 1, null, 1004, CURRENT_DATE(), 0, 1, 1),
+       (6, 1, null, 1005, CURRENT_DATE(), 0, 1, 1),
+       (7, 1, null, 1006, CURRENT_DATE(), 0, 1, 1),
+       (8, 1, null, 1007, CURRENT_DATE(), 0, 1, 1);
 
 -- reservation_menus / 予約メニュー
 INSERT INTO `reservation_menus` (`reservation_id`, `store_id`, `store_menu_id`, `created_by`, `updated_by`)
@@ -317,7 +327,11 @@ VALUES (1, 1, 101, 1, 1),
        (1, 1, 102, 1, 1),
        (2, 2, 201, 1, 1),
        (3, 1, 101, 2, 2),
-       (3, 2, 201, 2, 2);
+       (4, 1, 101, 1, 1),
+       (5, 1, 101, 1, 1),
+       (6, 1, 102, 1, 1),
+       (7, 1, 101, 1, 1),
+       (8, 1, 101, 1, 1);
 
 -- staffsテーブルへのデータ投入
 INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `cognito_user_id`)
@@ -337,14 +351,16 @@ VALUES (1, 2),
        (3, 2),
        (4, 2),
        (5, 2),
-       (6, 2),
+       (6, 1),
        (7, 1),
        (8, 1);
 
 -- active_staffsテーブルへのデータ投入
 INSERT INTO `active_staffs` (`staff_id`, `store_id`, `sort_order`, `break_start_datetime`, `break_end_datetime`)
-VALUES (1, 2, 1, null, null),
-       (2, 2, 2, null, null);
+VALUES (6, 1, 1, null, null),
+       (7, 1, 2, null, null),
+       (8, 1, 3, null, null),
+       (1, 2, 2, null, null);
 
 
 -- 以下、一旦未使用 複数メニューを選択した場合にセット価格になる場合があったら使用する

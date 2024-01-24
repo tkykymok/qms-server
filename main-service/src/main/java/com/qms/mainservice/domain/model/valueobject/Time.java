@@ -12,8 +12,19 @@ public record Time(Integer value) implements ValueObject {
         return new Time(0);
     }
 
-    public Time add(Time other) {
-        return new Time(this.value + other.value);
+    public Time add(Time time) {
+        return new Time(time.value);
+    }
+
+    // 5分単位に丸めて加算する
+    public Time addAndRoundUp(Time other) {
+        int totalMinutes = this.value + other.value;
+        int remainder = totalMinutes % 5;
+        if (remainder != 0) {
+            // 5分単位に切り上げる
+            totalMinutes += 5 - remainder;
+        }
+        return new Time(totalMinutes);
     }
 
     public int compareTo(Time other) {

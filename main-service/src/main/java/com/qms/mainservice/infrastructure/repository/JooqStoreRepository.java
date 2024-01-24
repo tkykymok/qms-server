@@ -45,6 +45,19 @@ public class JooqStoreRepository implements StoreRepository {
         return storeRecords.map(record -> recordToStore(record, storeBusinessHourMap));
     }
 
+    @Override
+    public Store findById(StoreId storeId) {
+        // 店舗IDに紐づく店舗情報を取得する
+        Record storeRecord = dsl.select()
+                .from(STORES)
+                .where(STORES.ID.eq(storeId.value()))
+                .fetchOne();
+        if (storeRecord == null) {
+            return null;
+        }
+        return recordToStore(storeRecord, Map.of());
+    }
+
     private Store recordToStore(Record record, Map<Long, Result<Record>> storeBusinessHourMap) {
         return Store.reconstruct(
                 StoreId.of(record.get(STORES.ID)),
@@ -56,7 +69,9 @@ public class JooqStoreRepository implements StoreRepository {
                 Longitude.of(record.get(STORES.LONGITUDE).doubleValue()),
                 PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
                 HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
-                storeBusinessHourMap.get(record.get(STORES.ID))
+                storeBusinessHourMap.isEmpty()
+                        ? null
+                        : storeBusinessHourMap.get(record.get(STORES.ID))
                         .map(this::recordToStoreBusinessHour)
         );
     }

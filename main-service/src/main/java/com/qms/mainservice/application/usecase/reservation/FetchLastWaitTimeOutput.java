@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record FetchReservationsOutput(
+public record FetchLastWaitTimeOutput(
         List<ReservationOutput> reservations
 ) {
 }
