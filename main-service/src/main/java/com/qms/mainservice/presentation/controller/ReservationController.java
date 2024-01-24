@@ -3,7 +3,7 @@ package com.qms.mainservice.presentation.controller;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
-import com.qms.mainservice.presentation.presenter.reservation.ReservationPresenter;
+import com.qms.mainservice.presentation.presenter.ReservationPresenter;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

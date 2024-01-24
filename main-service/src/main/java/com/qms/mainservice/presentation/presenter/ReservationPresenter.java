@@ -1,4 +1,4 @@
-package com.qms.mainservice.presentation.presenter.reservation;
+package com.qms.mainservice.presentation.presenter;
 
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;

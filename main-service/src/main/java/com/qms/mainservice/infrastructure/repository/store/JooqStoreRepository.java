@@ -11,6 +11,7 @@ import org.jooq.Result;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class JooqStoreRepository implements StoreRepository {
     private StoreBusinessHour recordToStoreBusinessHour(Record record) {
         return StoreBusinessHour.reconstruct(
                 StoreId.of(record.get(STORE_BUSINESS_HOURS.STORE_ID)),
-                DayOfWeek.fromValue(record.get(STORE_BUSINESS_HOURS.DAY_OF_WEEK)),
+                DayOfWeek.of(record.get(STORE_BUSINESS_HOURS.DAY_OF_WEEK)),
                 OpenTime.of(record.get(STORE_BUSINESS_HOURS.OPEN_TIME)),
                 CloseTime.of(record.get(STORE_BUSINESS_HOURS.CLOSE_TIME)),
                 Flag.fromValue(record.get(STORE_BUSINESS_HOURS.CLOSED))

@@ -24,6 +24,32 @@ public class FetchStoresUsecase extends Usecase<FetchStoresInput, FetchStoresOut
         Point point = geometryFactory.createPoint(coordinate);
         List<StoreAggregate> storeAggregates = jooqStoreRepository.findStoreDetailsByLocation(point, 2000);
 
-        return null;
+        if (storeAggregates.isEmpty()) {
+            return FetchStoresOutput.builder()
+                    .stores(List.of())
+                    .build();
+        }
+
+        List<StoreOutput> storeOutputs = storeAggregates.stream()
+                .map(storeAggregate -> StoreOutput.builder()
+                        .storeId(storeAggregate.getId())
+                        .companyId(storeAggregate.getCompanyId())
+                        .storeName(storeAggregate.getStoreName())
+                        .postalCode(storeAggregate.getPostalCode())
+                        .address(storeAggregate.getAddress())
+                        .latitude(storeAggregate.getLatitude())
+                        .longitude(storeAggregate.getLongitude())
+                        .phoneNumber(storeAggregate.getPhoneNumber())
+                        .homePageUrl(storeAggregate.getHomePageUrl())
+                        .isClosed(storeAggregate.isClosed())
+                        .weekdayHours(storeAggregate.getWeekdayHours())
+                        .holidayHours(storeAggregate.getHolidayHours())
+                        .regularHolidays(storeAggregate.getRegularHolidays())
+                        .build())
+                .toList();
+
+        return FetchStoresOutput.builder()
+                .stores(storeOutputs)
+                .build();
     }
 }

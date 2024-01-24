@@ -3,10 +3,14 @@ package com.qms.mainservice.domain.model.aggregate;
 import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.AggregateRoot;
+import lombok.Getter;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class StoreAggregate extends AggregateRoot<StoreId> {
 
     // 店舗
@@ -22,8 +26,8 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
     // 店舗営業時間List
     private List<StoreBusinessHour> storeBusinessHours;
 
-    private StoreAggregate() {}
-
+    private StoreAggregate() {
+    }
 
     // DBから取得したデータをドメインオブジェクトに変換する
     public static StoreAggregate reconstruct(
@@ -53,8 +57,8 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
     }
 
     // 店舗営業時間Listから平日の営業時間を取得する
-    public String getWeekdayHours(List<StoreBusinessHour> hours) {
-        return hours.stream()
+    public String getWeekdayHours() {
+        return storeBusinessHours.stream()
                 .filter(hour -> hour.getKey().dayOfWeek().getValue() >= DayOfWeek.MONDAY.getValue()
                         && hour.getKey().dayOfWeek().getValue() <= DayOfWeek.FRIDAY.getValue())
                 .filter(hour -> !hour.getClosed().value())
@@ -64,8 +68,8 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
     }
 
     // 店舗営業時間Listから土日祝の営業時間を取得する
-    public String getHolidayHours(List<StoreBusinessHour> hours) {
-        return hours.stream()
+    public String getHolidayHours() {
+        return storeBusinessHours.stream()
                 .filter(hour -> hour.getKey().dayOfWeek().getValue() == DayOfWeek.SATURDAY.getValue()
                         || hour.getKey().dayOfWeek().getValue() == DayOfWeek.SUNDAY.getValue())
                 .filter(hour -> !hour.getClosed().value())
@@ -75,11 +79,21 @@ public class StoreAggregate extends AggregateRoot<StoreId> {
     }
 
     // 店舗営業時間Listから定休日一覧を取得する
-    public List<DayOfWeek> getRegularHoliday(List<StoreBusinessHour> hours) {
-        return hours.stream()
+    public List<DayOfWeek> getRegularHolidays() {
+        return storeBusinessHours.stream()
                 .filter(hour -> hour.getClosed().value())
                 .map(hour -> hour.getKey().dayOfWeek())
                 .collect(Collectors.toList());
+    }
+
+    // 今日の日付から定休日かどうかを判定する
+    public Flag isClosed() {
+        return storeBusinessHours.stream()
+                .filter(hour -> hour.getKey().dayOfWeek().equals(LocalDate.now().getDayOfWeek()))
+                .map(StoreBusinessHour::getClosed)
+                .findFirst()
+                .orElse(Flag.OFF());
+
     }
 
 }

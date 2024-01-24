@@ -54,7 +54,7 @@ CREATE TABLE `stores`
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
     `company_id`      BIGINT       NOT NULL COMMENT '企業ID',
     `store_name`      VARCHAR(255) NOT NULL COMMENT '店舗名',
-    `postal_code`     VARCHAR(7) COMMENT '郵便番号',
+    `postal_code`     VARCHAR(8) COMMENT '郵便番号',
     `address`         VARCHAR(255) COMMENT '住所',
     `latitude`        DECIMAL(10, 7) COMMENT '緯度',
     `longitude`       DECIMAL(10, 7) COMMENT '経度',
@@ -260,28 +260,28 @@ VALUES (1, 'Company A'),
        (2, 'Company B');
 
 -- storesテーブルにレコードを2つ挿入
-INSERT INTO `stores` (`id`, `company_id`, `store_name`, `address`, `phone_number`, `latitude`, `longitude`)
-VALUES (1, 1, 'store_ A1', 'Address A1', '123-456-7890', 35.6798787, 139.7581848),
-       (2, 1, 'store_ A2', 'Address A2', '123-456-7890', 35.6797699, 139.7574348),
-       (3, 2, 'store_ B1', 'Address B1', '098-765-4321', 36.0000, 136.0000);
+INSERT INTO `stores` (`id`, `company_id`, `store_name`, `postal_code`, `address`, `phone_number`, `home_page_url`, `latitude`, `longitude`)
+VALUES (1, 1, 'store_ A1', '123-4567', '東京都千代田区千代田1-1', '123-456-7890', 'https://www.google.com/', 35.6798787, 139.7581848),
+       (2, 1, 'store_ A2', '123-4567', '東京都千代田区千代田1-2', '123-456-7890', 'https://www.google.com/', 35.6797699, 139.7574348),
+       (3, 2, 'store_ B1', '123-4567', '東京都千代田区千代田2-1', '098-765-4321', 'https://www.google.com/', 36.0000, 136.0000);
 
 -- store_business_hoursテーブルにレコードを挿入
 INSERT INTO `store_business_hours` (`store_id`, `day_of_week`, `open_time`, `close_time`, `closed`)
-VALUES (1, 0, '09:00', '18:00', FALSE), -- 日曜日
-       (1, 1, '09:00', '18:00', FALSE), -- 月曜日
-       (1, 2, '09:00', '18:00', FALSE), -- 火曜日
-       (1, 3, '09:00', '18:00', FALSE), -- 水曜日
-       (1, 4, '09:00', '18:00', FALSE), -- 木曜日
-       (1, 5, '09:00', '20:00', FALSE), -- 金曜日
-       (1, 6, NULL, NULL, TRUE),        -- 土曜日（定休日）
+VALUES (1, 1, '09:00', '18:00', FALSE), -- 日曜日
+       (1, 2, '09:00', '18:00', FALSE), -- 月曜日
+       (1, 3, '09:00', '18:00', FALSE), -- 火曜日
+       (1, 4, '09:00', '18:00', FALSE), -- 水曜日
+       (1, 5, '09:00', '18:00', FALSE), -- 木曜日
+       (1, 6, '09:00', '20:00', FALSE), -- 金曜日
+       (1, 7, NULL, NULL, TRUE),        -- 土曜日（定休日）
 
-       (2, 0, '10:00', '19:00', FALSE), -- 日曜日
-       (2, 1, '10:00', '19:00', FALSE), -- 月曜日
-       (2, 2, '10:00', '19:00', FALSE), -- 火曜日
-       (2, 3, '10:00', '19:00', FALSE), -- 水曜日
-       (2, 4, '10:00', '19:00', FALSE), -- 木曜日
-       (2, 5, NULL, NULL, TRUE),        -- 金曜日（定休日）
-       (2, 6, '10:00', '19:00', FALSE); -- 土曜日
+       (2, 1, '10:00', '19:00', FALSE), -- 日曜日
+       (2, 2, '10:00', '19:00', FALSE), -- 月曜日
+       (2, 3, '10:00', '19:00', FALSE), -- 火曜日
+       (2, 4, '10:00', '19:00', FALSE), -- 水曜日
+       (2, 5, '10:00', '19:00', FALSE), -- 木曜日
+       (2, 6, NULL, NULL, TRUE),        -- 金曜日（定休日）
+       (2, 7, '10:00', '19:00', FALSE); -- 土曜日
 
 -- customersテーブルにレコードを5つ挿入
 INSERT INTO `customers` (`id`, `cognito_user_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`)

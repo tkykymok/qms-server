@@ -4,6 +4,8 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
 import lombok.Getter;
 
+import java.time.DayOfWeek;
+
 @Getter
 public class StoreBusinessHour extends CompositeKeyBaseEntity<StoreBusinessHourKey> {
 

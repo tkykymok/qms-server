@@ -1,6 +1,7 @@
 package com.qms.mainservice.domain.model.valueobject;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 
 public record StoreBusinessHourKey(
         StoreId storeId,
