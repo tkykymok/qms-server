@@ -59,7 +59,7 @@ CREATE TABLE `stores`
     `latitude`        DECIMAL(10, 7) COMMENT '緯度',
     `longitude`       DECIMAL(10, 7) COMMENT '経度',
     `phone_number`    VARCHAR(20) COMMENT '電話番号',
-    `homepage_url`    VARCHAR(255) COMMENT 'ホームページURL',
+    `home_page_url`    VARCHAR(255) COMMENT 'ホームページURL',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
@@ -281,8 +281,7 @@ VALUES (1, 0, '09:00', '18:00', FALSE), -- 日曜日
        (2, 3, '10:00', '19:00', FALSE), -- 水曜日
        (2, 4, '10:00', '19:00', FALSE), -- 木曜日
        (2, 5, NULL, NULL, TRUE),        -- 金曜日（定休日）
-       (2, 6, '10:00', '19:00', FALSE);
--- 土曜日
+       (2, 6, '10:00', '19:00', FALSE); -- 土曜日
 
 -- customersテーブルにレコードを5つ挿入
 INSERT INTO `customers` (`id`, `cognito_user_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`)
@@ -306,9 +305,9 @@ VALUES (1, 101, 'カット', 3000, 15, 1, 1),
 -- reservationsテーブルにレコードを5つ挿入
 INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_date`, `status`,
                             `created_by`, `updated_by`)
-VALUES (1, 1, 1, 1001, now(), 1, 1, 1),
-       (2, 1, 2, 1002, now(), 1, 1, 1),
-       (3, 2, 3, 2001, now(), 1, 2, 2);
+VALUES (1, 1, 1, 1001, CURRENT_DATE(), 1, 1, 1),
+       (2, 1, 2, 1002, CURRENT_DATE(), 1, 1, 1),
+       (3, 2, 3, 2001, CURRENT_DATE(), 1, 2, 2);
 
 -- reservation_menus / 予約メニュー
 INSERT INTO `reservation_menus` (`reservation_id`, `store_id`, `store_menu_id`, `created_by`, `updated_by`)
