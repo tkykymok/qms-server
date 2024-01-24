@@ -20,25 +20,24 @@ public class ReservationPresenter {
                                 .customerId(reservation.customerId().value())
                                 .reservationNumber(reservation.reservationNumber().value())
                                 .reservedDate(reservation.reservedDate().value()
-                                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                                )
+                                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                                 .staffId(reservation.staffId().value())
                                 .serviceStartDateTime(Formatter.formatDateTime(
                                         reservation.serviceStartDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss")
-                                )
+                                        "yyyy-MM-dd HH:mm:ss"))
                                 .serviceEndDateTime(Formatter.formatDateTime(
                                         reservation.serviceEndDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss")
-                                )
+                                        "yyyy-MM-dd HH:mm:ss"))
                                 .holdStartDateTime(Formatter.formatDateTime(
                                         reservation.holdStartDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss")
-                                )
+                                        "yyyy-MM-dd HH:mm:ss"))
                                 .status(reservation.status().getValue())
                                 .notified(reservation.notified().value())
                                 .arrived(reservation.arrived().value())
                                 .version(reservation.version().value())
+                                .menuName(reservation.menuName().value())
+                                .price(reservation.price().value())
+                                .time(reservation.time().value())
                                 .build())
                         .toList())
                 .build();

@@ -42,6 +42,9 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
                         .notified(reservation.getNotified()) // 通知フラグ
                         .arrived(reservation.getArrived()) // 到着フラグ
                         .version(reservation.getVersion()) // バージョン
+                        .menuName(reservation.getMenuName()) // メニュー名
+                        .price(reservation.getPrice()) // 価格
+                        .time(reservation.getTime()) // 所要時間
                         .build())
                 .toList();
 

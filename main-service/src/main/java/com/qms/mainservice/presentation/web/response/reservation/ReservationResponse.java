@@ -2,6 +2,9 @@ package com.qms.mainservice.presentation.web.response.reservation;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Builder
 public record ReservationResponse (
         Long reservationId, // 予約ID
@@ -16,6 +19,10 @@ public record ReservationResponse (
         Integer status, // 予約ステータス
         Boolean notified, // 通知フラグ
         Boolean arrived, // 到着フラグ
-        Integer version // バージョン
+        Integer version, // バージョン
+        // 予約メニュー
+        String menuName, // メニュー名
+        BigDecimal price, // 価格
+        Integer time // 所要時間
 ) {
 }
