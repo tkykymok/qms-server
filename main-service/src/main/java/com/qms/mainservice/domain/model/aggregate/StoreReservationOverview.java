@@ -41,7 +41,16 @@ public class StoreReservationOverview extends AggregateRoot<StoreId> {
             if (poll == null) {
                 throw new DomainException("スタッフの次の利用可能時刻を保持する優先度キューが空です");
             }
+            // スタッフの次の利用可能時刻を保持する優先度キューに追加する
             poll.getNextAvailableTime().add(waitingReservation.getTime());
+
+            // ループ対象の予約が処理される時刻がスタッフの休憩時間内の場合
+            if(poll.getStaff().isInBreakTime(waitingReservation.getTime())) {
+                // スタッフの次の利用可能時刻を保持する優先度キューに追加する
+                staffAvailability.add(poll);
+                continue;
+            }
+
             // スタッフの次の利用可能時刻を保持する優先度キューに追加する
             staffAvailability.add(poll);
         }
