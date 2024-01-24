@@ -1,6 +1,6 @@
 package com.qms.mainservice.presentation.presenter;
 
-import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
+import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import com.qms.mainservice.presentation.web.response.reservation.ReservationResponse;
 import com.qms.shared.utils.Formatter;
@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class ReservationPresenter {
-    public ResponseEntity<GetReservationsResponse> present(FetchLastWaitTimeOutput output) {
+    public ResponseEntity<GetReservationsResponse> present(FetchReservationsOutput output) {
         var response = GetReservationsResponse.builder()
                 .reservations(output.reservations().stream()
                         .map(reservation -> ReservationResponse.builder()

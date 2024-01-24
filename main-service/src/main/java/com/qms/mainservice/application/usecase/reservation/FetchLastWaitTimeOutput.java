@@ -1,11 +1,12 @@
 package com.qms.mainservice.application.usecase.reservation;
 
+import com.qms.mainservice.domain.model.valueobject.ReservationNumber;
+import com.qms.mainservice.domain.model.valueobject.Time;
 import lombok.Builder;
-
-import java.util.List;
 
 @Builder
 public record FetchLastWaitTimeOutput(
-        List<ReservationOutput> reservations
+        Time lastWaitTime,
+        ReservationNumber reservationNumber
 ) {
 }

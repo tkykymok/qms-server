@@ -2,6 +2,7 @@ package com.qms.mainservice.presentation.controller;
 
 import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeUsecase;
+import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
@@ -29,7 +30,7 @@ public class ReservationController {
         StoreId storeId = StoreId.of(1L);
 
         // 予約一覧を取得する
-        FetchLastWaitTimeOutput output = fetchReservationsUsecase.execute(storeId);
+        FetchReservationsOutput output = fetchReservationsUsecase.execute(storeId);
 
         return presenter.present(output);
     }
@@ -37,7 +38,7 @@ public class ReservationController {
     // 予約の最後尾の待ち時間を取得する
     @GetMapping("/last-wait-time/{storeId}")
     public ResponseEntity<?> getLastWaitTime(@PathVariable("storeId") Long storeId) {
-        fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
+        FetchLastWaitTimeOutput output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
         return null;
     }
 
