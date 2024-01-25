@@ -137,15 +137,16 @@ public class Reservation extends AggregateRoot<ReservationId> {
     // 予約の所要時間を取得する
     public Time getTime() {
         // 予約メニューから得られる時間を合計
-        Time menuTime = this.reservationMenus.stream()
-                .map(reservationMenu -> reservationMenu.getMenu().getTime())
-                .reduce(Time.ZERO(), Time::add);
+        Time menuTime = Time.ZERO();
+        for (ReservationMenu reservationMenu : reservationMenus) {
+            menuTime = menuTime.add(reservationMenu.getMenu().getTime());
+        }
 
-        // 予約ステータスが対応中の場合、現在日時との差を計算して追加
+        // 予約ステータスが対応中の場合、現在日時との差を計算して残り時間追加
         if (this.status == ReservationStatus.IN_PROGRESS) {
-            Duration duration = Duration.between(serviceStartTime.value(), LocalTime.now());
-            Time additionalTime = Time.of((int) duration.toMinutes());
-            return menuTime.add(additionalTime);
+            Duration duration = Duration.between(serviceStartTime.value(), LocalTime.now()); // 経過時間
+            Time remainingTime = menuTime.subtract(Time.of((int) duration.toMinutes())); // 所要時間 - 経過時間 = 残り時間
+            return menuTime.add(remainingTime);
         }
 
         return menuTime;

@@ -11,8 +11,13 @@ public record Time(Integer value) implements ValueObject {
         return new Time(0);
     }
 
-    public Time add(Time time) {
-        return new Time(time.value);
+    public Time add(Time other) {
+        return new Time(this.value + other.value);
+
+    }
+
+    public Time subtract(Time other) {
+        return new Time(this.value - other.value);
     }
 
     // 5分単位に丸めて加算する
