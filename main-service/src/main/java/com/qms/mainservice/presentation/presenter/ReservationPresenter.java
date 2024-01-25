@@ -69,23 +69,14 @@ public class ReservationPresenter {
                 .customerId(output.reservation().customerId().value())
                 .reservationNumber(output.reservation().reservationNumber().value())
                 .reservedDate(output.reservation().reservedDate().value()
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .staffId(output.reservation().staffId().value())
-                .serviceStartTime(Formatter.formatTime(
-                        output.reservation().serviceStartTime().value(), "HH:mm"))
-                .serviceEndTime(Formatter.formatTime(
-                        output.reservation().serviceEndTime().value(), "HH:mm"))
-                .holdStartTime(Formatter.formatTime(
-                        output.reservation().holdStartTime().value(), "HH:mm"))
+                        .format(DateTimeFormatter.ofPattern("yyyy年MM月dd日(E)", Locale.JAPAN)))
                 .status(output.reservation().status().getValue())
-                .notified(output.reservation().notified().value())
                 .arrived(output.reservation().arrived().value())
                 .version(output.reservation().version().value())
                 .storeName(output.reservation().storeName().value())
                 .homePageUrl(output.reservation().homePageUrl().value())
                 .menuName(output.reservation().menuName().value())
                 .price(output.reservation().price().value())
-                .time(output.reservation().time().value())
                 .waitingCount(output.waitingCount().value())
                 .position(output.position().value())
                 .estimatedServiceStartTime(Formatter.formatTime(

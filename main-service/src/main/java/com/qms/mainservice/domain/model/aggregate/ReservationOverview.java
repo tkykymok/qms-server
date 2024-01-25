@@ -53,16 +53,19 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
             if (poll == null) {
                 throw new DomainException("スタッフの次の利用可能時間を保持する優先度キューが空です");
             }
+
+            // ループ対象が対象の予約の場合は処理を終了する
+            if (i == targetPosition) {
+                // ループ対象の予約が処理される時間を取得する(現在時間から何分後か)
+                return poll.getNextAvailableTime();
+            }
+
             // スタッフの次の利用可能時間を保持する優先度キューに追加する
             poll.addTime(waitingReservation.getTime());
             // ループ対象の予約が処理される時間がスタッフの休憩時間内の場合、次の利用可能時間に休憩終了時間を追加する
             poll.addBreakTimeIfNeeded();
             // スタッフの次の利用可能時間を保持する優先度キューに追加する
             staffAvailability.add(poll);
-            if (i == targetPosition) {
-                // ループ対象の予約が処理される時間を取得する(現在時間から何分後か)
-                return poll.getNextAvailableTime();
-            }
         }
 
         // 最後尾の予約が処理される時間を取得する(現在時間から何分後か)
@@ -78,9 +81,9 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     }
 
     // 該当予約の待ち時間を算出し、案内開始時間目安を算出する(予約ID)
-    public ServiceStartTime calcEstimatedServiceStartTime(Position position) {
+    public ServiceStartTime getEstimatedServiceStartTime(Position position) {
         Time time = calcWaitTime(position);
-        return ServiceStartTime.of(LocalTime.now().plusMinutes(time.value()));
+        return ServiceStartTime.nowPlusTime(time);
     }
 
     // 予約ステータスが未案内の予約一覧の件数を取得する

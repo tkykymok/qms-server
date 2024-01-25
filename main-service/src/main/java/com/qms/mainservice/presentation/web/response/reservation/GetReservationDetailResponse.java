@@ -13,12 +13,7 @@ public record GetReservationDetailResponse(
         Long customerId, // 顧客ID
         Integer reservationNumber, // 予約番号
         String reservedDate, // 予約日
-        Long staffId, // 対応スタッフID
-        String serviceStartTime, // 対応開始時間
-        String serviceEndTime, // 対応終了時間
-        String holdStartTime, // 保留開始時間
         Integer status, // 予約ステータス
-        Boolean notified, // 通知フラグ
         Boolean arrived, // 到着フラグ
         Integer version, // バージョン
         // 店舗情報
@@ -27,7 +22,6 @@ public record GetReservationDetailResponse(
         // 予約メニュー
         String menuName, // メニュー名
         BigDecimal price, // 価格
-        Integer time, // 所要時間
         // 待ち人数
         Integer waitingCount,
         // 順番

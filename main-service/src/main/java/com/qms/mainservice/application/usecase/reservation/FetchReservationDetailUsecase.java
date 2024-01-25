@@ -36,7 +36,7 @@ public class FetchReservationDetailUsecase extends Usecase<CustomerId, FetchRese
         Position position = reservationOverview.getPosition(reservationId);
         // 予約IDから案内開始時間目安を取得する
         ServiceStartTime serviceStartTime =
-                reservationOverview.calcEstimatedServiceStartTime(position);
+                reservationOverview.getEstimatedServiceStartTime(position);
 
         // 予約詳細を返す
         return FetchReservationDetailOutput.builder()
