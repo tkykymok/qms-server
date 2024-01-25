@@ -6,9 +6,9 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.PriorityQueue;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationOverview extends AggregateRoot<StoreId> {
     // 店舗情報
@@ -24,8 +24,10 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     private ReservationOverview() {
     }
 
-    // 最後尾の待ち時間を算出する
-    public Time calcLastWaitTime() {
+
+
+    // 順番を指定して待ち時間を算出する
+    public Time calcWaitTime(Position position) {
         if (staffAvailability.isEmpty()) {
             return Time.ZERO();
         }
@@ -33,7 +35,17 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         // 予約一覧の予約ステータスが未案内の予約一覧を取得する
         List<Reservation> waitingReservations = getWaitingReservations();
 
-        for (Reservation waitingReservation : waitingReservations) {
+        int targetPosition;
+        if (position == null) {
+            // 順番が指定されていない場合は最後尾の予約を対象とする
+            targetPosition = waitingReservations.size();
+        } else {
+            // 順番が指定されている場合は指定された順番の予約を対象とする
+            targetPosition = position.value() - 1;
+        }
+
+        for (int i = 0; i < waitingReservations.size(); i++) {
+            Reservation waitingReservation = waitingReservations.get(i);
             // スタッフの次の利用可能時刻を保持する優先度キューから最小値を取得する
             StaffAvailability poll = staffAvailability.poll();
             // スタッフの次の利用可能時刻に予約の所要時間を加算する
@@ -46,6 +58,10 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
             poll.addBreakTimeIfNeeded();
             // スタッフの次の利用可能時刻を保持する優先度キューに追加する
             staffAvailability.add(poll);
+            if (i == targetPosition) {
+                // ループ対象の予約が処理される時刻を取得する(現在時刻から何分後か)
+                return poll.getNextAvailableTime();
+            }
         }
 
         // 最後尾の予約が処理される時刻を取得する(現在時刻から何分後か)
@@ -55,17 +71,45 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
                 .getNextAvailableTime();
     }
 
-    // 該当予約の待ち時間を算出する(予約ID)
-    public Time calcWaitTime(ReservationId reservationId) {
+    // 最後尾の待ち時間を算出する
+    public Time calcLastWaitTime() {
+        return calcWaitTime(null);
+    }
+
+    // 該当予約の待ち時間を算出し、案内開始時刻目安を算出する(予約ID)
+    public ServiceStartDateTime calcEstimatedServiceStartDateTime(Position position) {
+        Time time = calcWaitTime(position);
+        return ServiceStartDateTime.of(LocalDateTime.now().plusMinutes(time.value()));
+    }
+
+    // 該当予約の順番を取得する(予約ID)
+    public Position getPosition(ReservationId reservationId) {
+        // 予約一覧の予約ステータスが未案内の予約一覧を取得する
+        List<Reservation> waitingReservations = getWaitingReservations();
+        // 該当予約の順番を取得する
+        for (int i = 0; i < waitingReservations.size(); i++) {
+            Reservation reservation = waitingReservations.get(i);
+            if (reservation.getId().equals(reservationId)) {
+                return Position.of(i + 1);
+            }
+        }
+        // 該当予約が見つからない場合はnullを返却する
         return null;
     }
+
 
     // 予約ステータスが未案内の予約一覧を取得する
     private List<Reservation> getWaitingReservations() {
         return reservations.stream()
                 .filter(reservation -> Objects.equals(reservation.getStatus(), ReservationStatus.WAITING))
+                .sorted((r1, r2) -> {
+                    ReservationNumber num1 = r1.getReservationNumber();
+                    ReservationNumber num2 = r2.getReservationNumber();
+                    return num1.compareTo(num2);
+                })
                 .toList();
     }
+
 
     // 予約日を取得する
     public ReservedDate getReservedDate() {

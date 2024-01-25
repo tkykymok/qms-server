@@ -8,9 +8,10 @@ import java.util.List;
 public interface ReservationRepository {
     Reservation findById(ReservationId reservationId);
 
-    ReservationId findIdByCustomerId(CustomerId customerId);
+    Reservation findByCustomerId(CustomerId customerId);
 
     List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate);
 
     ReservationNumber newReservationNumber(StoreId storeId);
+
 }

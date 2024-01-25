@@ -52,20 +52,28 @@ public class JooqReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public ReservationId findIdByCustomerId(CustomerId customerId) {
-        // 顧客IDに紐づく予約IDを取得する
-        Record1<Long> reservationId = dsl.select(RESERVATIONS.ID)
+    public Reservation findByCustomerId(CustomerId customerId) {
+        // 顧客IDに紐づく予約を取得する
+        Record reservationRecord = dsl.select()
                 .from(RESERVATIONS)
-                .where(RESERVATIONS.CUSTOMER_ID.eq(customerId.value()) // 顧客ID
-                        .and(RESERVATIONS.RESERVED_DATE.eq(ReservedDate.now().value())) // 予約日(当日)
-                        .and(RESERVATIONS.STATUS.eq(ReservationStatus.WAITING.getValue())) // 予約ステータス
-                )
+                .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
+                .where(RESERVATIONS.CUSTOMER_ID.eq(customerId.value()))
                 .fetchOne();
         // 予約IDが取得できない場合はnullを返却する
-        if (reservationId == null) {
+        if (reservationRecord == null) {
             return null;
         }
-        return ReservationId.of(reservationId.value1());
+
+        // 予約IDに紐づく予約メニュー一覧を取得する
+        Map<Long, Result<Record>> reservationMenuMap = dsl.select()
+                .from(RESERVATION_MENUS)
+                .innerJoin(MENUS).on(RESERVATION_MENUS.STORE_ID.eq(MENUS.STORE_ID)
+                        .and(RESERVATION_MENUS.STORE_MENU_ID.eq(MENUS.STORE_MENU_ID)))
+                .where(RESERVATION_MENUS.RESERVATION_ID.eq(reservationRecord.get(RESERVATIONS.ID)))
+                .fetch()
+                .intoGroups(RESERVATION_MENUS.RESERVATION_ID);
+
+        return recordToReservation(reservationRecord, reservationMenuMap);
     }
 
     @Override
@@ -112,7 +120,6 @@ public class JooqReservationRepository implements ReservationRepository {
         return ReservationNumber.of(nextReservationNumber);
     }
 
-
     // Record から Reservationを生成
     private Reservation recordToReservation(Record record, Map<Long, Result<Record>> reservationMenusMap) {
         return Reservation.reconstruct(
@@ -142,7 +149,9 @@ public class JooqReservationRepository implements ReservationRepository {
                         HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
                         null
                 ),
-                reservationMenusMap.get(record.get(RESERVATIONS.ID))
+                reservationMenusMap.isEmpty()
+                        ? null
+                        : reservationMenusMap.get(record.get(RESERVATIONS.ID))
                         .map(this::recordsToReservationMenu)
         );
     }

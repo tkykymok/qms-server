@@ -6,9 +6,9 @@ import lombok.Builder;
 
 @Builder
 public record GetLastWaitTimeResponse(
-        Integer lastWaitTime,
-        Integer reservationNumber,
-        Message message
+        Integer lastWaitTime, // 最後尾の待ち時間
+        Integer reservationNumber, // 予約番号
+        Message message // メッセージ
 ) implements BaseResponse {
     @Override
     public String getMessage() {

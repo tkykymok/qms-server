@@ -12,4 +12,8 @@ public record ReservationNumber(Integer value) implements ValueObject {
     public static ReservationNumber newReservationNumber(ReservationRepository repository, StoreId storeId) {
         return  repository.newReservationNumber(storeId);
     }
+
+    public int compareTo(ReservationNumber other) {
+        return this.value.compareTo(other.value);
+    }
 }

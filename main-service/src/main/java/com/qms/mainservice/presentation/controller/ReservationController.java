@@ -5,6 +5,7 @@ import com.qms.mainservice.domain.model.valueobject.CustomerId;
 import com.qms.mainservice.domain.model.valueobject.ReservationId;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
+import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitTimeResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class ReservationController {
 
     // 予約の最後尾の待ち時間を取得する
     @GetMapping("/last-wait-time/{storeId}")
-    public ResponseEntity<?> getLastWaitTime(@PathVariable("storeId") Long storeId) {
+    public ResponseEntity<GetLastWaitTimeResponse> getLastWaitTime(@PathVariable("storeId") Long storeId) {
         FetchLastWaitTimeOutput output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
         return presenter.present(output);
     }

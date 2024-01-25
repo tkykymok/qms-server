@@ -93,6 +93,10 @@ public class ReservationPresenter {
                 .menuName(output.reservation().menuName().value())
                 .price(output.reservation().price().value())
                 .time(output.reservation().time().value())
+                .position(output.position().value())
+                .estimatedServiceStartDateTime(Formatter.formatDateTime(
+                        output.estimatedServiceStartDateTime().value(),
+                        "yyyy-MM-dd HH:mm:ss"))
                 .build();
         return ResponseEntity.ok(response);
     }

@@ -28,6 +28,11 @@ public record GetReservationDetailResponse(
         String menuName, // メニュー名
         BigDecimal price, // 価格
         Integer time, // 所要時間
+        // 順番
+        Integer position,
+        // 案内開始時刻目安
+        String estimatedServiceStartDateTime,
+        // メッセージ
         Message message
 ) implements BaseResponse {
     @Override
