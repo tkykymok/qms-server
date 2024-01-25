@@ -1,20 +1,20 @@
 DROP
-DATABASE IF EXISTS qms_db;
+    DATABASE IF EXISTS qms_db;
 CREATE
-DATABASE qms_db;
+    DATABASE qms_db;
 USE
-qms_db;
+    qms_db;
 
 GRANT ALL PRIVILEGES ON qms_db.* TO
-'qms'@'%';
+    'qms'@'%';
 FLUSH
-PRIVILEGES;
+    PRIVILEGES;
 
 -- 既存のテーブル定義を削除
 DROP TABLE IF EXISTS `customers`, `companies`, `stores`, `store_business_hours`, `favorite_stores`, `staffs`, `store_staffs`, `active_staffs`, `reservations`, `reservation_menus`, `sales`, `menus`, `menu_sets`, `menu_set_details`, `notifications`;
 
 SET
-FOREIGN_KEY_CHECKS = 0;
+    FOREIGN_KEY_CHECKS = 0;
 
 
 -- customers / 顧客
