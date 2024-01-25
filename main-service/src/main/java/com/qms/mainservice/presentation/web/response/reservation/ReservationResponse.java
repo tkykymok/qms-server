@@ -3,10 +3,9 @@ package com.qms.mainservice.presentation.web.response.reservation;
 import lombok.Builder;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Builder
-public record ReservationResponse (
+public record ReservationResponse(
         Long reservationId, // 予約ID
         Long storeId, // 店舗ID
         Long customerId, // 顧客ID

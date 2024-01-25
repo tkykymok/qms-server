@@ -5,14 +5,23 @@ import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutp
 import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitTimeResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import com.qms.mainservice.presentation.web.response.reservation.ReservationResponse;
+import com.qms.shared.presentation.Message;
 import com.qms.shared.utils.Formatter;
+import com.qms.shared.utils.MessageHelper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Component
+@RequiredArgsConstructor
 public class ReservationPresenter {
+
+    private final MessageHelper messageHelper;
+
     public ResponseEntity<GetReservationsResponse> present(FetchReservationsOutput output) {
         var response = GetReservationsResponse.builder()
                 .reservations(output.reservations().stream()
@@ -42,6 +51,7 @@ public class ReservationPresenter {
                                 .time(reservation.time().value())
                                 .build())
                         .toList())
+                .message(Message.of(messageHelper.getMessage(Locale.JAPAN, "S0001", "予約"))) // TODO メッセージ確認用
                 .build();
         return ResponseEntity.ok(response);
     }
