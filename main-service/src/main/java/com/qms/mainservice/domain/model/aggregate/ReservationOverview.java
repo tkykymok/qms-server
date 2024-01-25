@@ -136,11 +136,11 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
 
     // DBから取得したデータをドメインオブジェクトに変換する
     public static ReservationOverview reconstruct(
-            Store store,
+            StoreId storeId,
             List<ActiveStaff> activeStaffs,
             List<Reservation> reservations) {
         ReservationOverview overview = new ReservationOverview();
-        overview.id = store.getId();
+        overview.id = storeId;
         overview.activeStaffs = activeStaffs;
         overview.reservations = reservations;
 
