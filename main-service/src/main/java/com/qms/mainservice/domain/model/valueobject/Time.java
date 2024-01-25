@@ -4,7 +4,6 @@ import com.qms.shared.domain.model.ValueObject;
 
 public record Time(Integer value) implements ValueObject {
     public static Time of(Integer value) {
-        if(value == null) return null;
         return new Time(value);
     }
 

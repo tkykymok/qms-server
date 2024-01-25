@@ -35,7 +35,7 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
 
     // 次の利用可能時刻が休憩時間内かどうかを判定する
     public boolean isInBreakTime(Time time) {
-        if (breakStartDateTime == null || breakEndDateTime == null) {
+        if (breakStartDateTime.value() == null || breakEndDateTime.value() == null) {
             return false;
         }
 

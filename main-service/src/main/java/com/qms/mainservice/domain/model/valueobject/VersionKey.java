@@ -4,7 +4,6 @@ import com.qms.shared.domain.model.ValueObject;
 
 public record VersionKey(Integer value) implements ValueObject {
     public static VersionKey of(Integer value) {
-        if(value == null) return null;
         return new VersionKey(value);
     }
 

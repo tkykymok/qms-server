@@ -1,9 +1,8 @@
 package com.qms.mainservice.presentation.controller;
 
-import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
-import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeUsecase;
-import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
-import com.qms.mainservice.application.usecase.reservation.FetchReservationsUsecase;
+import com.qms.mainservice.application.usecase.reservation.*;
+import com.qms.mainservice.domain.model.valueobject.CustomerId;
+import com.qms.mainservice.domain.model.valueobject.ReservationId;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
@@ -22,6 +21,7 @@ public class ReservationController {
 
     private final FetchReservationsUsecase fetchReservationsUsecase;
     private final FetchLastWaitTimeUsecase fetchLastWaitTimeUsecase;
+    private final FetchReservationDetailUsecase fetchReservationDetailUsecase;
     private final ReservationPresenter presenter;
 
     // 予約一覧を取得する
@@ -43,13 +43,18 @@ public class ReservationController {
         return presenter.present(output);
     }
 
-    // 予約の待ち時間を取得する
-    @GetMapping("/detail/{reservationId}")
-    public ResponseEntity<GetReservationDetailResponse> getReservationDetail(
-            @PathVariable("reservationId") Long reservationId) {
-        System.out.println(reservationId);
+    // 顧客に紐づく予約詳細を取得する
+    @GetMapping("/detail")
+    public ResponseEntity<GetReservationDetailResponse> getReservationDetail() {
 
-        return null;
+        // 顧客ID
+        CustomerId customerId = CustomerId.of(1L);
+
+        // 予約詳細を取得する
+        FetchReservationDetailOutput output =
+                fetchReservationDetailUsecase.execute(customerId);
+
+        return presenter.present(output);
     }
 
 

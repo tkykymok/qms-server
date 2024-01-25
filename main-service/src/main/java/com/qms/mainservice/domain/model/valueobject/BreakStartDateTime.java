@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 public record BreakStartDateTime(LocalDateTime value) implements ValueObject {
     public static BreakStartDateTime of(LocalDateTime value) {
-        if(value == null) return null;
         return new BreakStartDateTime(value);
     }
 }

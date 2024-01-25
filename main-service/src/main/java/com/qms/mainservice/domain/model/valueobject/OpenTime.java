@@ -6,7 +6,6 @@ import java.time.LocalTime;
 
 public record OpenTime(LocalTime value) implements ValueObject {
     public static OpenTime of(LocalTime value) {
-        if(value == null) return null;
         return new OpenTime(value);
     }
 }

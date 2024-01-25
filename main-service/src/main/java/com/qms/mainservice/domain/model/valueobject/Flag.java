@@ -4,7 +4,6 @@ import com.qms.shared.domain.model.ValueObject;
 
 public record Flag(Boolean value) implements ValueObject {
     public static Flag of(Boolean value) {
-        if(value == null) return null;
         return new Flag(value);
     }
 

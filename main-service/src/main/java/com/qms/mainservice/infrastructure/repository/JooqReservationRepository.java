@@ -1,6 +1,7 @@
 package com.qms.mainservice.infrastructure.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
+import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
@@ -26,12 +27,45 @@ public class JooqReservationRepository implements ReservationRepository {
     private final DSLContext dsl;
 
     @Override
-    public Reservation findById(ReservationId id) {
-        // 予約IDに紐づく予約を取得する
+    public Reservation findById(ReservationId reservationId) {
+        // 予約IDに紐づく予約(店舗情報含む)を取得する
+        Record reservationRecord = dsl.select()
+                .from(RESERVATIONS)
+                .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
+                .where(RESERVATIONS.ID.eq(reservationId.value()))
+                .fetchOne();
+        // 予約IDが取得できない場合はnullを返却する
+        if (reservationRecord == null) {
+            return null;
+        }
 
         // 予約IDに紐づく予約メニュー一覧を取得する
+        Map<Long, Result<Record>> reservationMenuMap = dsl.select()
+                .from(RESERVATION_MENUS)
+                .innerJoin(MENUS).on(RESERVATION_MENUS.STORE_ID.eq(MENUS.STORE_ID)
+                        .and(RESERVATION_MENUS.STORE_MENU_ID.eq(MENUS.STORE_MENU_ID)))
+                .where(RESERVATION_MENUS.RESERVATION_ID.eq(reservationId.value()))
+                .fetch()
+                .intoGroups(RESERVATION_MENUS.RESERVATION_ID);
 
-        return null;
+        return recordToReservation(reservationRecord, reservationMenuMap);
+    }
+
+    @Override
+    public ReservationId findIdByCustomerId(CustomerId customerId) {
+        // 顧客IDに紐づく予約IDを取得する
+        Record1<Long> reservationId = dsl.select(RESERVATIONS.ID)
+                .from(RESERVATIONS)
+                .where(RESERVATIONS.CUSTOMER_ID.eq(customerId.value()) // 顧客ID
+                        .and(RESERVATIONS.RESERVED_DATE.eq(ReservedDate.now().value())) // 予約日(当日)
+                        .and(RESERVATIONS.STATUS.eq(ReservationStatus.WAITING.getValue())) // 予約ステータス
+                )
+                .fetchOne();
+        // 予約IDが取得できない場合はnullを返却する
+        if (reservationId == null) {
+            return null;
+        }
+        return ReservationId.of(reservationId.value1());
     }
 
     @Override
@@ -39,6 +73,7 @@ public class JooqReservationRepository implements ReservationRepository {
         // 予約一覧を取得する
         Result<Record> reservationRecords = dsl.select()
                 .from(RESERVATIONS)
+                .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
                 .where(RESERVATIONS.STORE_ID.eq(storeId.value()))
                 .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
                 .fetch();
@@ -47,8 +82,7 @@ public class JooqReservationRepository implements ReservationRepository {
         Map<Long, Result<Record>> reservationMenuMap = dsl.select()
                 .from(RESERVATION_MENUS)
                 .innerJoin(RESERVATIONS).on(RESERVATION_MENUS.RESERVATION_ID.eq(RESERVATIONS.ID))
-                .innerJoin(MENUS)
-                .on(RESERVATION_MENUS.STORE_ID.eq(MENUS.STORE_ID)
+                .innerJoin(MENUS).on(RESERVATION_MENUS.STORE_ID.eq(MENUS.STORE_ID)
                         .and(RESERVATION_MENUS.STORE_MENU_ID.eq(MENUS.STORE_MENU_ID)))
                 .where(RESERVATIONS.STORE_ID.eq(storeId.value()).
                         and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value())))
@@ -61,7 +95,7 @@ public class JooqReservationRepository implements ReservationRepository {
 
     @Override
     public ReservationNumber newReservationNumber(StoreId storeId) {
-        // 店舗ごとの本日最新の予約の次の予約番号を取得する
+        // 店舗ごとの次の予約番号を取得する
         Record1<Integer> maxReservationNumber = dsl
                 .select(DSL.max(RESERVATIONS.RESERVATION_NUMBER))
                 .from(RESERVATIONS)
@@ -95,7 +129,19 @@ public class JooqReservationRepository implements ReservationRepository {
                 Flag.fromValue(record.get(RESERVATIONS.NOTIFIED).intValue()),
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),
                 VersionKey.of(record.get(RESERVATIONS.VERSION)),
-                null,
+                // 店舗情報
+                Store.reconstruct(
+                        StoreId.of(record.get(STORES.ID)),
+                        CompanyId.of(record.get(STORES.COMPANY_ID)),
+                        StoreName.of(record.get(STORES.STORE_NAME)),
+                        PostalCode.of(record.get(STORES.POSTAL_CODE)),
+                        Address.of(record.get(STORES.ADDRESS)),
+                        Latitude.of(record.get(STORES.LATITUDE).doubleValue()),
+                        Longitude.of(record.get(STORES.LONGITUDE).doubleValue()),
+                        PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
+                        HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
+                        null
+                ),
                 reservationMenusMap.get(record.get(RESERVATIONS.ID))
                         .map(this::recordsToReservationMenu)
         );

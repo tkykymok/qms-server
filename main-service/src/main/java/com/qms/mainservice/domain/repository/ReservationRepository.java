@@ -1,15 +1,14 @@
 package com.qms.mainservice.domain.repository;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
-import com.qms.mainservice.domain.model.valueobject.ReservationId;
-import com.qms.mainservice.domain.model.valueobject.ReservationNumber;
-import com.qms.mainservice.domain.model.valueobject.ReservedDate;
-import com.qms.mainservice.domain.model.valueobject.StoreId;
+import com.qms.mainservice.domain.model.valueobject.*;
 
 import java.util.List;
 
 public interface ReservationRepository {
-    Reservation findById(ReservationId id);
+    Reservation findById(ReservationId reservationId);
+
+    ReservationId findIdByCustomerId(CustomerId customerId);
 
     List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate);
 

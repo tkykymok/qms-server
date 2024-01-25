@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 public record SalesAmount(BigDecimal value) {
     public static SalesAmount of(BigDecimal value) {
-        if(value == null) return null;
         if (value.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("value is negative");
         return new SalesAmount(value);
     }

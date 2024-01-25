@@ -1,8 +1,10 @@
 package com.qms.mainservice.presentation.presenter;
 
 import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
+import com.qms.mainservice.application.usecase.reservation.FetchReservationDetailOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
 import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitTimeResponse;
+import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
 import com.qms.mainservice.presentation.web.response.reservation.ReservationResponse;
 import com.qms.shared.presentation.Message;
@@ -63,4 +65,36 @@ public class ReservationPresenter {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    public ResponseEntity<GetReservationDetailResponse> present(FetchReservationDetailOutput output) {
+        var response = GetReservationDetailResponse.builder()
+                .reservationId(output.reservation().reservationId().value())
+                .storeId(output.reservation().storeId().value())
+                .customerId(output.reservation().customerId().value())
+                .reservationNumber(output.reservation().reservationNumber().value())
+                .reservedDate(output.reservation().reservedDate().value()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .staffId(output.reservation().staffId().value())
+                .serviceStartDateTime(Formatter.formatDateTime(
+                        output.reservation().serviceStartDateTime().value(),
+                        "yyyy-MM-dd HH:mm:ss"))
+                .serviceEndDateTime(Formatter.formatDateTime(
+                        output.reservation().serviceEndDateTime().value(),
+                        "yyyy-MM-dd HH:mm:ss"))
+                .holdStartDateTime(Formatter.formatDateTime(
+                        output.reservation().holdStartDateTime().value(),
+                        "yyyy-MM-dd HH:mm:ss"))
+                .status(output.reservation().status().getValue())
+                .notified(output.reservation().notified().value())
+                .arrived(output.reservation().arrived().value())
+                .version(output.reservation().version().value())
+                .storeName(output.reservation().storeName().value())
+                .homePageUrl(output.reservation().homePageUrl().value())
+                .menuName(output.reservation().menuName().value())
+                .price(output.reservation().price().value())
+                .time(output.reservation().time().value())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 }
