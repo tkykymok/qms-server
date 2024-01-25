@@ -35,8 +35,8 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
                 StoreId.of(record.get(ACTIVE_STAFFS.STORE_ID)),
                 StaffId.of(record.get(ACTIVE_STAFFS.STAFF_ID)),
                 SortOrder.of(record.get(ACTIVE_STAFFS.SORT_ORDER)),
-                BreakStartDateTime.of(record.get(ACTIVE_STAFFS.BREAK_START_DATETIME)),
-                BreakEndDateTime.of(record.get(ACTIVE_STAFFS.BREAK_END_DATETIME)),
+                BreakStartTime.of(record.get(ACTIVE_STAFFS.BREAK_START_TIME)),
+                BreakEndTime.of(record.get(ACTIVE_STAFFS.BREAK_END_TIME)),
                 ReservationId.of(record.get(ACTIVE_STAFFS.RESERVATION_ID))
         );
     }

@@ -6,9 +6,10 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.PriorityQueue;
 
 public class ReservationOverview extends AggregateRoot<StoreId> {
     // 店舗情報
@@ -17,7 +18,7 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     private List<ActiveStaff> activeStaffs;
     // 予約一覧
     private List<Reservation> reservations;
-    // スタッフの次の利用可能時刻を保持する優先度キュー
+    // スタッフの次の利用可能時間を保持する優先度キュー
     private PriorityQueue<StaffAvailability> staffAvailability;
 
     // デフォルトコンストラクタ
@@ -46,28 +47,28 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
 
         for (int i = 0; i < waitingReservations.size(); i++) {
             Reservation waitingReservation = waitingReservations.get(i);
-            // スタッフの次の利用可能時刻を保持する優先度キューから最小値を取得する
+            // スタッフの次の利用可能時間を保持する優先度キューから最小値を取得する
             StaffAvailability poll = staffAvailability.poll();
-            // スタッフの次の利用可能時刻に予約の所要時間を加算する
+            // スタッフの次の利用可能時間に予約の所要時間を加算する
             if (poll == null) {
-                throw new DomainException("スタッフの次の利用可能時刻を保持する優先度キューが空です");
+                throw new DomainException("スタッフの次の利用可能時間を保持する優先度キューが空です");
             }
-            // スタッフの次の利用可能時刻を保持する優先度キューに追加する
+            // スタッフの次の利用可能時間を保持する優先度キューに追加する
             poll.addTime(waitingReservation.getTime());
-            // ループ対象の予約が処理される時刻がスタッフの休憩時間内の場合、次の利用可能時刻に休憩終了時刻を追加する
+            // ループ対象の予約が処理される時間がスタッフの休憩時間内の場合、次の利用可能時間に休憩終了時間を追加する
             poll.addBreakTimeIfNeeded();
-            // スタッフの次の利用可能時刻を保持する優先度キューに追加する
+            // スタッフの次の利用可能時間を保持する優先度キューに追加する
             staffAvailability.add(poll);
             if (i == targetPosition) {
-                // ループ対象の予約が処理される時刻を取得する(現在時刻から何分後か)
+                // ループ対象の予約が処理される時間を取得する(現在時間から何分後か)
                 return poll.getNextAvailableTime();
             }
         }
 
-        // 最後尾の予約が処理される時刻を取得する(現在時刻から何分後か)
+        // 最後尾の予約が処理される時間を取得する(現在時間から何分後か)
         return staffAvailability.stream()
                 .min(StaffAvailability::compareTo)
-                .orElseThrow(() -> new DomainException("スタッフの次の利用可能時刻を保持する優先度キューが空です"))
+                .orElseThrow(() -> new DomainException("スタッフの次の利用可能時間を保持する優先度キューが空です"))
                 .getNextAvailableTime();
     }
 
@@ -76,10 +77,10 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         return calcWaitTime(null);
     }
 
-    // 該当予約の待ち時間を算出し、案内開始時刻目安を算出する(予約ID)
-    public ServiceStartDateTime calcEstimatedServiceStartDateTime(Position position) {
+    // 該当予約の待ち時間を算出し、案内開始時間目安を算出する(予約ID)
+    public ServiceStartTime calcEstimatedServiceStartTime(Position position) {
         Time time = calcWaitTime(position);
-        return ServiceStartDateTime.of(LocalDateTime.now().plusMinutes(time.value()));
+        return ServiceStartTime.of(LocalTime.now().plusMinutes(time.value()));
     }
 
     // 該当予約の順番を取得する(予約ID)
@@ -139,7 +140,7 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         overview.activeStaffs = activeStaffs;
         overview.reservations = reservations;
 
-        // スタッフの次の利用可能時刻を保持する優先度キューを初期化する
+        // スタッフの次の利用可能時間を保持する優先度キューを初期化する
         overview.staffAvailability = new PriorityQueue<>();
 
         activeStaffs.forEach(staff -> {

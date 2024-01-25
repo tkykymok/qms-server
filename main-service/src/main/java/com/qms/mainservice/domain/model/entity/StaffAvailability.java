@@ -4,11 +4,11 @@ import com.qms.mainservice.domain.model.valueobject.Time;
 import lombok.Getter;
 import lombok.Setter;
 
-// スタッフの次の利用可能時刻を保持する優先度キューの要素
+// スタッフの次の利用可能時間を保持する優先度キューの要素
 @Getter
 public class StaffAvailability implements Comparable<StaffAvailability> {
     private ActiveStaff staff; // スタッフ
-    private @Setter Time nextAvailableTime; // 次の利用可能時刻
+    private @Setter Time nextAvailableTime; // 次の利用可能時間(何分後か)
 
     private StaffAvailability() {
     }
@@ -29,7 +29,7 @@ public class StaffAvailability implements Comparable<StaffAvailability> {
         setNextAvailableTime(nextAvailableTime.addAndRoundUp(time));
     }
 
-    // ループ対象の予約が処理される時刻がスタッフの休憩時間内の場合、次の利用可能時刻に休憩終了時刻を追加する
+    // ループ対象の予約が処理される時間がスタッフの休憩時間内の場合、次の利用可能時間に休憩終了時間を追加する
     public void addBreakTimeIfNeeded() {
         if (staff.isInBreakTime(nextAvailableTime)) {
             setNextAvailableTime(nextAvailableTime.addAndRoundUp(staff.getRemainingTimeToBreakEnd()));

@@ -14,9 +14,9 @@ public record GetReservationDetailResponse(
         Integer reservationNumber, // 予約番号
         String reservedDate, // 予約日
         Long staffId, // 対応スタッフID
-        String serviceStartDateTime, // 対応開始日時
-        String serviceEndDateTime, // 対応終了日時
-        String holdStartDateTime, // 保留開始日時
+        String serviceStartTime, // 対応開始時間
+        String serviceEndTime, // 対応終了時間
+        String holdStartTime, // 保留開始時間
         Integer status, // 予約ステータス
         Boolean notified, // 通知フラグ
         Boolean arrived, // 到着フラグ
@@ -30,8 +30,8 @@ public record GetReservationDetailResponse(
         Integer time, // 所要時間
         // 順番
         Integer position,
-        // 案内開始時刻目安
-        String estimatedServiceStartDateTime,
+        // 案内開始時間目安
+        String estimatedServiceStartTime,
         // メッセージ
         Message message
 ) implements BaseResponse {

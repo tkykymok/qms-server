@@ -11,7 +11,6 @@ import com.qms.shared.presentation.Message;
 import com.qms.shared.utils.Formatter;
 import com.qms.shared.utils.MessageHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -35,15 +34,12 @@ public class ReservationPresenter {
                                 .reservedDate(reservation.reservedDate().value()
                                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                                 .staffId(reservation.staffId().value())
-                                .serviceStartDateTime(Formatter.formatDateTime(
-                                        reservation.serviceStartDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss"))
-                                .serviceEndDateTime(Formatter.formatDateTime(
-                                        reservation.serviceEndDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss"))
-                                .holdStartDateTime(Formatter.formatDateTime(
-                                        reservation.holdStartDateTime().value(),
-                                        "yyyy-MM-dd HH:mm:ss"))
+                                .serviceStartTime(Formatter.formatTime(
+                                        reservation.serviceStartTime().value(), "HH:mm"))
+                                .serviceEndTime(Formatter.formatTime(
+                                        reservation.serviceEndTime().value(), "HH:mm"))
+                                .holdStartTime(Formatter.formatTime(
+                                        reservation.holdStartTime().value(), "HH:mm"))
                                 .status(reservation.status().getValue())
                                 .notified(reservation.notified().value())
                                 .arrived(reservation.arrived().value())
@@ -75,15 +71,12 @@ public class ReservationPresenter {
                 .reservedDate(output.reservation().reservedDate().value()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .staffId(output.reservation().staffId().value())
-                .serviceStartDateTime(Formatter.formatDateTime(
-                        output.reservation().serviceStartDateTime().value(),
-                        "yyyy-MM-dd HH:mm:ss"))
-                .serviceEndDateTime(Formatter.formatDateTime(
-                        output.reservation().serviceEndDateTime().value(),
-                        "yyyy-MM-dd HH:mm:ss"))
-                .holdStartDateTime(Formatter.formatDateTime(
-                        output.reservation().holdStartDateTime().value(),
-                        "yyyy-MM-dd HH:mm:ss"))
+                .serviceStartTime(Formatter.formatTime(
+                        output.reservation().serviceStartTime().value(), "HH:mm"))
+                .serviceEndTime(Formatter.formatTime(
+                        output.reservation().serviceEndTime().value(), "HH:mm"))
+                .holdStartTime(Formatter.formatTime(
+                        output.reservation().holdStartTime().value(), "HH:mm"))
                 .status(output.reservation().status().getValue())
                 .notified(output.reservation().notified().value())
                 .arrived(output.reservation().arrived().value())
@@ -94,9 +87,8 @@ public class ReservationPresenter {
                 .price(output.reservation().price().value())
                 .time(output.reservation().time().value())
                 .position(output.position().value())
-                .estimatedServiceStartDateTime(Formatter.formatDateTime(
-                        output.estimatedServiceStartDateTime().value(),
-                        "yyyy-MM-dd HH:mm:ss"))
+                .estimatedServiceStartTime(Formatter.formatTime(
+                        output.estimatedServiceStartTime().value(), "HH:mm"))
                 .build();
         return ResponseEntity.ok(response);
     }

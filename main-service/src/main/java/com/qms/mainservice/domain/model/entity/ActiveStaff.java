@@ -4,53 +4,41 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
     SortOrder sortOrder; // 並び順
-    BreakStartDateTime breakStartDateTime; // 休憩開始時刻
-    BreakEndDateTime breakEndDateTime; // 休憩終了時刻
+    BreakStartTime breakStartTime; // 休憩開始時間
+    BreakEndTime breakEndTime; // 休憩終了時間
     ReservationId reservationId; // 予約ID
 
     private ActiveStaff() {
     }
 
 //    public static ActiveStaff create(
-//            StoreId storeId,
-//            StaffId staffId,
-//            SortOrder sortOrder,
-//            BreakStartDateTime breakStartDateTime,
-//            BreakEndDateTime breakEndDateTime,
-//            ReservationId reservationId
+//
 //    ) {
-//        ActiveStaff activeStaff = new ActiveStaff();
-//        activeStaff.key = new ActiveStaffKey(storeId, staffId);
-//        activeStaff.sortOrder = sortOrder;
-//        activeStaff.breakStartDateTime = breakStartDateTime;
-//        activeStaff.breakEndDateTime = breakEndDateTime;
-//        activeStaff.reservationId = reservationId;
-//        return activeStaff;
 //    }
 
-    // 次の利用可能時刻が休憩時間内かどうかを判定する
+    // 次の利用可能時間が休憩時間内かどうかを判定する
     public boolean isInBreakTime(Time time) {
-        if (breakStartDateTime.value() == null || breakEndDateTime.value() == null) {
+        if (breakStartTime.value() == null || breakEndTime.value() == null) {
             return false;
         }
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime nextAvailableDateTime = currentDateTime.plusMinutes(time.value());
+        LocalTime currentTime = LocalTime.now();
+        LocalTime nextAvailableTime = currentTime.plusMinutes(time.value());
 
-        return breakStartDateTime.value().isBefore(nextAvailableDateTime)
-                && breakEndDateTime.value().isAfter(nextAvailableDateTime);
+        return breakStartTime.value().isBefore(nextAvailableTime)
+                && breakEndTime.value().isAfter(nextAvailableTime);
     }
 
-    // 休憩終了時刻までの残り時間を取得する
+    // 休憩終了時間までの残り時間を取得する
     public Time getRemainingTimeToBreakEnd() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime breakEndDateTime = this.breakEndDateTime.value();
-        return Time.of(breakEndDateTime.getMinute() - currentDateTime.getMinute());
+        LocalTime currentTime = LocalTime.now();
+        LocalTime breakEndTime = this.breakEndTime.value();
+        return Time.of(breakEndTime.getMinute() - currentTime.getMinute());
     }
 
     // DBから取得したレコードをActiveStaffに変換する
@@ -58,15 +46,15 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
             StoreId storeId,
             StaffId staffId,
             SortOrder sortOrder,
-            BreakStartDateTime breakStartDateTime,
-            BreakEndDateTime breakEndDateTime,
+            BreakStartTime breakStartTime,
+            BreakEndTime breakEndTime,
             ReservationId reservationId
     ) {
         ActiveStaff activeStaff = new ActiveStaff();
         activeStaff.key = new ActiveStaffKey(storeId, staffId);
         activeStaff.sortOrder = sortOrder;
-        activeStaff.breakStartDateTime = breakStartDateTime;
-        activeStaff.breakEndDateTime = breakEndDateTime;
+        activeStaff.breakStartTime = breakStartTime;
+        activeStaff.breakEndTime = breakEndTime;
         activeStaff.reservationId = reservationId;
         return activeStaff;
     }

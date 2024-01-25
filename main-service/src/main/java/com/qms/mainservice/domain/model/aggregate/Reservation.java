@@ -8,7 +8,7 @@ import com.qms.shared.domain.model.AggregateRoot;
 import lombok.Getter;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +21,9 @@ public class Reservation extends AggregateRoot<ReservationId> {
     private ReservationNumber reservationNumber; // 予約番号
     private ReservedDate reservedDate; // 予約日
     private StaffId staffId; // 対応スタッフID
-    private ServiceStartDateTime serviceStartDateTime; // 対応開始日時
-    private ServiceEndDateTime serviceEndDateTime; // 対応終了日時
-    private HoldStartDateTime holdStartDateTime; // 保留開始日時
+    private ServiceStartTime serviceStartTime; // 対応開始時間
+    private ServiceEndTime serviceEndTime; // 対応終了時間
+    private HoldStartTime holdStartTime; // 保留開始時間
     private ReservationStatus status; // 予約ステータス
     private Flag notified; // 通知フラグ
     private Flag arrived; // 到着フラグ
@@ -75,8 +75,8 @@ public class Reservation extends AggregateRoot<ReservationId> {
      */
     public void updateStatusToWaiting() {
         this.status = ReservationStatus.WAITING;
-        this.serviceStartDateTime = null;
-        this.holdStartDateTime = null;
+        this.serviceStartTime = null;
+        this.holdStartTime = null;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
     public void updateStatusToInProgress(StaffId staffId) {
         this.status = ReservationStatus.IN_PROGRESS; // 予約ステータスを対応中に更新する
         this.staffId = staffId; // 対応スタッフを設定する
-        this.serviceStartDateTime = ServiceStartDateTime.now(); // 対応開始日時を設定する
+        this.serviceStartTime = ServiceStartTime.now(); // 対応開始時間を設定する
     }
 
     /**
@@ -95,7 +95,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
      */
     public void updateStatusToPending() {
         this.status = ReservationStatus.PENDING; // 予約ステータスを保留中に更新する
-        this.holdStartDateTime = HoldStartDateTime.now(); // 保留開始日時を設定する
+        this.holdStartTime = HoldStartTime.now(); // 保留開始時間を設定する
     }
 
     /**
@@ -107,7 +107,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
             throw new DomainException("現在のステータスが対応中ではありません。");
         }
         this.status = ReservationStatus.DONE; // 予約ステータスを案内済に更新する
-        this.serviceEndDateTime = ServiceEndDateTime.now(); // 対応終了日時を設定する
+        this.serviceEndTime = ServiceEndTime.now(); // 対応終了時間を設定する
     }
 
     /**
@@ -141,10 +141,10 @@ public class Reservation extends AggregateRoot<ReservationId> {
                 .map(reservationMenu -> reservationMenu.getMenu().getTime())
                 .reduce(Time.ZERO(), Time::add);
 
-        // 対応開始日時が設定されている場合、現在日時との差を計算して追加
-        if (serviceStartDateTime.value() != null) {
-            Duration duration = Duration.between(serviceStartDateTime.value(), LocalDateTime.now());
-            Time additionalTime = Time.of((int) duration.toMinutes());  // または適切なTimeオブジェクトの生成方法に従ってください
+        // 予約ステータスが対応中の場合、現在日時との差を計算して追加
+        if (this.status == ReservationStatus.IN_PROGRESS) {
+            Duration duration = Duration.between(serviceStartTime.value(), LocalTime.now());
+            Time additionalTime = Time.of((int) duration.toMinutes());
             return menuTime.add(additionalTime);
         }
 
@@ -159,9 +159,9 @@ public class Reservation extends AggregateRoot<ReservationId> {
             ReservationNumber reservationNumber,
             ReservedDate reservedDate,
             StaffId staffId,
-            ServiceStartDateTime serviceStartDateTime,
-            ServiceEndDateTime serviceEndDateTime,
-            HoldStartDateTime holdStartDateTime,
+            ServiceStartTime serviceStartTime,
+            ServiceEndTime serviceEndTime,
+            HoldStartTime holdStartTime,
             ReservationStatus status,
             Flag notified,
             Flag arrived,
@@ -176,9 +176,9 @@ public class Reservation extends AggregateRoot<ReservationId> {
         reservation.reservationNumber = reservationNumber;
         reservation.reservedDate = reservedDate;
         reservation.staffId = staffId;
-        reservation.serviceStartDateTime = serviceStartDateTime;
-        reservation.serviceEndDateTime = serviceEndDateTime;
-        reservation.holdStartDateTime = holdStartDateTime;
+        reservation.serviceStartTime = serviceStartTime;
+        reservation.serviceEndTime = serviceEndTime;
+        reservation.holdStartTime = holdStartTime;
         reservation.status = status;
         reservation.notified = notified;
         reservation.arrived = arrived;

@@ -35,9 +35,9 @@ public class FetchReservationsUsecase extends Usecase<StoreId, FetchReservations
                         .reservationNumber(reservation.getReservationNumber()) // 予約番号
                         .reservedDate(reservation.getReservedDate()) // 予約日
                         .staffId(reservation.getStaffId()) // 対応スタッフID
-                        .serviceStartDateTime(reservation.getServiceStartDateTime()) // 対応開始日時
-                        .serviceEndDateTime(reservation.getServiceEndDateTime()) // 対応終了日時
-                        .holdStartDateTime(reservation.getHoldStartDateTime()) // 保留開始日時
+                        .serviceStartTime(reservation.getServiceStartTime()) // 対応開始時間
+                        .serviceEndTime(reservation.getServiceEndTime()) // 対応終了時間
+                        .holdStartTime(reservation.getHoldStartTime()) // 保留開始時間
                         .status(reservation.getStatus()) // 予約ステータス
                         .notified(reservation.getNotified()) // 通知フラグ
                         .arrived(reservation.getArrived()) // 到着フラグ
