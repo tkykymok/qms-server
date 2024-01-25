@@ -2,8 +2,7 @@ DROP
     DATABASE IF EXISTS qms_db;
 CREATE
     DATABASE qms_db;
-USE
-    qms_db;
+USE qms_db;
 
 GRANT ALL PRIVILEGES ON qms_db.* TO
     'qms'@'%';
