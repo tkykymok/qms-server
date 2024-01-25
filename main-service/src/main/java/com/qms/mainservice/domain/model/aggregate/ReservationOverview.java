@@ -77,13 +77,13 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         return calcWaitTime(null);
     }
 
-    // 該当予約の待ち時間を算出し、案内開始時間目安を算出する(予約ID)
+    // 案内開始時間目安を算出する(予約ID)
     public ServiceStartTime getEstimatedServiceStartTime(Position position) {
         Time time = calcWaitTime(position);
         return ServiceStartTime.nowPlusTime(time);
     }
 
-    // 予約ステータスが未案内の予約一覧の件数を取得する
+    // 未案内の予約一覧の件数を取得する
     public WaitingCount getWaitingCount() {
         return WaitingCount.of(getWaitingReservations().size());
     }
