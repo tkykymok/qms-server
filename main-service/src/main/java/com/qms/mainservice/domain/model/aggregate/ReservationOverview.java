@@ -6,14 +6,11 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class ReservationOverview extends AggregateRoot<StoreId> {
-    // 店舗情報
-    private StoreName storeName;
     // 活動スタッフ一覧
     private List<ActiveStaff> activeStaffs;
     // 予約一覧
@@ -144,14 +141,13 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
             List<Reservation> reservations) {
         ReservationOverview overview = new ReservationOverview();
         overview.id = store.getId();
-        overview.storeName = store.getStoreName();
         overview.activeStaffs = activeStaffs;
         overview.reservations = reservations;
 
         // スタッフの次の利用可能時間を保持する優先度キューを初期化する
         overview.staffAvailability = new PriorityQueue<>();
 
-        activeStaffs.forEach(staff -> {
+        overview.activeStaffs.forEach(staff -> {
             Reservation reservation = null;
             ReservationId reservationId = staff.getReservationId();
             if (reservationId != null) {
