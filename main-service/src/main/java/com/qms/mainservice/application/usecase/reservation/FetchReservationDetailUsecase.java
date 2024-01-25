@@ -60,6 +60,7 @@ public class FetchReservationDetailUsecase extends Usecase<CustomerId, FetchRese
                         .price(reservation.getPrice()) // 価格
                         .time(reservation.getTime()) // 所要時間
                         .build())
+                .waitingCount(reservationOverview.getWaitingCount()) // 待ち人数
                 .position(position) // 順番
                 .estimatedServiceStartTime(serviceStartTime) // 案内開始時間目安
                 .build();

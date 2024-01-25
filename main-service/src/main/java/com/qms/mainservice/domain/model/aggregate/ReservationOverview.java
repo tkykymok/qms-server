@@ -83,9 +83,14 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         return ServiceStartTime.of(LocalTime.now().plusMinutes(time.value()));
     }
 
+    // 予約ステータスが未案内の予約一覧の件数を取得する
+    public WaitingCount getWaitingCount() {
+        return WaitingCount.of(getWaitingReservations().size());
+    }
+
     // 該当予約の順番を取得する(予約ID)
     public Position getPosition(ReservationId reservationId) {
-        // 予約一覧の予約ステータスが未案内の予約一覧を取得する
+        // 予約ステータスが未案内の予約一覧を取得する
         List<Reservation> waitingReservations = getWaitingReservations();
         // 該当予約の順番を取得する
         for (int i = 0; i < waitingReservations.size(); i++) {

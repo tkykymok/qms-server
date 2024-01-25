@@ -28,6 +28,8 @@ public record GetReservationDetailResponse(
         String menuName, // メニュー名
         BigDecimal price, // 価格
         Integer time, // 所要時間
+        // 待ち人数
+        Integer waitingCount,
         // 順番
         Integer position,
         // 案内開始時間目安

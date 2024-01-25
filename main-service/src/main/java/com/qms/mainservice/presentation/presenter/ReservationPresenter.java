@@ -86,6 +86,7 @@ public class ReservationPresenter {
                 .menuName(output.reservation().menuName().value())
                 .price(output.reservation().price().value())
                 .time(output.reservation().time().value())
+                .waitingCount(output.waitingCount().value())
                 .position(output.position().value())
                 .estimatedServiceStartTime(Formatter.formatTime(
                         output.estimatedServiceStartTime().value(), "HH:mm"))
