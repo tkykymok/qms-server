@@ -10,9 +10,6 @@ import java.util.List;
 
 @Getter
 public class StoreStaffOverview extends AggregateRoot<StoreId> {
-    // 店舗
-    private CompanyId companyId; // 企業ID
-
     // 店舗スタッフ一覧
     private List<StoreStaff> storeStaffs;
 
@@ -23,18 +20,25 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
     private StoreStaffOverview() {
     }
 
+    // 店舗スタッフを追加する
+    public void addStoreStaff(StaffId staffId) {
+        StoreStaff storeStaff = StoreStaff.create(staffId, id);
+        storeStaffs.add(storeStaff);
+    }
+
     // 活動スタッフを追加する
-    public void add(ActiveStaff activeStaff) {
-        // 活動スタッフのソート順を設定する
+    public void addActiveStaff(StaffId staffId) {
         SortOrder sortOrder = SortOrder.of(activeStaffs.size() + 1);
-        activeStaff.setSortOrder(sortOrder);
+        ActiveStaff activeStaff = ActiveStaff.create(id, staffId, sortOrder);
         activeStaffs.add(activeStaff);
     }
 
     // 活動スタッフを削除する
-    public void remove(ActiveStaffKey activeStaffKey) {
+    public void removeActiveStaff(ActiveStaffKey activeStaffKey) {
         activeStaffs.removeIf(activeStaff -> activeStaff.getKey()
                 .equals(activeStaffKey));
+        // 活動スタッフのソート順を再設定する
+        resetSortOrder();
     }
 
     // 休憩時間を設定する
@@ -53,16 +57,26 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 ));
     }
 
-//    // DBから取得したレコードをActiveStaffsに変換する
-//    public static ActiveStaffs reconstruct(
-//            StoreId storeId,
-//            List<ActiveStaff> activeStaffList
-//    ) {
-//        ActiveStaffs activeStaffs = new ActiveStaffs();
-//        activeStaffs.id = storeId;
-//        activeStaffs.activeStaffs = activeStaffList;
-//        return activeStaffs;
-//    }
+    // 活動スタッフのソート順を再設定する
+    private void resetSortOrder() {
+        for (int i = 0; i < activeStaffs.size(); i++) {
+            ActiveStaff activeStaff = activeStaffs.get(i);
+            activeStaff.setSortOrder(SortOrder.of(i + 1));
+        }
+    }
+
+    // DBから取得したレコードをActiveStaffsに変換する
+    public static StoreStaffOverview reconstruct(
+            StoreId storeId,
+            List<StoreStaff> storeStaffList,
+            List<ActiveStaff> activeStaffList
+    ) {
+        StoreStaffOverview staffOverview = new StoreStaffOverview();
+        staffOverview.id = storeId;
+        staffOverview.storeStaffs = storeStaffList;
+        staffOverview.activeStaffs = activeStaffList;
+        return staffOverview;
+    }
 
 
 }
