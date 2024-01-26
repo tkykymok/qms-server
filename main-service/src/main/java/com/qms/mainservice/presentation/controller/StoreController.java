@@ -3,6 +3,7 @@ package com.qms.mainservice.presentation.controller;
 import com.qms.mainservice.application.usecase.store.FetchStoresInput;
 import com.qms.mainservice.application.usecase.store.FetchStoresOutput;
 import com.qms.mainservice.application.usecase.store.FetchStoresUsecase;
+import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StorePresenter;
 import com.qms.mainservice.presentation.web.request.SearchStoresRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,16 @@ public class StoreController {
         FetchStoresOutput output = fetchStoresUsecase.execute(input);
 
         return presenter.present(output);
+    }
+
+    @GetMapping("/staff-list")
+    public ResponseEntity<?> searchStores() {
+        // 店舗ID TODO tokenから取得する想定
+        StoreId storeId = StoreId.of(1L);
+
+        // 店舗IDに紐づくスタッフ一覧を取得する
+
+        return null;
     }
 
 
