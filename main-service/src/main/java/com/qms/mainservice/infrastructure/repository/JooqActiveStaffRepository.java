@@ -4,6 +4,8 @@ import com.qms.mainservice.domain.model.entity.ActiveStaff;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.ActiveStaffRepository;
 import static com.qms.mainservice.infrastructure.jooq.Tables.*;
+
+import com.qms.mainservice.infrastructure.mapper.ActiveStaffMapper;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -26,21 +28,7 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
                 .where(ACTIVE_STAFFS.STORE_ID.eq(storeId.value()))
                 .fetch();
 
-        return storeRecords.map(this::recordToActiveStaff);
+        return storeRecords.map(ActiveStaffMapper::recordToActiveStaff);
     }
-
-    // RecordからActiveStaffを生成する
-    private ActiveStaff recordToActiveStaff(Record record) {
-        return ActiveStaff.reconstruct(
-                StoreId.of(record.get(ACTIVE_STAFFS.STORE_ID)),
-                StaffId.of(record.get(ACTIVE_STAFFS.STAFF_ID)),
-                SortOrder.of(record.get(ACTIVE_STAFFS.SORT_ORDER)),
-                BreakStartTime.of(record.get(ACTIVE_STAFFS.BREAK_START_TIME)),
-                BreakEndTime.of(record.get(ACTIVE_STAFFS.BREAK_END_TIME)),
-                ReservationId.of(record.get(ACTIVE_STAFFS.RESERVATION_ID))
-        );
-    }
-
-
 
 }
