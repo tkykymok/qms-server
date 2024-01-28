@@ -1,12 +1,12 @@
 package com.qms.mainservice.domain.repository;
 
-import com.qms.mainservice.domain.model.entity.ActiveStaff;
+import com.qms.mainservice.domain.model.entity.StoreStaff;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 
 import java.util.List;
 
-public interface ActiveStaffRepository {
+public interface StoreStaffRepository {
     // 店舗IDに紐づく活動スタッフ一覧を取得する
-    List<ActiveStaff> findAllByStoreId(StoreId storeId);
+    List<StoreStaff> findAllByStoreId(StoreId storeId);
 
 }

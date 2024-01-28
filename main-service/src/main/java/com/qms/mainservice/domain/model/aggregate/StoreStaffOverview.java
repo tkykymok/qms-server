@@ -60,6 +60,16 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 ));
     }
 
+    // 店舗IDとスタッフIDを指定して該当スタッフが活動中かどうかを判定する
+    public Flag getIsActive(StoreId storeId, StaffId staffId) {
+        var key = ActiveStaffKey.of(storeId, staffId);
+        return activeStaffs.stream()
+                .filter(activeStaff -> activeStaff.getKey().equals(key))
+                .findFirst()
+                .map(activeStaff -> Flag.of(true))
+                .orElse(Flag.of(false));
+    }
+
     // DBから取得したレコードをActiveStaffsに変換する
     public static StoreStaffOverview reconstruct(
             StoreId storeId,

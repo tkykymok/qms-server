@@ -5,7 +5,7 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.ActiveStaffRepository;
 import static com.qms.mainservice.infrastructure.jooq.Tables.*;
 
-import com.qms.mainservice.infrastructure.mapper.ActiveStaffMapper;
+import com.qms.mainservice.infrastructure.mapper.StaffMapper;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -25,10 +25,11 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
         // 店舗IDに紐づく活動スタッフ一覧を取得する
         Result<Record> storeRecords = dsl.select()
                 .from(ACTIVE_STAFFS)
+                .innerJoin(STAFFS).on(ACTIVE_STAFFS.STAFF_ID.eq(STAFFS.ID))
                 .where(ACTIVE_STAFFS.STORE_ID.eq(storeId.value()))
                 .fetch();
 
-        return storeRecords.map(ActiveStaffMapper::recordToActiveStaff);
+        return storeRecords.map(StaffMapper::recordToActiveStaff);
     }
 
 }
