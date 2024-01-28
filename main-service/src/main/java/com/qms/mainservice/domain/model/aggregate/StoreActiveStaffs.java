@@ -3,14 +3,17 @@ package com.qms.mainservice.domain.model.aggregate;
 import com.qms.mainservice.domain.model.entity.ActiveStaff;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.AggregateRoot;
+import lombok.Getter;
 
 import java.util.List;
 
-public class ActiveStaffs extends AggregateRoot<StoreId> {
+@Getter
+public class StoreActiveStaffs extends AggregateRoot<StoreId> {
     // 活動スタッフ一覧
     private List<ActiveStaff> activeStaffs;
 
-    private ActiveStaffs() {
+    // デフォルトコンストラクタ
+    private StoreActiveStaffs() {
     }
 
     // 活動スタッフを追加する
@@ -44,14 +47,15 @@ public class ActiveStaffs extends AggregateRoot<StoreId> {
     }
 
     // DBから取得したレコードをActiveStaffsに変換する
-    public static ActiveStaffs reconstruct(
+    public static StoreActiveStaffs reconstruct(
             StoreId storeId,
             List<ActiveStaff> activeStaffList
     ) {
-        ActiveStaffs activeStaffs = new ActiveStaffs();
+        StoreActiveStaffs activeStaffs = new StoreActiveStaffs();
         activeStaffs.id = storeId;
         activeStaffs.activeStaffs = activeStaffList;
         return activeStaffs;
     }
+
 
 }

@@ -14,6 +14,8 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
     private BreakStartTime breakStartTime; // 休憩開始時間
     private BreakEndTime breakEndTime; // 休憩終了時間
     private ReservationId reservationId; // 予約ID
+    // スタッフ
+    private Staff staff;
 
     private ActiveStaff() {
     }
@@ -63,7 +65,8 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
             SortOrder sortOrder,
             BreakStartTime breakStartTime,
             BreakEndTime breakEndTime,
-            ReservationId reservationId
+            ReservationId reservationId,
+            Staff staff
     ) {
         ActiveStaff activeStaff = new ActiveStaff();
         activeStaff.key = new ActiveStaffKey(storeId, staffId);
@@ -71,6 +74,7 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
         activeStaff.breakStartTime = breakStartTime;
         activeStaff.breakEndTime = breakEndTime;
         activeStaff.reservationId = reservationId;
+        activeStaff.staff = staff;
         return activeStaff;
     }
 
