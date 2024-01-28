@@ -22,10 +22,12 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
 
     public static ActiveStaff create(
             StoreId storeId,
-            StaffId staffId
+            StaffId staffId,
+            SortOrder sortOrder
     ) {
         ActiveStaff activeStaff = new ActiveStaff();
         activeStaff.key = new ActiveStaffKey(storeId, staffId);
+        activeStaff.sortOrder = sortOrder;
         return activeStaff;
     }
 
