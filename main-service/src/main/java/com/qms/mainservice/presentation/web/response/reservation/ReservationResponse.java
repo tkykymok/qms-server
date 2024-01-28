@@ -22,6 +22,12 @@ public record ReservationResponse(
         // 予約メニュー
         String menuName, // メニュー名
         BigDecimal price, // 価格
-        Integer time // 所要時間
+        Integer time, // 所要時間
+        // 店舗情報
+        String storeName, // 店舗名
+        String homePageUrl, // ホームページURL
+        // 顧客情報
+        String customerLastName, // 顧客姓
+        String customerFirstName // 顧客名
 ) {
 }

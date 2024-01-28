@@ -1,5 +1,6 @@
 package com.qms.mainservice.domain.model.aggregate;
 
+import com.qms.mainservice.domain.model.entity.Customer;
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
@@ -32,6 +33,8 @@ public class Reservation extends AggregateRoot<ReservationId> {
     private Store store;
     // 予約メニューList
     private List<ReservationMenu> reservationMenus;
+    // 顧客情報
+    private Customer customer;
 
     private Reservation() {
     }
@@ -168,7 +171,8 @@ public class Reservation extends AggregateRoot<ReservationId> {
             Flag arrived,
             VersionKey version,
             Store store,
-            List<ReservationMenu> reservationMenus
+            List<ReservationMenu> reservationMenus,
+            Customer customer
     ) {
         Reservation reservation = new Reservation();
         reservation.id = reservationId;
@@ -186,6 +190,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
         reservation.version = version;
         reservation.store = store;
         reservation.reservationMenus = reservationMenus;
+        reservation.customer = customer;
         return reservation;
     }
 

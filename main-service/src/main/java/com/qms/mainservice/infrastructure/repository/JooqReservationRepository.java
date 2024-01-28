@@ -29,6 +29,7 @@ public class JooqReservationRepository implements ReservationRepository {
         Record reservationRecord = dsl.select()
                 .from(RESERVATIONS)
                 .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
+                .innerJoin(CUSTOMERS).on(RESERVATIONS.CUSTOMER_ID.eq(CUSTOMERS.ID))
                 .where(RESERVATIONS.ID.eq(reservationId.value()))
                 .fetchOne();
         // 予約IDが取得できない場合はnullを返却する
@@ -54,6 +55,7 @@ public class JooqReservationRepository implements ReservationRepository {
         Record reservationRecord = dsl.select()
                 .from(RESERVATIONS)
                 .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
+                .innerJoin(CUSTOMERS).on(RESERVATIONS.CUSTOMER_ID.eq(CUSTOMERS.ID))
                 .where(RESERVATIONS.CUSTOMER_ID.eq(customerId.value()))
                 .fetchOne();
         // 予約IDが取得できない場合はnullを返却する
@@ -79,6 +81,7 @@ public class JooqReservationRepository implements ReservationRepository {
         Result<Record> reservationRecords = dsl.select()
                 .from(RESERVATIONS)
                 .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
+                .innerJoin(CUSTOMERS).on(RESERVATIONS.CUSTOMER_ID.eq(CUSTOMERS.ID))
                 .where(RESERVATIONS.STORE_ID.eq(storeId.value()))
                 .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
                 .fetch();

@@ -1,5 +1,7 @@
 package com.qms.mainservice.application.usecase.reservation;
 
+import com.qms.mainservice.domain.model.aggregate.Store;
+import com.qms.mainservice.domain.model.entity.Customer;
 import com.qms.mainservice.domain.model.valueobject.*;
 import lombok.Builder;
 
@@ -18,12 +20,13 @@ public record ReservationOutput(
         Flag notified, // 通知フラグ
         Flag arrived, // 到着フラグ
         VersionKey version, // バージョン
-        // 店舗情報
-        StoreName storeName, // 店舗名
-        HomePageUrl homePageUrl, // ホームページURL
         // 予約メニュー
         MenuName menuName, // メニュー名
         Price price, // 価格
-        Time time // 所要時間
+        Time time, // 所要時間
+        // 店舗情報
+        Store store,
+        // 顧客情報
+        Customer customer
 ) {
 }

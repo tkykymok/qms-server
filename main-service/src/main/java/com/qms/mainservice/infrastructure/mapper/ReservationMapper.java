@@ -33,22 +33,14 @@ public class ReservationMapper {
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),
                 VersionKey.of(record.get(RESERVATIONS.VERSION)),
                 // 店舗情報
-                Store.reconstruct(
-                        StoreId.of(record.get(STORES.ID)),
-                        CompanyId.of(record.get(STORES.COMPANY_ID)),
-                        StoreName.of(record.get(STORES.STORE_NAME)),
-                        PostalCode.of(record.get(STORES.POSTAL_CODE)),
-                        Address.of(record.get(STORES.ADDRESS)),
-                        Latitude.of(record.get(STORES.LATITUDE).doubleValue()),
-                        Longitude.of(record.get(STORES.LONGITUDE).doubleValue()),
-                        PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
-                        HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
-                        null
-                ),
+                StoreMapper.recordToStore(record, Map.of()),
                 reservationMenusMap.isEmpty()
                         ? null
                         : reservationMenusMap.get(record.get(RESERVATIONS.ID))
-                        .map(ReservationMapper::recordsToReservationMenu)
+                        .map(ReservationMapper::recordsToReservationMenu),
+                // 顧客情報
+                CustomerMapper.recordToCustomer(record)
+
         );
     }
 

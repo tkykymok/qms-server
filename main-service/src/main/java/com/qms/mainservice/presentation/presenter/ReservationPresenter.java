@@ -3,10 +3,7 @@ package com.qms.mainservice.presentation.presenter;
 import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationDetailOutput;
 import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
-import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitTimeResponse;
-import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
-import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
-import com.qms.mainservice.presentation.web.response.reservation.ReservationResponse;
+import com.qms.mainservice.presentation.web.response.reservation.*;
 import com.qms.shared.presentation.Message;
 import com.qms.shared.utils.Formatter;
 import com.qms.shared.utils.MessageHelper;
@@ -47,6 +44,8 @@ public class ReservationPresenter {
                                 .menuName(reservation.menuName().value())
                                 .price(reservation.price().value())
                                 .time(reservation.time().value())
+                                .customerLastName(reservation.customer().getLastName().value())
+                                .customerFirstName(reservation.customer().getFirstName().value())
                                 .build())
                         .toList())
                 .message(Message.of(messageHelper.getMessage(Locale.JAPAN, "S0001", "予約"))) // TODO メッセージ確認用
@@ -64,23 +63,30 @@ public class ReservationPresenter {
 
     public ResponseEntity<GetReservationDetailResponse> present(FetchReservationDetailOutput output) {
         var response = GetReservationDetailResponse.builder()
-                .reservationId(output.reservation().reservationId().value())
-                .storeId(output.reservation().storeId().value())
-                .customerId(output.reservation().customerId().value())
-                .reservationNumber(output.reservation().reservationNumber().value())
-                .reservedDate(output.reservation().reservedDate().value()
-                        .format(DateTimeFormatter.ofPattern("yyyy年MM月dd日(E)", Locale.JAPAN)))
-                .status(output.reservation().status().getValue())
-                .arrived(output.reservation().arrived().value())
-                .version(output.reservation().version().value())
-                .storeName(output.reservation().storeName().value())
-                .homePageUrl(output.reservation().homePageUrl().value())
-                .menuName(output.reservation().menuName().value())
-                .price(output.reservation().price().value())
-                .waitingCount(output.waitingCount().value())
-                .position(output.position().value())
-                .estimatedServiceStartTime(Formatter.formatTime(
-                        output.estimatedServiceStartTime().value(), "HH:mm"))
+                .reservation(ReservationResponse.builder()
+                        .reservationId(output.reservation().reservationId().value())
+                        .storeId(output.reservation().storeId().value())
+                        .customerId(output.reservation().customerId().value())
+                        .reservationNumber(output.reservation().reservationNumber().value())
+                        .reservedDate(output.reservation().reservedDate().value()
+                                .format(DateTimeFormatter.ofPattern("yyyy年MM月dd日(E)", Locale.JAPAN)))
+                        .status(output.reservation().status().getValue())
+                        .arrived(output.reservation().arrived().value())
+                        .version(output.reservation().version().value())
+                        .storeName(output.reservation().store().getStoreName().value())
+                        .homePageUrl(output.reservation().store().getHomePageUrl().value())
+                        .menuName(output.reservation().menuName().value())
+                        .price(output.reservation().price().value())
+                        .customerFirstName(output.reservation().customer().getFirstName().value())
+                        .customerLastName(output.reservation().customer().getLastName().value())
+                        .build())
+                .waitingInfo(
+                        WaitingInfoResponse.builder()
+                                .waitingCount(output.waitingCount().value())
+                                .position(output.position().value())
+                                .estimatedServiceStartTime(Formatter.formatTime(
+                                        output.estimatedServiceStartTime().value(), "HH:mm"))
+                                .build())
                 .build();
         return ResponseEntity.ok(response);
     }
