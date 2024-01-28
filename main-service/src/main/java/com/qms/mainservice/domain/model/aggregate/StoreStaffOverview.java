@@ -1,6 +1,7 @@
 package com.qms.mainservice.domain.model.aggregate;
 
 import com.qms.mainservice.domain.model.entity.ActiveStaff;
+import com.qms.mainservice.domain.model.entity.StoreStaff;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.AggregateRoot;
 import lombok.Getter;
@@ -8,16 +9,29 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class StoreActiveStaffs extends AggregateRoot<StoreId> {
+public class StoreStaffOverview extends AggregateRoot<StoreId> {
+    // 店舗スタッフ一覧
+    private List<StoreStaff> storeStaffs;
     // 活動スタッフ一覧
     private List<ActiveStaff> activeStaffs;
 
     // デフォルトコンストラクタ
-    private StoreActiveStaffs() {
+    private StoreStaffOverview() {
+    }
+
+    // 店舗スタッフを追加する
+    public void addStoreStaff(StoreStaff storeStaff) {
+        storeStaffs.add(storeStaff);
+    }
+
+    // 店舗スタッフを削除する
+    public void removeStoreStaff(StoreStaffKey storeStaffKey) {
+        storeStaffs.removeIf(storestaff -> storestaff.getKey()
+                .equals(storeStaffKey));
     }
 
     // 活動スタッフを追加する
-    public void add(ActiveStaff activeStaff) {
+    public void addActiveStaff(ActiveStaff activeStaff) {
         // 活動スタッフのソート順を設定する
         SortOrder sortOrder = SortOrder.of(activeStaffs.size() + 1);
         activeStaff.setSortOrder(sortOrder);
@@ -25,7 +39,7 @@ public class StoreActiveStaffs extends AggregateRoot<StoreId> {
     }
 
     // 活動スタッフを削除する
-    public void remove(ActiveStaffKey activeStaffKey) {
+    public void removeActiveStaff(ActiveStaffKey activeStaffKey) {
         activeStaffs.removeIf(activeStaff -> activeStaff.getKey()
                 .equals(activeStaffKey));
     }
@@ -47,12 +61,14 @@ public class StoreActiveStaffs extends AggregateRoot<StoreId> {
     }
 
     // DBから取得したレコードをActiveStaffsに変換する
-    public static StoreActiveStaffs reconstruct(
+    public static StoreStaffOverview reconstruct(
             StoreId storeId,
+            List<StoreStaff> staffList,
             List<ActiveStaff> activeStaffList
     ) {
-        StoreActiveStaffs activeStaffs = new StoreActiveStaffs();
+        StoreStaffOverview activeStaffs = new StoreStaffOverview();
         activeStaffs.id = storeId;
+        activeStaffs.storeStaffs = staffList;
         activeStaffs.activeStaffs = activeStaffList;
         return activeStaffs;
     }
