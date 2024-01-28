@@ -109,6 +109,7 @@ CREATE TABLE `staffs`
     `company_id`      BIGINT       NOT NULL COMMENT '所属企業ID',
     `last_name`       VARCHAR(255) COMMENT 'スタッフ姓',
     `first_name`      VARCHAR(255) COMMENT 'スタッフ名',
+    `image_url`       VARCHAR(255) COMMENT '画像URL',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
