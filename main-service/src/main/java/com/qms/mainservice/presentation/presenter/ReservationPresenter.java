@@ -53,12 +53,14 @@ public class ReservationPresenter {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<GetLastWaitTimeResponse> present(FetchLastWaitTimeOutput output) {
-        var response = GetLastWaitTimeResponse.builder()
-                .lastWaitTime(output.lastWaitTime().value())
-                .reservationNumber(output.reservationNumber().value())
-                .activeStaffCount(output.activeStaffCount().value())
-                .waitingCount(output.waitingCount().value())
+    public ResponseEntity<GetLastWaitingInfoResponse> present(FetchLastWaitTimeOutput output) {
+        var response = GetLastWaitingInfoResponse.builder()
+                .waitingInfo(WaitingInfoResponse.builder()
+                        .lastWaitTime(output.lastWaitTime().value())
+                        .reservationNumber(output.reservationNumber().value())
+                        .activeStaffCount(output.activeStaffCount().value())
+                        .waitingCount(output.waitingCount().value())
+                        .build())
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -86,6 +88,7 @@ public class ReservationPresenter {
                         WaitingInfoResponse.builder()
                                 .waitingCount(output.waitingCount().value())
                                 .position(output.position().value())
+                                .reservationNumber(output.reservationNumber().value())
                                 .estimatedServiceStartTime(Formatter.formatTime(
                                         output.estimatedServiceStartTime().value(), "HH:mm"))
                                 .build())

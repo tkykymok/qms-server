@@ -20,7 +20,7 @@ public class FetchReservationDetailUsecase extends Usecase<CustomerId, FetchRese
     private final ReservationOverviewCreator reservationOverviewCreator;
 
     public FetchReservationDetailOutput execute(CustomerId customerId) {
-        // 顧客IDから予約IDを取得する
+        // 顧客IDから対象の予約を取得する
         Reservation reservation = reservationRepository.findByCustomerId(customerId);
         if (reservation == null) {
             // 予約IDが取得できない場合はnullを返却する
@@ -43,6 +43,7 @@ public class FetchReservationDetailUsecase extends Usecase<CustomerId, FetchRese
                 .reservation(ReservationOutputMapper.modelToReservationOutput(reservation)) // 予約情報
                 .waitingCount(reservationOverview.getWaitingCount()) // 待ち人数
                 .position(position) // 順番
+                .reservationNumber(reservation.getReservationNumber()) // 予約番号
                 .estimatedServiceStartTime(serviceStartTime) // 案内開始時間目安
                 .build();
     }

@@ -6,6 +6,9 @@ import lombok.Builder;
 public record WaitingInfoResponse(
         Integer waitingCount, // 待ち人数
         Integer position, // 順番
+        Integer reservationNumber, // 予約番号
+        Integer activeStaffCount, // 活動中スタッフ数
+        Integer lastWaitTime, // 最後尾の待ち時間
         String estimatedServiceStartTime // 案内開始時間目安
 ) {
 }
