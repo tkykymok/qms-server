@@ -37,7 +37,7 @@ public class ReservationController {
 
     // 予約の最後尾の待ち時間を取得する
     @GetMapping("/last-wait-time/{storeId}")
-    public ResponseEntity<GetLastWaitingInfoResponse> getLastWaitTime(@PathVariable("storeId") Long storeId) {
+    public ResponseEntity<GetLastWaitingInfoResponse> getLastWaitingInfo(@PathVariable("storeId") Long storeId) {
         // 予約の最後尾の待ち時間を取得する
         FetchLastWaitTimeOutput output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
 
