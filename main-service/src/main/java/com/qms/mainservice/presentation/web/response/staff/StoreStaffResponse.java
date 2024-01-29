@@ -8,6 +8,7 @@ public record StoreStaffResponse(
         Long storeId, // 店舗ID
         String lastName, // スタッフ姓
         String firstName, // スタッフ名
-        Boolean isActive // 活動中フラグ
+        Boolean isActive, // 活動中フラグ
+        Long reservationId // 予約ID
 ) {
 }

@@ -70,6 +70,16 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 .orElse(Flag.of(false));
     }
 
+    // 店舗IDとスタッフIDを指定して対応中の予約IDを取得する
+    public ReservationId getReservationId(StoreId storeId, StaffId staffId) {
+        var key = ActiveStaffKey.of(storeId, staffId);
+        return activeStaffs.stream()
+                .filter(activeStaff -> activeStaff.getKey().equals(key))
+                .findFirst()
+                .map(ActiveStaff::getReservationId)
+                .orElse(null);
+    }
+
     // DBから取得したレコードをActiveStaffsに変換する
     public static StoreStaffOverview reconstruct(
             StoreId storeId,

@@ -6,7 +6,6 @@ import java.util.List;
 
 @Builder
 public record GetStoreStaffs(
-        List<StoreStaffResponse> storeStaffs,
-        List<ActiveStaffResponse> activeStaffs
+        List<StoreStaffResponse> storeStaffs
 ) {
 }

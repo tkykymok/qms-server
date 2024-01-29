@@ -11,6 +11,7 @@ public record StoreStaffOutput(
         LastName lastName,
         FirstName firstName,
         CognitoUserId cognitoUserId,
-        Flag isActive
+        Flag isActive,
+        ReservationId reservationId
 ) {
 }

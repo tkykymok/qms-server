@@ -33,25 +33,13 @@ public class FetchStoreStaffsUsecase extends Usecase<StoreId, FetchStoreStaffsOu
                                                 storeStaff.getKey().storeId(),
                                                 storeStaff.getKey().staffId()
                                         ))
+                                        .reservationId(storeStaffOverview.getReservationId(
+                                                storeStaff.getKey().storeId(),
+                                                storeStaff.getKey().staffId()
+                                        ))
                                         .build()
                                 )
                                 .toList()
-                )
-                .activeStaffOutputs(
-                        storeStaffOverview.getActiveStaffs().stream()
-                                .map(activeStaff -> ActiveStaffOutput.builder()
-                                        .storeId(activeStaff.getKey().storeId())
-                                        .staffId(activeStaff.getKey().staffId())
-                                        .sortOrder(activeStaff.getSortOrder())
-                                        .breakStartTime(activeStaff.getBreakStartTime())
-                                        .breakEndTime(activeStaff.getBreakEndTime())
-                                        .reservationId(activeStaff.getReservationId())
-                                        .companyId(activeStaff.getStaff().getCompanyId())
-                                        .lastName(activeStaff.getStaff().getLastName())
-                                        .firstName(activeStaff.getStaff().getFirstName())
-                                        .cognitoUserId(activeStaff.getStaff().getCognitoUserId())
-                                        .build()
-                                ).toList()
                 )
                 .build();
     }
