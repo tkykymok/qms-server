@@ -4,11 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record WaitingInfoResponse(
-        // 待ち人数
-        Integer waitingCount,
-        // 順番
-        Integer position,
-        // 案内開始時間目安
-        String estimatedServiceStartTime
+        Integer waitingCount, // 待ち人数
+        Integer position, // 順番
+        String estimatedServiceStartTime // 案内開始時間目安
 ) {
 }

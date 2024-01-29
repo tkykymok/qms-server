@@ -1,6 +1,7 @@
 package com.qms.mainservice.application.usecase.reservation;
 
 import com.qms.mainservice.domain.model.aggregate.ReservationOverview;
+import com.qms.mainservice.domain.model.valueobject.Count;
 import com.qms.mainservice.domain.model.valueobject.ReservationNumber;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.domain.model.valueobject.Time;
@@ -27,11 +28,17 @@ public class FetchLastWaitTimeUsecase extends Usecase<StoreId, FetchLastWaitTime
         Time lastWaitTime = reservationOverview.calcLastWaitTime();
         // 次の予約番号を取得する
         ReservationNumber reservationNumber = reservationRepository.newReservationNumber(storeId);
+        // 活動中スタッフ数を取得する
+        Count activeStaffCount = reservationOverview.getActiveStaffCount();
+        // 待ち人数を取得する
+        Count waitingCount = reservationOverview.getWaitingCount();
 
         // 最後尾の待ち時間と次の予約番号を返却する
         return FetchLastWaitTimeOutput.builder()
                 .lastWaitTime(lastWaitTime)
                 .reservationNumber(reservationNumber)
+                .activeStaffCount(activeStaffCount)
+                .waitingCount(waitingCount)
                 .build();
     }
 }

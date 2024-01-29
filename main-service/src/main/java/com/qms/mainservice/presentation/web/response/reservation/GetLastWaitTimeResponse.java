@@ -8,6 +8,8 @@ import lombok.Builder;
 public record GetLastWaitTimeResponse(
         Integer lastWaitTime, // 最後尾の待ち時間
         Integer reservationNumber, // 予約番号
+        Integer activeStaffCount, // 活動中スタッフ数
+        Integer waitingCount, // 待ち人数
         Message message // メッセージ
 ) implements BaseResponse {
     @Override

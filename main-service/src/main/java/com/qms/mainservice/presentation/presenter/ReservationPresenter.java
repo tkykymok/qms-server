@@ -57,6 +57,8 @@ public class ReservationPresenter {
         var response = GetLastWaitTimeResponse.builder()
                 .lastWaitTime(output.lastWaitTime().value())
                 .reservationNumber(output.reservationNumber().value())
+                .activeStaffCount(output.activeStaffCount().value())
+                .waitingCount(output.waitingCount().value())
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -69,7 +71,7 @@ public class ReservationPresenter {
                         .customerId(output.reservation().customerId().value())
                         .reservationNumber(output.reservation().reservationNumber().value())
                         .reservedDate(output.reservation().reservedDate().value()
-                                .format(DateTimeFormatter.ofPattern("yyyy年MM月dd日(E)", Locale.JAPAN)))
+                                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd(E)", Locale.JAPAN)))
                         .status(output.reservation().status().getValue())
                         .arrived(output.reservation().arrived().value())
                         .version(output.reservation().version().value())

@@ -84,8 +84,13 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     }
 
     // 未案内の予約一覧の件数を取得する
-    public WaitingCount getWaitingCount() {
-        return WaitingCount.of(getWaitingReservations().size());
+    public Count getWaitingCount() {
+        return Count.of(getWaitingReservations().size());
+    }
+
+    // 活動中スタッフの数を取得する
+    public Count getActiveStaffCount() {
+        return Count.of(activeStaffs.size());
     }
 
     // 該当予約の順番を取得する(予約ID)
