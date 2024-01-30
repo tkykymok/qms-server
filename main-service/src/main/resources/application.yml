@@ -12,6 +12,9 @@ server:
   servlet:
     context-path: /api
 
+cors:
+  allowed-origins: http://localhost:3000
+
 logging:
   level:
     org:
