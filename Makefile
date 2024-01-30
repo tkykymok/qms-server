@@ -1,12 +1,18 @@
 init:
-	docker compose up --build -d
+	docker-compose up --build -d
 
 destroy:
-	docker compose down --rmi all --volumes --remove-orphans
+	docker-compose down --rmi all --volumes --remove-orphans
 
 remake:
 	@make destroy
 	@make init
+
+remake-db:
+	docker-compose stop db
+	docker-compose rm --force db
+	docker volume rm qms-server_mysql_data
+	docker-compose up db --build -d
 
 gen-jooq:
 	docker exec -it main-service /bin/sh -c "./gradlew generateJooq"
