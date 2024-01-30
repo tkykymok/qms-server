@@ -4,6 +4,7 @@ import com.qms.mainservice.application.usecase.staff.FetchStoreStaffsOutput;
 import com.qms.mainservice.application.usecase.staff.FetchStoreStaffsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StaffPresenter;
+import com.qms.mainservice.presentation.web.response.staff.GetStoreStaffs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class StaffController {
 
 
     @GetMapping("/store-staffs")
-    public ResponseEntity<?> getStoreStaffs() {
+    public ResponseEntity<GetStoreStaffs> getStoreStaffs() {
         // 店舗ID TODO tokenから取得する想定
         StoreId storeId = StoreId.of(1L);
         // 店舗IDに紐づくスタッフ一覧&活動スタッフ一覧を取得する
