@@ -17,6 +17,7 @@ services:
       - 3306:3306
     volumes: # マッピングを指定
       - mysql_data:/var/lib/mysql # データ永続化用のマウント
+      - ./db/conf.d:/etc/mysql/conf.d
       - ./db/initdb.d:/docker-entrypoint-initdb.d # 初期化用SQLのマウント
 
   main-service:
