@@ -127,7 +127,7 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         return reservations.stream()
                 .findFirst()
                 .map(Reservation::getReservedDate)
-                .orElse(null);
+                .orElse(ReservedDate.of(null));
     }
 
     // 予約一覧から予約IDに紐づく予約を取得する

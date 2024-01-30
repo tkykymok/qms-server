@@ -77,7 +77,7 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 .filter(activeStaff -> activeStaff.getKey().equals(key))
                 .findFirst()
                 .map(ActiveStaff::getReservationId)
-                .orElse(null);
+                .orElse(ReservationId.of(null));
     }
 
     // DBから取得したレコードをActiveStaffsに変換する
