@@ -3,6 +3,7 @@ package com.qms.mainservice.presentation.controller;
 import com.qms.mainservice.application.usecase.reservation.*;
 import com.qms.mainservice.domain.model.valueobject.CustomerId;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
+import com.qms.mainservice.infrastructure.config.ApplicationProperties;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
 import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitingInfoResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
@@ -25,8 +26,8 @@ public class ReservationController {
     private final ReservationPresenter presenter;
 
     // 予約一覧を取得する
-    @GetMapping("/list")
-    public ResponseEntity<GetReservationsResponse> getReservations() {
+    @GetMapping("/list/today")
+    public ResponseEntity<GetReservationsResponse> getTodayReservations() {
         // 店舗ID
         StoreId storeId = StoreId.of(1L);
         // 予約一覧を取得する
