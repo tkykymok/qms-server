@@ -1,4 +1,4 @@
-package com.qms.mainservice.presentation.web.request;
+package com.qms.mainservice.presentation.web.request.store;
 
 public record SearchStoresRequest(
         double latitude,

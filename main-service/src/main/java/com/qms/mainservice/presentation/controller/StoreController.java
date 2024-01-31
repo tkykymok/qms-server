@@ -5,7 +5,7 @@ import com.qms.mainservice.application.usecase.store.FetchStoresOutput;
 import com.qms.mainservice.application.usecase.store.FetchStoresUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StorePresenter;
-import com.qms.mainservice.presentation.web.request.SearchStoresRequest;
+import com.qms.mainservice.presentation.web.request.store.SearchStoresRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
