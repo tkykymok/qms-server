@@ -21,19 +21,8 @@ public class UpdateReservationStatusUsecase extends Usecase<UpdateReservationSta
             throw new IllegalArgumentException("Invalid version: " + input.version());
         }
 
-        switch (input.status()) {
-            // 予約のステータスを「未案内」に更新する
-            case WAITING -> reservation.updateStatusToWaiting();
-            // 予約のステータスを「対応中」に更新する
-            case IN_PROGRESS -> reservation.updateStatusToInProgress(input.staffId());
-            // 予約のステータスを「案内済」に更新する
-            case DONE -> reservation.updateStatusToDone();
-            // 予約のステータスを「保留」に更新する
-            case PENDING -> reservation.updateStatusToPending();
-            // 予約のステータスを「キャンセル」に更新する
-            case CANCELED -> reservation.updateStatusToCanceled();
-            default -> throw new IllegalArgumentException("Invalid value for Status: " + input.status());
-        }
+        // 予約のステータスを更新する
+        reservation.updateStatus(input.status(), input.staffId());
 
         // 予約を更新する
         reservationRepository.update(reservation);

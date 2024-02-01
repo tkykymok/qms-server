@@ -72,10 +72,34 @@ public class Reservation extends AggregateRoot<ReservationId> {
         return reservation;
     }
 
+
+    /**
+     * 予約ステータスを更新する
+     *
+     * @param afterStatus 更新後の予約ステータス
+     * @param staffId     対応スタッフID
+     */
+    public void updateStatus(ReservationStatus afterStatus, StaffId staffId) {
+        switch (afterStatus) {
+            // 予約のステータスを「未案内」に更新する
+            case WAITING -> updateStatusToWaiting();
+            // 予約のステータスを「対応中」に更新する
+            case IN_PROGRESS -> updateStatusToInProgress(staffId);
+            // 予約のステータスを「案内済」に更新する
+            case DONE -> updateStatusToDone();
+            // 予約のステータスを「保留」に更新する
+            case PENDING -> updateStatusToPending();
+            // 予約のステータスを「キャンセル」に更新する
+            case CANCELED -> updateStatusToCanceled();
+            default -> throw new IllegalArgumentException("Invalid value for Status: " + status);
+        }
+
+    }
+
     /**
      * 予約ステータスを未案内に更新する
      */
-    public void updateStatusToWaiting() {
+    private void updateStatusToWaiting() {
         // 現在のステータスが案内済の場合は例外をスローする
         if (this.status == ReservationStatus.DONE) {
             throw new DomainException("案内済の予約は未案内にできません。");
@@ -91,7 +115,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
      *
      * @param staffId 対応スタッフID
      */
-    public void updateStatusToInProgress(StaffId staffId) {
+    private void updateStatusToInProgress(StaffId staffId) {
         // 現在のステータスがキャンセル|案内済の場合は例外をスローする
         if (this.status == ReservationStatus.CANCELED || this.status == ReservationStatus.DONE) {
             throw new DomainException("キャンセルまたは案内済の予約は対応中にできません。");
@@ -105,7 +129,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
     /**
      * 予約ステータスを保留に更新する
      */
-    public void updateStatusToPending() {
+    private void updateStatusToPending() {
         // 現在のステータスが案内済の場合は例外をスローする
         if (this.status == ReservationStatus.DONE) {
             throw new DomainException("案内済の予約は保留にできません。");
@@ -119,7 +143,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
     /**
      * 予約ステータスを案内済に更新する
      */
-    public void updateStatusToDone() {
+    private void updateStatusToDone() {
         // 現在のステータスが対応中でない場合は例外をスローする
         if (this.status != ReservationStatus.IN_PROGRESS) {
             throw new DomainException("対応中の予約のみ案内済にできます。");
@@ -132,7 +156,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
     /**
      * 予約ステータスをキャンセルに更新する
      */
-    public void updateStatusToCanceled() {
+    private void updateStatusToCanceled() {
         // 現在のステータスが保留でない場合は例外をスローする
         if (this.status != ReservationStatus.PENDING) {
             throw new DomainException("保留中の予約のみキャンセルにできます。");
@@ -141,7 +165,10 @@ public class Reservation extends AggregateRoot<ReservationId> {
         this.version = version.increment();
     }
 
-    // メニュー名を取得する
+    /**
+     * メニュー名を取得する
+     * @return メニュー名
+     */
     public MenuName getMenuName() {
         String menuNamesConcatenated = this.reservationMenus.stream()
                 .map(ReservationMenu::getMenu)
@@ -151,14 +178,20 @@ public class Reservation extends AggregateRoot<ReservationId> {
         return MenuName.of(menuNamesConcatenated);
     }
 
-    // メニュー金額を取得する
+    /**
+     * メニュー金額を取得する
+     * @return メニュー金額
+     */
     public Price getPrice() {
         return this.reservationMenus.stream()
                 .map(reservationMenu -> reservationMenu.getMenu().getPrice())
                 .reduce(Price.ZERO(), Price::add);
     }
 
-    // 予約の所要時間を取得する
+    /**
+     * 予約の所要時間を取得する
+     * @return 予約の所要時間
+     */
     public Time getTime() {
         // 予約メニューから得られる時間を合計
         Time menuTime = Time.ZERO();
