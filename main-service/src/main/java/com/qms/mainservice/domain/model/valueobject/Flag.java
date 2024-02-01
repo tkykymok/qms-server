@@ -11,6 +11,10 @@ public record Flag(Boolean value) implements ValueObject {
         return new Flag(value == 1);
     }
 
+    public Byte toByteValue() {
+        return value ? (byte) 1 : (byte) 0;
+    }
+
     public static Flag OFF() {
         return new Flag(false);
     }

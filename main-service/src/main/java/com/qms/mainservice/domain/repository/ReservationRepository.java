@@ -14,4 +14,5 @@ public interface ReservationRepository {
 
     ReservationNumber newReservationNumber(StoreId storeId);
 
+    void update(Reservation reservation);
 }

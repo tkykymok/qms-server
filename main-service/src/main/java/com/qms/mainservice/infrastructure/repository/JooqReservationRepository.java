@@ -120,8 +120,21 @@ public class JooqReservationRepository implements ReservationRepository {
         return ReservationNumber.of(nextReservationNumber);
     }
 
-
-
+    @Override
+    public void update(Reservation reservation) {
+        // 予約を更新する
+        dsl.update(RESERVATIONS)
+                .set(RESERVATIONS.STAFF_ID, reservation.getStaffId().value()) // 対応スタッフID
+                .set(RESERVATIONS.SERVICE_START_TIME, reservation.getServiceStartTime().value()) // 対応開始時刻
+                .set(RESERVATIONS.SERVICE_END_TIME, reservation.getServiceEndTime().value()) // 対応終了時刻
+                .set(RESERVATIONS.HOLD_START_TIME, reservation.getHoldStartTime().value()) // 保留開始時刻
+                .set(RESERVATIONS.STATUS, reservation.getStatus().getValue()) // 予約ステータス
+                .set(RESERVATIONS.NOTIFIED, reservation.getNotified().toByteValue()) // 通知フラグ
+                .set(RESERVATIONS.ARRIVED, reservation.getArrived().toByteValue()) // 到着フラグ
+                .set(RESERVATIONS.VERSION, reservation.getVersion().value()) // バージョン
+                .where(RESERVATIONS.ID.eq(reservation.getId().value())) //
+                .execute();
+    }
 
 
 }

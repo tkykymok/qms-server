@@ -1,9 +1,9 @@
 package com.qms.mainservice.presentation.web.request.reservation;
 
-public record UpdateReservationRequest(
+public record UpdateReservationStatusRequest(
         Long reservationId,
-        Long storeId,
         Long staffId,
-        int status
+        int status,
+        Integer version
 ) {
 }

@@ -2,9 +2,8 @@ package com.qms.mainservice.presentation.controller;
 
 import com.qms.mainservice.application.usecase.reservation.*;
 import com.qms.mainservice.domain.model.valueobject.*;
-import com.qms.mainservice.infrastructure.config.ApplicationProperties;
 import com.qms.mainservice.presentation.presenter.ReservationPresenter;
-import com.qms.mainservice.presentation.web.request.reservation.UpdateReservationRequest;
+import com.qms.mainservice.presentation.web.request.reservation.UpdateReservationStatusRequest;
 import com.qms.mainservice.presentation.web.response.reservation.GetLastWaitingInfoResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationDetailResponse;
 import com.qms.mainservice.presentation.web.response.reservation.GetReservationsResponse;
@@ -58,26 +57,22 @@ public class ReservationController {
 
     // 予約ステータスを更新する(店舗)
     @PutMapping("/update-status")
-    public ResponseEntity<?> updateReservationStatus(@RequestBody UpdateReservationRequest request) {
+    public ResponseEntity<?> updateReservationStatus(@RequestBody UpdateReservationStatusRequest request) {
         // ログインユーザーの店舗IDを取得する TODO トークンから取得する想定
         Long storeId = 1L;
-        // リクエストの店舗IDとログインユーザーの店舗IDが一致するか確認する
-        if (!storeId.equals(request.storeId())) {
-            // 一致しない場合はエラーを返す
-            return null;
-        }
 
         UpdateReservationStatusInput input = UpdateReservationStatusInput.builder()
                 .reservationId(ReservationId.of(request.reservationId()))
-                .storeId(StoreId.of(request.storeId()))
+                .storeId(StoreId.of(storeId))
                 .staffId(StaffId.of(request.staffId()))
                 .status(ReservationStatus.fromValue(request.status()))
+                .version(VersionKey.of(request.version()))
                 .build();
 
         // 予約ステータスを更新する
-        updateReservationStatusUsecase.execute(input);
+        UpdateReservationStatusOutput output = updateReservationStatusUsecase.execute(input);
 
-        return null;
+        return presenter.present(output);
     }
 
     // 予約をキャンセルする
@@ -87,7 +82,6 @@ public class ReservationController {
 
         return null;
     }
-
 
 
 }

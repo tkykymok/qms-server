@@ -1,8 +1,6 @@
 package com.qms.mainservice.presentation.presenter;
 
-import com.qms.mainservice.application.usecase.reservation.FetchLastWaitTimeOutput;
-import com.qms.mainservice.application.usecase.reservation.FetchReservationDetailOutput;
-import com.qms.mainservice.application.usecase.reservation.FetchReservationsOutput;
+import com.qms.mainservice.application.usecase.reservation.*;
 import com.qms.mainservice.presentation.web.response.reservation.*;
 import com.qms.shared.presentation.Message;
 import com.qms.shared.utils.Formatter;
@@ -94,6 +92,28 @@ public class ReservationPresenter {
                                 .build())
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<UpdateReservationStatusResponse> present(UpdateReservationStatusOutput output) {
+        var response = UpdateReservationStatusResponse.builder()
+                .reservation(ReservationResponse.builder()
+                        .reservationId(output.reservation().reservationId().value())
+                        .storeId(output.reservation().storeId().value())
+                        .customerId(output.reservation().customerId().value())
+                        .reservationNumber(output.reservation().reservationNumber().value())
+                        .reservedDate(output.reservation().reservedDate().value()
+                                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd(E)", Locale.JAPAN)))
+                        .status(output.reservation().status().getValue())
+                        .arrived(output.reservation().arrived().value())
+                        .version(output.reservation().version().value())
+                        .storeName(output.reservation().store().getStoreName().value())
+                        .homePageUrl(output.reservation().store().getHomePageUrl().value())
+                        .menuName(output.reservation().menuName().value())
+                        .price(output.reservation().price().value())
+                        .customerFirstName(output.reservation().customer().getFirstName().value())
+                        .customerLastName(output.reservation().customer().getLastName().value())
+                        .build());
+        return ResponseEntity.ok(response.build());
     }
 
 }

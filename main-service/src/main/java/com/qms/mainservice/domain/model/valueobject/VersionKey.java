@@ -10,4 +10,8 @@ public record VersionKey(Integer value) implements ValueObject {
     public static VersionKey newVersion() {
         return new VersionKey(0);
     }
+
+    public VersionKey increment() {
+        return new VersionKey(value + 1);
+    }
 }
