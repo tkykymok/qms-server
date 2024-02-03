@@ -28,12 +28,12 @@ public class StoreMapper {
                 PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
                 HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
                 TrackingInfo.reconstruct(
-                        record.get(RESERVATIONS.CREATED_AT),
-                        record.get(RESERVATIONS.UPDATED_AT),
-                        record.get(RESERVATIONS.CREATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
-                        record.get(RESERVATIONS.UPDATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                        record.get(STORES.CREATED_AT),
+                        record.get(STORES.UPDATED_AT),
+                        record.get(STORES.CREATED_BY),
+                        UserType.fromValue(record.get(STORES.CREATED_BY_TYPE)),
+                        record.get(STORES.UPDATED_BY),
+                        UserType.fromValue(record.get(STORES.UPDATED_BY_TYPE))
                 ),
                 storeBusinessHourMap.isEmpty()
                         ? null
@@ -50,12 +50,12 @@ public class StoreMapper {
                 CloseTime.of(record.get(STORE_BUSINESS_HOURS.CLOSE_TIME)),
                 Flag.fromValue(record.get(STORE_BUSINESS_HOURS.CLOSED)),
                 TrackingInfo.reconstruct(
-                        record.get(RESERVATIONS.CREATED_AT),
-                        record.get(RESERVATIONS.UPDATED_AT),
-                        record.get(RESERVATIONS.CREATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
-                        record.get(RESERVATIONS.UPDATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                        record.get(STORE_BUSINESS_HOURS.CREATED_AT),
+                        record.get(STORE_BUSINESS_HOURS.UPDATED_AT),
+                        record.get(STORE_BUSINESS_HOURS.CREATED_BY),
+                        UserType.fromValue(record.get(STORE_BUSINESS_HOURS.CREATED_BY_TYPE)),
+                        record.get(STORE_BUSINESS_HOURS.UPDATED_BY),
+                        UserType.fromValue(record.get(STORE_BUSINESS_HOURS.UPDATED_BY_TYPE))
                 )
         );
     }

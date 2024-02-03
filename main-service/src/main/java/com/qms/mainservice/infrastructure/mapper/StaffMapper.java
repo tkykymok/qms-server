@@ -21,12 +21,12 @@ public class StaffMapper {
                 FirstName.of(record.get(STAFFS.FIRST_NAME)),
                 CognitoUserId.of(record.get(STAFFS.COGNITO_USER_ID)),
                 TrackingInfo.reconstruct(
-                        record.get(RESERVATIONS.CREATED_AT),
-                        record.get(RESERVATIONS.UPDATED_AT),
-                        record.get(RESERVATIONS.CREATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
-                        record.get(RESERVATIONS.UPDATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                        record.get(STAFFS.CREATED_AT),
+                        record.get(STAFFS.UPDATED_AT),
+                        record.get(STAFFS.CREATED_BY),
+                        UserType.fromValue(record.get(STAFFS.CREATED_BY_TYPE)),
+                        record.get(STAFFS.UPDATED_BY),
+                        UserType.fromValue(record.get(STAFFS.UPDATED_BY_TYPE))
                 )
         );
     }
@@ -41,12 +41,12 @@ public class StaffMapper {
                 BreakEndTime.of(record.get(ACTIVE_STAFFS.BREAK_END_TIME)),
                 ReservationId.of(record.get(ACTIVE_STAFFS.RESERVATION_ID)),
                 TrackingInfo.reconstruct(
-                        record.get(RESERVATIONS.CREATED_AT),
-                        record.get(RESERVATIONS.UPDATED_AT),
-                        record.get(RESERVATIONS.CREATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
-                        record.get(RESERVATIONS.UPDATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                        record.get(ACTIVE_STAFFS.CREATED_AT),
+                        record.get(ACTIVE_STAFFS.UPDATED_AT),
+                        record.get(ACTIVE_STAFFS.CREATED_BY),
+                        UserType.fromValue(record.get(ACTIVE_STAFFS.CREATED_BY_TYPE)),
+                        record.get(ACTIVE_STAFFS.UPDATED_BY),
+                        UserType.fromValue(record.get(ACTIVE_STAFFS.UPDATED_BY_TYPE))
                 ),
                 StaffMapper.recordToStaff(record)
         );
@@ -57,12 +57,12 @@ public class StaffMapper {
                 StaffId.of(record.get(STORE_STAFFS.STAFF_ID)),
                 StoreId.of(record.get(STORE_STAFFS.STORE_ID)),
                 TrackingInfo.reconstruct(
-                        record.get(RESERVATIONS.CREATED_AT),
-                        record.get(RESERVATIONS.UPDATED_AT),
-                        record.get(RESERVATIONS.CREATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
-                        record.get(RESERVATIONS.UPDATED_BY),
-                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                        record.get(STORE_STAFFS.CREATED_AT),
+                        record.get(STORE_STAFFS.UPDATED_AT),
+                        record.get(STORE_STAFFS.CREATED_BY),
+                        UserType.fromValue(record.get(STORE_STAFFS.CREATED_BY_TYPE)),
+                        record.get(STORE_STAFFS.UPDATED_BY),
+                        UserType.fromValue(record.get(STORE_STAFFS.UPDATED_BY_TYPE))
                 ),
                 StaffMapper.recordToStaff(record)
         );

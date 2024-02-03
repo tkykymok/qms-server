@@ -2,6 +2,7 @@ package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.SingleKeyBaseEntity;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 @Getter
@@ -24,7 +25,8 @@ public class Customer extends SingleKeyBaseEntity<CustomerId> {
             LastName lastName,
             FirstName firstName,
             Email email,
-            Birthday birthday
+            Birthday birthday,
+            TrackingInfo trackingInfo
     ) {
         Customer customer = new Customer();
         customer.id = customerId;
@@ -33,6 +35,7 @@ public class Customer extends SingleKeyBaseEntity<CustomerId> {
         customer.firstName = firstName;
         customer.email = email;
         customer.birthday = birthday;
+        customer.trackingInfo = trackingInfo;
         return customer;
     }
 }

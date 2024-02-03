@@ -2,6 +2,7 @@ package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 @Getter
@@ -17,10 +18,13 @@ public class ReservationMenu extends CompositeKeyBaseEntity<ReservationMenuKey> 
     public static ReservationMenu reconstruct(
             ReservationId reservationId,
             StoreId storeId,
-            StoreMenuId storeMenuId, Menu menu
+            StoreMenuId storeMenuId,
+            TrackingInfo trackingInfo,
+            Menu menu
     ) {
         ReservationMenu reservationMenu = new ReservationMenu();
         reservationMenu.key = ReservationMenuKey.of(reservationId, storeId, storeMenuId);
+        reservationMenu.trackingInfo = trackingInfo;
         reservationMenu.menu = menu;
         return reservationMenu;
     }

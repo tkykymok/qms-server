@@ -58,6 +58,14 @@ public class ReservationMapper {
                 ReservationId.of(record.get(RESERVATION_MENUS.RESERVATION_ID)),
                 StoreId.of(record.get(RESERVATION_MENUS.STORE_ID)),
                 StoreMenuId.of(record.get(RESERVATION_MENUS.STORE_MENU_ID)),
+                TrackingInfo.reconstruct(
+                        record.get(RESERVATION_MENUS.CREATED_AT),
+                        record.get(RESERVATION_MENUS.UPDATED_AT),
+                        record.get(RESERVATION_MENUS.CREATED_BY),
+                        UserType.fromValue(record.get(RESERVATION_MENUS.CREATED_BY_TYPE)),
+                        record.get(RESERVATION_MENUS.UPDATED_BY),
+                        UserType.fromValue(record.get(RESERVATION_MENUS.UPDATED_BY_TYPE))
+                ),
                 // Menuを生成
                 Menu.reconstruct(
                         StoreId.of(record.get(MENUS.STORE_ID)),
@@ -65,7 +73,15 @@ public class ReservationMapper {
                         MenuName.of(record.get(MENUS.MENU_NAME)),
                         Price.of(BigDecimal.valueOf(record.get(MENUS.PRICE))),
                         Time.of(record.get(MENUS.TIME)),
-                        Flag.fromValue(record.get(MENUS.DISABLED).intValue())
+                        Flag.fromValue(record.get(MENUS.DISABLED).intValue()),
+                        TrackingInfo.reconstruct(
+                                record.get(MENUS.CREATED_AT),
+                                record.get(MENUS.UPDATED_AT),
+                                record.get(MENUS.CREATED_BY),
+                                UserType.fromValue(record.get(MENUS.CREATED_BY_TYPE)),
+                                record.get(MENUS.UPDATED_BY),
+                                UserType.fromValue(record.get(MENUS.UPDATED_BY_TYPE))
+                        )
                 )
         );
     }
