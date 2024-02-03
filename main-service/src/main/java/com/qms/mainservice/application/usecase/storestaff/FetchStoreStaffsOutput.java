@@ -1,4 +1,4 @@
-package com.qms.mainservice.application.usecase.staff;
+package com.qms.mainservice.application.usecase.storestaff;
 
 import lombok.Builder;
 

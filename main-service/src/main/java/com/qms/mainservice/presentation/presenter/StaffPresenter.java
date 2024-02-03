@@ -1,10 +1,8 @@
 package com.qms.mainservice.presentation.presenter;
 
-import com.qms.mainservice.application.usecase.staff.FetchStoreStaffsOutput;
-import com.qms.mainservice.presentation.web.response.staff.ActiveStaffResponse;
+import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsOutput;
 import com.qms.mainservice.presentation.web.response.staff.GetStoreStaffs;
 import com.qms.mainservice.presentation.web.response.staff.StoreStaffResponse;
-import com.qms.shared.utils.Formatter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
