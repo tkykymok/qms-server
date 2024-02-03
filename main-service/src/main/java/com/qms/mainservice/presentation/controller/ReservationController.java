@@ -58,16 +58,11 @@ public class ReservationController {
     // 予約ステータスを更新する(店舗)
     @PutMapping("/update-status")
     public ResponseEntity<?> updateReservationStatus(@RequestBody UpdateReservationStatusRequest request) {
-        // ログインユーザーの店舗IDを取得する TODO トークンから取得する想定
-        Long storeId = 1L;
+        // 店舗ID TODO tokenから取得する想定
+        StoreId storeId = StoreId.of(1L);
 
-        UpdateReservationStatusInput input = UpdateReservationStatusInput.builder()
-                .reservationId(ReservationId.of(request.reservationId()))
-                .storeId(StoreId.of(storeId))
-                .staffId(StaffId.of(request.staffId()))
-                .status(ReservationStatus.fromValue(request.status()))
-                .version(VersionKey.of(request.version()))
-                .build();
+        // リクエストをinputクラスに変換
+        UpdateReservationStatusInput input = request.toInput(storeId);
 
         // 予約ステータスを更新する
         UpdateReservationStatusOutput output = updateReservationStatusUsecase.execute(input);
