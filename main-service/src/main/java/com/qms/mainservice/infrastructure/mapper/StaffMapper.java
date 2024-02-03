@@ -70,14 +70,19 @@ public class StaffMapper {
 
     // ActiveStaffをActiveStaffsRecordに変換する
     public static ActiveStaffsRecord activeStaffToRecord(ActiveStaff activeStaff) {
-//        return new ActiveStaffsRecord(
-//                activeStaff.getKey().storeId().value(),
-//                activeStaff.getKey().staffId().value(),
-//                activeStaff.getSortOrder().value(),
-//                activeStaff.getBreakStartTime().value(),
-//                activeStaff.getBreakEndTime().value(),
-//                activeStaff.getReservationId().value()
-//        );
-        return null;
+        return new ActiveStaffsRecord(
+                activeStaff.getKey().storeId().value(),
+                activeStaff.getKey().staffId().value(),
+                activeStaff.getSortOrder().value(),
+                activeStaff.getBreakStartTime().value(),
+                activeStaff.getBreakEndTime().value(),
+                activeStaff.getReservationId().value(),
+                activeStaff.getTrackingInfo().getCreatedAt(),
+                activeStaff.getTrackingInfo().getUpdatedAt(),
+                activeStaff.getTrackingInfo().getCreatedBy(),
+                activeStaff.getTrackingInfo().getCreatedByType().getValue(),
+                activeStaff.getTrackingInfo().getUpdatedBy(),
+                activeStaff.getTrackingInfo().getUpdatedByType().getValue()
+        );
     }
 }

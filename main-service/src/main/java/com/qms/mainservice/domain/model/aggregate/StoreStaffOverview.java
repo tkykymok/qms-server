@@ -34,7 +34,7 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
     public void addActiveStaff(ActiveStaff activeStaff) {
         // 活動スタッフのソート順を設定する
         SortOrder sortOrder = SortOrder.of(activeStaffs.size() + 1);
-        activeStaff.setSortOrder(sortOrder);
+        activeStaff.setSortOrder(sortOrder); // 並び順
         activeStaffs.add(activeStaff);
     }
 
@@ -64,7 +64,8 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
     public void sortActiveStaffs(List<StaffId> staffIds) {
         activeStaffs.forEach(activeStaff -> {
             var sortOrder = staffIds.indexOf(activeStaff.getKey().staffId());
-            activeStaff.setSortOrder(SortOrder.of(sortOrder + 1));
+            activeStaff.setSortOrder(SortOrder.of(sortOrder + 1)); // 並び順
+            activeStaff.getTrackingInfo().setUpdateInfo(); // 更新情報
         });
     }
 

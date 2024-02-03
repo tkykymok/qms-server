@@ -36,14 +36,11 @@ public class StoreStaffController {
     public ResponseEntity<Void> sortActiveStaffs(@RequestBody SortActiveStaffsRequest request) {
         // 店舗ID TODO tokenから取得する想定
         StoreId storeId = StoreId.of(1L);
-
+        // リクエストをInputに変換する
         var input = request.toInput(storeId);
-
+        // 活動中スタッフの並び順を更新する
         sortActiveStaffsUsecase.execute(input);
-
         return ResponseEntity.ok().build();
     }
-
-
 
 }
