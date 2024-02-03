@@ -1,10 +1,13 @@
 package com.qms.mainservice.infrastructure.repository;
 
+import com.qms.mainservice.domain.model.aggregate.StoreStaffOverview;
+import com.qms.mainservice.domain.model.entity.ActiveStaff;
 import com.qms.mainservice.domain.model.entity.StoreStaff;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.domain.repository.StoreStaffRepository;
 import com.qms.mainservice.infrastructure.mapper.StaffMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -16,6 +19,7 @@ import static com.qms.mainservice.infrastructure.jooq.Tables.*;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class JooqStoreStaffRepository implements StoreStaffRepository {
 
     private final DSLContext dsl;
@@ -30,5 +34,21 @@ public class JooqStoreStaffRepository implements StoreStaffRepository {
                 .fetch();
 
         return storeStaffRecords.map(StaffMapper::recordToStoreStaff);
+    }
+
+    @Override
+    public void updateActiveStaffSortOrder(StoreStaffOverview storeStaffOverview) {
+        // 活動中スタッフの並び順を更新する(delete-insert)
+        dsl.deleteFrom(ACTIVE_STAFFS)
+                .where(ACTIVE_STAFFS.STORE_ID.eq(storeStaffOverview.getId().value()))
+                .execute();
+
+        // 活動中スタッフを挿入する
+        List<ActiveStaff> activeStaffs = storeStaffOverview.getActiveStaffs();
+        dsl.batchInsert(activeStaffs.stream()
+                .map(StaffMapper::activeStaffToRecord)
+                .toList())
+                .execute();
+
     }
 }

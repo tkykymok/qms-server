@@ -2,6 +2,7 @@ package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,6 +69,7 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
             BreakStartTime breakStartTime,
             BreakEndTime breakEndTime,
             ReservationId reservationId,
+            TrackingInfo trackingInfo,
             Staff staff
     ) {
         ActiveStaff activeStaff = new ActiveStaff();
@@ -76,6 +78,7 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
         activeStaff.breakStartTime = breakStartTime;
         activeStaff.breakEndTime = breakEndTime;
         activeStaff.reservationId = reservationId;
+        activeStaff.trackingInfo = trackingInfo;
         activeStaff.staff = staff;
         return activeStaff;
     }

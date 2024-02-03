@@ -3,6 +3,7 @@ package com.qms.mainservice.domain.model.aggregate;
 import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.AggregateRoot;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
@@ -40,6 +41,7 @@ public class Store extends AggregateRoot<StoreId> {
             Longitude longitude,
             PhoneNumber phoneNumber,
             HomePageUrl homePageUrl,
+            TrackingInfo trackingInfo,
             List<StoreBusinessHour> storeBusinessHours
     ) {
         Store store = new Store();
@@ -52,6 +54,7 @@ public class Store extends AggregateRoot<StoreId> {
         store.longitude = longitude;
         store.phoneNumber = phoneNumber;
         store.homePageUrl = homePageUrl;
+        store.trackingInfo = trackingInfo;
         store.storeBusinessHours = storeBusinessHours;
         return store;
     }

@@ -6,6 +6,7 @@ import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 import java.time.Duration;
@@ -224,6 +225,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
             Flag notified,
             Flag arrived,
             VersionKey version,
+            TrackingInfo trackingInfo,
             Store store,
             List<ReservationMenu> reservationMenus,
             Customer customer
@@ -242,6 +244,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
         reservation.notified = notified;
         reservation.arrived = arrived;
         reservation.version = version;
+        reservation.trackingInfo = trackingInfo;
         reservation.store = store;
         reservation.reservationMenus = reservationMenus;
         reservation.customer = customer;

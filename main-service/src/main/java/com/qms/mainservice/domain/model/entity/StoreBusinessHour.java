@@ -2,6 +2,7 @@ package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
@@ -22,13 +23,15 @@ public class StoreBusinessHour extends CompositeKeyBaseEntity<StoreBusinessHourK
             DayOfWeek dayOfWeek,
             OpenTime openTime,
             CloseTime closeTime,
-            Flag closed
+            Flag closed,
+            TrackingInfo trackingInfo
     ) {
         StoreBusinessHour storeBusinessHour = new StoreBusinessHour();
         storeBusinessHour.key = StoreBusinessHourKey.of(storeId, dayOfWeek);
         storeBusinessHour.openTime = openTime;
         storeBusinessHour.closeTime = closeTime;
         storeBusinessHour.closed = closed;
+        storeBusinessHour.trackingInfo = trackingInfo;
         return storeBusinessHour;
     }
 }

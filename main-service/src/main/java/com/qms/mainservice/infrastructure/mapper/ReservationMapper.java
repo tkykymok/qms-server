@@ -1,10 +1,11 @@
 package com.qms.mainservice.infrastructure.mapper;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
-import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
+import com.qms.shared.domain.model.valueobject.UserType;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -32,6 +33,14 @@ public class ReservationMapper {
                 Flag.fromValue(record.get(RESERVATIONS.NOTIFIED).intValue()),
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),
                 VersionKey.of(record.get(RESERVATIONS.VERSION)),
+                TrackingInfo.reconstruct(
+                        record.get(RESERVATIONS.CREATED_AT),
+                        record.get(RESERVATIONS.UPDATED_AT),
+                        record.get(RESERVATIONS.CREATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
+                        record.get(RESERVATIONS.UPDATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                ),
                 // 店舗情報
                 StoreMapper.recordToStore(record, Map.of()),
                 reservationMenusMap.isEmpty()

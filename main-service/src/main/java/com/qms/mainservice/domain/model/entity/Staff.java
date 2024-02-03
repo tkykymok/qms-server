@@ -2,6 +2,7 @@ package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.model.SingleKeyBaseEntity;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
 
 @Getter
@@ -21,7 +22,8 @@ public class Staff extends SingleKeyBaseEntity<StaffId> {
             CompanyId companyId,
             LastName lastName,
             FirstName firstName,
-            CognitoUserId cognitoUserId
+            CognitoUserId cognitoUserId,
+            TrackingInfo trackingInfo
     ) {
         Staff staff =  new Staff();
         staff.id = staffId;
@@ -29,6 +31,7 @@ public class Staff extends SingleKeyBaseEntity<StaffId> {
         staff.lastName = lastName;
         staff.firstName = firstName;
         staff.cognitoUserId = cognitoUserId;
+        staff.trackingInfo = trackingInfo;
         return staff;
     }
 }

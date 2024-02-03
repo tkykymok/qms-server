@@ -3,14 +3,16 @@ package com.qms.mainservice.infrastructure.mapper;
 import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.StoreBusinessHour;
 import com.qms.mainservice.domain.model.valueobject.*;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
+import com.qms.shared.domain.model.valueobject.UserType;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import java.time.DayOfWeek;
 import java.util.Map;
 
-import static com.qms.mainservice.infrastructure.jooq.Tables.STORES;
-import static com.qms.mainservice.infrastructure.jooq.Tables.STORE_BUSINESS_HOURS;
+import static com.qms.mainservice.infrastructure.jooq.Tables.*;
+import static com.qms.mainservice.infrastructure.jooq.Tables.RESERVATIONS;
 
 public class StoreMapper {
 
@@ -25,6 +27,14 @@ public class StoreMapper {
                 Longitude.of(record.get(STORES.LONGITUDE).doubleValue()),
                 PhoneNumber.of(record.get(STORES.PHONE_NUMBER)),
                 HomePageUrl.of(record.get(STORES.HOME_PAGE_URL)),
+                TrackingInfo.reconstruct(
+                        record.get(RESERVATIONS.CREATED_AT),
+                        record.get(RESERVATIONS.UPDATED_AT),
+                        record.get(RESERVATIONS.CREATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
+                        record.get(RESERVATIONS.UPDATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                ),
                 storeBusinessHourMap.isEmpty()
                         ? null
                         : storeBusinessHourMap.get(record.get(STORES.ID))
@@ -38,7 +48,15 @@ public class StoreMapper {
                 DayOfWeek.of(record.get(STORE_BUSINESS_HOURS.DAY_OF_WEEK)),
                 OpenTime.of(record.get(STORE_BUSINESS_HOURS.OPEN_TIME)),
                 CloseTime.of(record.get(STORE_BUSINESS_HOURS.CLOSE_TIME)),
-                Flag.fromValue(record.get(STORE_BUSINESS_HOURS.CLOSED))
+                Flag.fromValue(record.get(STORE_BUSINESS_HOURS.CLOSED)),
+                TrackingInfo.reconstruct(
+                        record.get(RESERVATIONS.CREATED_AT),
+                        record.get(RESERVATIONS.UPDATED_AT),
+                        record.get(RESERVATIONS.CREATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.CREATED_BY_TYPE)),
+                        record.get(RESERVATIONS.UPDATED_BY),
+                        UserType.fromValue(record.get(RESERVATIONS.UPDATED_BY_TYPE))
+                )
         );
     }
 

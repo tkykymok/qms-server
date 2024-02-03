@@ -60,6 +60,14 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 ));
     }
 
+    // 活動中スタッフの並び順を変更する
+    public void sortActiveStaffs(List<StaffId> staffIds) {
+        activeStaffs.forEach(activeStaff -> {
+            var sortOrder = staffIds.indexOf(activeStaff.getKey().staffId());
+            activeStaff.setSortOrder(SortOrder.of(sortOrder + 1));
+        });
+    }
+
     // 店舗IDとスタッフIDを指定して該当スタッフが活動中かどうかを判定する
     public Flag getIsActive(StoreId storeId, StaffId staffId) {
         var key = ActiveStaffKey.of(storeId, staffId);

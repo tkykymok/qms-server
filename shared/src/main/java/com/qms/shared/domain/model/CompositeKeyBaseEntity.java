@@ -1,20 +1,12 @@
 package com.qms.shared.domain.model;
 
-import com.qms.shared.domain.model.valueobject.UserType;
+import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public abstract class CompositeKeyBaseEntity<KEY> {
     protected KEY key;
-
-    protected LocalDateTime createdAt;
-    protected LocalDateTime updatedAt;
-    protected Long createdBy;
-    protected UserType createdByType;
-    protected Long updatedBy;
-    protected UserType updatedByType;
+    protected TrackingInfo trackingInfo;
 
     protected CompositeKeyBaseEntity() {}
 
