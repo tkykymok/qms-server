@@ -12,6 +12,7 @@ public record StoreStaffOutput(
         FirstName firstName,
         CognitoUserId cognitoUserId,
         Flag isActive,
+        SortOrder sortOrder,
         ReservationId reservationId
 ) {
 }

@@ -9,6 +9,7 @@ public record StoreStaffResponse(
         String lastName, // スタッフ姓
         String firstName, // スタッフ名
         Boolean isActive, // 活動中フラグ
+        Integer sortOrder, // 並び順
         Long reservationId // 予約ID
 ) {
 }

@@ -33,6 +33,10 @@ public class FetchStoreStaffsUsecase extends Usecase<StoreId, FetchStoreStaffsOu
                                                 storeStaff.getKey().storeId(),
                                                 storeStaff.getKey().staffId()
                                         ))
+                                        .sortOrder(storeStaffOverview.getSortOrder(
+                                                storeStaff.getKey().storeId(),
+                                                storeStaff.getKey().staffId()
+                                        ))
                                         .reservationId(storeStaffOverview.getReservationId(
                                                 storeStaff.getKey().storeId(),
                                                 storeStaff.getKey().staffId()

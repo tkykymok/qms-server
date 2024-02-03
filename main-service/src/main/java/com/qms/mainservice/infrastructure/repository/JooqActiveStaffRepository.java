@@ -23,13 +23,13 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
     @Override
     public List<ActiveStaff> findAllByStoreId(StoreId storeId) {
         // 店舗IDに紐づく活動スタッフ一覧を取得する
-        Result<Record> storeRecords = dsl.select()
+        Result<Record> activeStaffRecords = dsl.select()
                 .from(ACTIVE_STAFFS)
                 .innerJoin(STAFFS).on(ACTIVE_STAFFS.STAFF_ID.eq(STAFFS.ID))
                 .where(ACTIVE_STAFFS.STORE_ID.eq(storeId.value()))
                 .fetch();
 
-        return storeRecords.map(StaffMapper::recordToActiveStaff);
+        return activeStaffRecords.map(StaffMapper::recordToActiveStaff);
     }
 
 }
