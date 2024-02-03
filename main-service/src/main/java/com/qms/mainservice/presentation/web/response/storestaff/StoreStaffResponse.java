@@ -1,4 +1,4 @@
-package com.qms.mainservice.presentation.web.response.staff;
+package com.qms.mainservice.presentation.web.response.storestaff;
 
 import lombok.Builder;
 

@@ -1,13 +1,13 @@
 package com.qms.mainservice.presentation.presenter;
 
 import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsOutput;
-import com.qms.mainservice.presentation.web.response.staff.GetStoreStaffs;
-import com.qms.mainservice.presentation.web.response.staff.StoreStaffResponse;
+import com.qms.mainservice.presentation.web.response.storestaff.GetStoreStaffs;
+import com.qms.mainservice.presentation.web.response.storestaff.StoreStaffResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StaffPresenter {
+public class StoreStaffPresenter {
     public ResponseEntity<GetStoreStaffs> present(FetchStoreStaffsOutput output) {
         var response = GetStoreStaffs.builder()
                 .storeStaffs(output.storeStaffOutputs().stream()
