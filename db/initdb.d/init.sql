@@ -29,9 +29,9 @@ CREATE TABLE `customers`
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
+    `updated_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '更新者タイプ'
 );
 
 -- companies / 会社
@@ -42,9 +42,9 @@ CREATE TABLE `companies`
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ'
+    `updated_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '更新者タイプ'
 );
 
 -- stores / 店舗
@@ -62,9 +62,9 @@ CREATE TABLE `stores`
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(45)  NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(45)  NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type` TINYINT      NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`)
 );
 
@@ -75,13 +75,13 @@ CREATE TABLE `store_business_hours`
     `day_of_week`     INT COMMENT '曜日（0=日曜, 1=月曜, ..., 6=土曜）',
     `open_time`       TIME COMMENT '開店時間',
     `close_time`      TIME COMMENT '閉店時間',
-    `closed`          BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '定休日の場合はTRUE',
-    `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `closed`          BOOLEAN  NOT NULL DEFAULT FALSE COMMENT '定休日の場合はTRUE',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`store_id`, `day_of_week`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
@@ -91,12 +91,12 @@ CREATE TABLE `favorite_stores`
 (
     `customer_id`     BIGINT COMMENT '顧客ID',
     `store_id`        BIGINT COMMENT '店舗ID',
-    `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`customer_id`, `store_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
@@ -106,17 +106,17 @@ CREATE TABLE `favorite_stores`
 CREATE TABLE `staffs`
 (
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    `company_id`      BIGINT       NOT NULL COMMENT '所属企業ID',
+    `company_id`      BIGINT   NOT NULL COMMENT '所属企業ID',
     `last_name`       VARCHAR(255) COMMENT 'スタッフ姓',
     `first_name`      VARCHAR(255) COMMENT 'スタッフ名',
     `image_url`       VARCHAR(255) COMMENT '画像URL',
     `cognito_user_id` VARCHAR(255) COMMENT 'CognitoユーザーID',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`)
 );
 
@@ -125,12 +125,12 @@ CREATE TABLE `store_staffs`
 (
     `staff_id`        BIGINT COMMENT 'スタッフID',
     `store_id`        BIGINT COMMENT '店舗ID',
-    `created_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT               DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT               DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(45) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`staff_id`, `store_id`),
     FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
@@ -148,9 +148,9 @@ CREATE TABLE `active_staffs`
     `created_at`       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`       BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type`  VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type`  VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`       BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type`  VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type`  VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`store_id`, `staff_id`),
     FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
@@ -164,14 +164,14 @@ CREATE TABLE `menus`
     `store_menu_id`   INT COMMENT '店舗メニューID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
     `price`           DECIMAL(10, 0) COMMENT '価格',
-    `time`            INT          NOT NULL DEFAULT 0 COMMENT '所要時間',
-    `disabled`        BOOLEAN      NOT NULL DEFAULT 0 COMMENT '無効フラグ',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `time`            INT      NOT NULL DEFAULT 0 COMMENT '所要時間',
+    `disabled`        BOOLEAN  NOT NULL DEFAULT 0 COMMENT '無効フラグ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`store_id`, `store_menu_id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
@@ -195,9 +195,9 @@ CREATE TABLE `reservations`
     `created_at`         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`         BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type`    VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type`    VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`         BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type`    VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type`    VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
     FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`)
@@ -209,12 +209,12 @@ CREATE TABLE `reservation_menus`
     `reservation_id`  BIGINT COMMENT '予約ID',
     `store_id`        BIGINT COMMENT '店舗ID',
     `store_menu_id`   INT COMMENT '店舗メニューID',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`reservation_id`, `store_id`, `store_menu_id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
     FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
@@ -227,12 +227,12 @@ CREATE TABLE `sales`
     `reservation_id`  BIGINT COMMENT '予約ID',
     `menu_name`       VARCHAR(255) COMMENT 'メニュー名',
     `sales_amount`    DECIMAL(10, 0) COMMENT '売上金額',
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
-    `created_by`      BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
-    `updated_by`      BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+    `updated_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
+    `created_by`      BIGINT            DEFAULT 0 COMMENT '作成者',
+    `created_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
+    `updated_by`      BIGINT            DEFAULT 0 COMMENT '更新者',
+    `updated_by_type` TINYINT  NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
 
@@ -249,9 +249,9 @@ CREATE TABLE `notifications`
     `created_at`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`        BIGINT                DEFAULT 0 COMMENT '作成者',
-    `created_by_type`   VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type`   VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`        BIGINT                DEFAULT 0 COMMENT '更新者',
-    `updated_by_type`   VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type`   VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
     FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
@@ -375,9 +375,9 @@ CREATE TABLE `menu_sets`
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type` TINYINT NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type` TINYINT NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
@@ -390,9 +390,9 @@ CREATE TABLE `menu_set_details`
     `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`      INT                   DEFAULT 0 COMMENT '作成者',
-    `created_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '作成者タイプ',
+    `created_by_type` TINYINT NOT NULL DEFAULT 0 COMMENT '作成者タイプ',
     `updated_by`      INT                   DEFAULT 0 COMMENT '更新者',
-    `updated_by_type` VARCHAR(255) NOT NULL DEFAULT 'system' COMMENT '更新者タイプ',
+    `updated_by_type` TINYINT NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`set_id`, `store_id`, `menu_id`),
     FOREIGN KEY (`set_id`) REFERENCES `menu_sets` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
