@@ -144,7 +144,6 @@ CREATE TABLE `active_staffs`
     `sort_order`       INT      NOT NULL COMMENT '順番',
     `break_start_time` TIME COMMENT '休憩開始日時',
     `break_end_time`   TIME COMMENT '休憩終了日時',
-    `reservation_id`   BIGINT            DEFAULT NULL COMMENT '予約ID',
     `created_at`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
     `created_by`       BIGINT            DEFAULT 0 COMMENT '作成者',
@@ -154,7 +153,6 @@ CREATE TABLE `active_staffs`
     PRIMARY KEY (`store_id`, `staff_id`),
     FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
     FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
-    FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`)
 );
 
 -- menus / メニュー
