@@ -152,7 +152,7 @@ CREATE TABLE `active_staffs`
     `updated_by_type`  INT      NOT NULL DEFAULT 0 COMMENT '更新者タイプ',
     PRIMARY KEY (`store_id`, `staff_id`),
     FOREIGN KEY (`staff_id`) REFERENCES `staffs` (`id`),
-    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
+    FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
 );
 
 -- menus / メニュー
