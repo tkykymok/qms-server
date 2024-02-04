@@ -39,14 +39,19 @@ public class TrackingInfo {
         this.updatedByType = UserType.ADMIN;
     }
 
-    public static TrackingInfo create(Long createdBy, UserType createdByType, Long updatedBy, UserType updatedByType) {
+    public static TrackingInfo create() {
+        // ログインユーザーIDを取得する TODO
+        long createdBy = 1L;
+        // ログインユーザータイプを取得する TODO
+        UserType createdByType = UserType.ADMIN;
+
         TrackingInfo trackingInfo = new TrackingInfo();
         trackingInfo.createdAt = LocalDateTime.now();
         trackingInfo.updatedAt = LocalDateTime.now();
         trackingInfo.createdBy = createdBy;
         trackingInfo.createdByType = createdByType;
-        trackingInfo.updatedBy = updatedBy;
-        trackingInfo.updatedByType = updatedByType;
+        trackingInfo.updatedBy = createdBy;
+        trackingInfo.updatedByType = createdByType;
         return trackingInfo;
     }
 

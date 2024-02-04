@@ -37,10 +37,6 @@ public class FetchStoreStaffsUsecase extends Usecase<StoreId, FetchStoreStaffsOu
                                                 storeStaff.getKey().storeId(),
                                                 storeStaff.getKey().staffId()
                                         ))
-                                        .reservationId(storeStaffOverview.getReservationId(
-                                                storeStaff.getKey().storeId(),
-                                                storeStaff.getKey().staffId()
-                                        ))
                                         .build()
                                 )
                                 .toList()

@@ -37,18 +37,17 @@ public class JooqStoreStaffRepository implements StoreStaffRepository {
     }
 
     @Override
-    public void updateActiveStaffSortOrder(StoreStaffOverview storeStaffOverview) {
-        // 活動中スタッフの並び順を更新する(delete-insert)
+    public void deleteAndInsertActiveStaff(StoreStaffOverview storeStaffOverview) {
+        // 活動中スタッフをDELETEする
         dsl.deleteFrom(ACTIVE_STAFFS)
                 .where(ACTIVE_STAFFS.STORE_ID.eq(storeStaffOverview.getId().value()))
                 .execute();
 
-        // 活動中スタッフを挿入する
+        // 活動中スタッフをINSERTする
         List<ActiveStaff> activeStaffs = storeStaffOverview.getActiveStaffs();
         dsl.batchInsert(activeStaffs.stream()
                 .map(StaffMapper::activeStaffToRecord)
                 .toList())
                 .execute();
-
     }
 }

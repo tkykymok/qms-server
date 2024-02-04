@@ -138,6 +138,15 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
                 .orElse(null);
     }
 
+    // 予約一覧からスタッフIDに紐づく対応中の予約(複数有)を取得する
+    public List<Reservation> getReservationsByStaffId(StaffId staffId) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getStaffId().equals(staffId))
+                .filter(reservation -> reservation.getStatus().equals(ReservationStatus.IN_PROGRESS))
+                .toList();
+    }
+
+
 
     // DBから取得したデータをドメインオブジェクトに変換する
     public static ReservationOverview reconstruct(
@@ -152,14 +161,18 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         // スタッフの次の利用可能時間を保持する優先度キューを初期化する
         overview.staffAvailability = new PriorityQueue<>();
 
+        // 活動中スタッフ一覧から次の利用可能時間を算出する
         overview.activeStaffs.forEach(staff -> {
-            Reservation reservation = null;
-            ReservationId reservationId = staff.getReservationId();
-            if (reservationId != null) {
-                reservation = overview.getReservationById(reservationId);
+            StaffId staffId = staff.getKey().staffId();
+            List<Reservation> inProgressReservations = overview.getReservationsByStaffId(staffId);
+            if (!inProgressReservations.isEmpty()) {
+                // 所要時間の合計を算出する
+                Time nextAvailableTime = inProgressReservations.stream()
+                        .map(Reservation::getTime)
+                        .reduce(Time.ZERO(), Time::add);
+
+                overview.staffAvailability.add(StaffAvailability.create(staff, nextAvailableTime));
             }
-            Time nextAvailableTime = (reservation != null) ? reservation.getTime() : Time.ZERO();
-            overview.staffAvailability.add(StaffAvailability.create(staff, nextAvailableTime));
         });
 
         return overview;

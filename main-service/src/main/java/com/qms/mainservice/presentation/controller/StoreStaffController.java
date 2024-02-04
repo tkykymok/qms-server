@@ -1,11 +1,13 @@
 package com.qms.mainservice.presentation.controller;
 
+import com.qms.mainservice.application.usecase.storestaff.CreateOrRemoveActiveStaffUsecase;
 import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsOutput;
 import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsUsecase;
 import com.qms.mainservice.application.usecase.storestaff.SortActiveStaffsUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StoreStaffPresenter;
 import com.qms.mainservice.presentation.web.request.storestaff.SortActiveStaffsRequest;
+import com.qms.mainservice.presentation.web.request.storestaff.ToggleActiveStaffRequest;
 import com.qms.mainservice.presentation.web.response.storestaff.GetStoreStaffs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class StoreStaffController {
 
     private final FetchStoreStaffsUsecase fetchStoreStaffsUsecase;
     private final SortActiveStaffsUsecase sortActiveStaffsUsecase;
+    private final CreateOrRemoveActiveStaffUsecase createOrRemoveActiveStaffUsecase;
     private final StoreStaffPresenter presenter;
 
 
@@ -40,6 +43,18 @@ public class StoreStaffController {
         var input = request.toInput(storeId);
         // 活動中スタッフの並び順を更新する
         sortActiveStaffsUsecase.execute(input);
+        return ResponseEntity.ok().build();
+    }
+
+    // スタッフの活動状態を更新する
+    @PutMapping("/toggle-active-staff")
+    public ResponseEntity<Void> toggleActiveStaff(@RequestBody ToggleActiveStaffRequest request) {
+        // 店舗ID TODO tokenから取得する想定
+        StoreId storeId = StoreId.of(1L);
+        // リクエストをInputに変換する
+        var input = request.toInput(storeId);
+        // スタッフの活動状態を更新する
+        createOrRemoveActiveStaffUsecase.execute(input);
         return ResponseEntity.ok().build();
     }
 

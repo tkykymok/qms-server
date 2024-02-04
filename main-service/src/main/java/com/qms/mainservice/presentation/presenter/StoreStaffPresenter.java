@@ -18,7 +18,6 @@ public class StoreStaffPresenter {
                                 .firstName(storeStaffOutput.firstName().value())
                                 .isActive(storeStaffOutput.isActive().value())
                                 .sortOrder(storeStaffOutput.sortOrder().value())
-                                .reservationId(storeStaffOutput.reservationId().value())
                                 .build())
                         .toList())
                 .build();

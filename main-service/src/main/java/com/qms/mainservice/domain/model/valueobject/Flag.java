@@ -22,4 +22,12 @@ public record Flag(Boolean value) implements ValueObject {
     public static Flag ON() {
         return new Flag(true);
     }
+
+    public boolean isON() {
+        return value;
+    }
+
+    public boolean isOFF() {
+        return !value;
+    }
 }

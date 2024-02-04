@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class SortActiveStaffsUsecase extends Usecase<SortActiveStaffsInput, Void> {
+public class CreateOrRemoveActiveStaffUsecase extends Usecase<CreateOrRemoveActiveStaffInput, Void> {
 
     private final StoreStaffOverviewCreator storeStaffOverviewCreator;
     private final StoreStaffRepository storeStaffRepository;
 
     @Transactional
     @Override
-    public Void execute(SortActiveStaffsInput input) {
+    public Void execute(CreateOrRemoveActiveStaffInput input) {
         // 店舗IDを指定して店舗スタッフ状況集約を生成する
         StoreStaffOverview storeStaffOverview = storeStaffOverviewCreator.create(input.storeId());
 
         // 活動中スタッフを更新する
-        storeStaffOverview.sortActiveStaffs(input.staffIds());
+        storeStaffOverview.toggleActive(input.staffId(), input.isActive());
         storeStaffRepository.deleteAndInsertActiveStaff(storeStaffOverview);
 
         return null;

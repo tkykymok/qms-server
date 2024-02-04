@@ -3,6 +3,7 @@ package com.qms.mainservice.domain.model.aggregate;
 import com.qms.mainservice.domain.model.entity.ActiveStaff;
 import com.qms.mainservice.domain.model.entity.StoreStaff;
 import com.qms.mainservice.domain.model.valueobject.*;
+import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.AggregateRoot;
 import lombok.Getter;
 
@@ -19,7 +20,42 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
     private StoreStaffOverview() {
     }
 
-    // 店舗スタッフを追加する
+    // 店舗スタッフの活動状態を切り替える
+    public void toggleActive(StaffId staffId, Flag afterIsActive) {
+        // StoreStaffKeyを指定して、該当スタッフの存在を確認する
+        if (storeStaffs.stream()
+                .noneMatch(storeStaff -> storeStaff.getKey().equals(StoreStaffKey.of(staffId, id)))
+        ) {
+            throw new DomainException("指定されたスタッフは存在しません");
+        }
+
+        // 変更後のisActiveがONの場合、活動中スタッフに追加する
+        if (afterIsActive.isON()) {
+            // 活動中スタッフに既に存在する場合はエラー
+            if (activeStaffs.stream()
+                    .anyMatch(activeStaff -> activeStaff.getKey().equals(ActiveStaffKey.of(id, staffId)))
+            ) {
+                throw new DomainException("指定されたスタッフは既に活動中です");
+            }
+
+            // 活動中スタッフを追加する
+            activeStaffs.add(ActiveStaff.create(
+                    id,
+                    staffId,
+                    SortOrder.of(activeStaffs.size() + 1)
+            ));
+        } else {
+            // 活動中スタッフを削除する
+            activeStaffs.removeIf(activeStaff -> activeStaff.getKey()
+                    .equals(ActiveStaffKey.of(id, staffId)));
+            // 並び順を再設定する
+            sortActiveStaffs(storeStaffs.stream()
+                    .map(StoreStaff::getKey)
+                    .map(StoreStaffKey::staffId)
+                    .toList());
+        }
+    }
+
     public void addStoreStaff(StoreStaff storeStaff) {
         storeStaffs.add(storeStaff);
     }
@@ -28,20 +64,6 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
     public void removeStoreStaff(StoreStaffKey storeStaffKey) {
         storeStaffs.removeIf(storestaff -> storestaff.getKey()
                 .equals(storeStaffKey));
-    }
-
-    // 活動スタッフを追加する
-    public void addActiveStaff(ActiveStaff activeStaff) {
-        // 活動スタッフのソート順を設定する
-        SortOrder sortOrder = SortOrder.of(activeStaffs.size() + 1);
-        activeStaff.setSortOrder(sortOrder); // 並び順
-        activeStaffs.add(activeStaff);
-    }
-
-    // 活動スタッフを削除する
-    public void removeActiveStaff(ActiveStaffKey activeStaffKey) {
-        activeStaffs.removeIf(activeStaff -> activeStaff.getKey()
-                .equals(activeStaffKey));
     }
 
     // 休憩時間を設定する
@@ -87,16 +109,6 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 .findFirst()
                 .map(ActiveStaff::getSortOrder)
                 .orElse(SortOrder.of(null));
-    }
-
-    // 店舗IDとスタッフIDを指定して対応中の予約IDを取得する
-    public ReservationId getReservationId(StoreId storeId, StaffId staffId) {
-        var key = ActiveStaffKey.of(storeId, staffId);
-        return activeStaffs.stream()
-                .filter(activeStaff -> activeStaff.getKey().equals(key))
-                .findFirst()
-                .map(ActiveStaff::getReservationId)
-                .orElse(ReservationId.of(null));
     }
 
     // DBから取得したレコードをActiveStaffsに変換する

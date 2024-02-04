@@ -10,7 +10,6 @@ public interface StoreStaffRepository {
     // 店舗IDに紐づく活動スタッフ一覧を取得する
     List<StoreStaff> findAllByStoreId(StoreId storeId);
 
-    // 活動中スタッフの並び順を更新する
-    void updateActiveStaffSortOrder(StoreStaffOverview storeStaffOverview);
-
+    // 活動中スタッフを更新する(DELETE -> INSERT)
+    void deleteAndInsertActiveStaff(StoreStaffOverview storeStaffOverview);
 }
