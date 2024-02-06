@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.qms.mainservice.infrastructure.jooq.Tables.*;
 
@@ -124,15 +125,31 @@ public class JooqReservationRepository implements ReservationRepository {
     public void update(Reservation reservation) {
         // 予約を更新する
         dsl.update(RESERVATIONS)
-                .set(RESERVATIONS.STAFF_ID, reservation.getStaffId().value()) // 対応スタッフID
-                .set(RESERVATIONS.SERVICE_START_TIME, reservation.getServiceStartTime().value()) // 対応開始時刻
-                .set(RESERVATIONS.SERVICE_END_TIME, reservation.getServiceEndTime().value()) // 対応終了時刻
-                .set(RESERVATIONS.HOLD_START_TIME, reservation.getHoldStartTime().value()) // 保留開始時刻
+                .set(RESERVATIONS.STAFF_ID,
+                        Optional.ofNullable(reservation.getStaffId())
+                                .map(StaffId::value)
+                                .orElse(null)
+                ) // 対応スタッフID
+                .set(RESERVATIONS.SERVICE_START_TIME,
+                        Optional.ofNullable(reservation.getServiceStartTime())
+                                .map(ServiceStartTime::value)
+                                .orElse(null)
+                ) // 対応開始時刻
+                .set(RESERVATIONS.SERVICE_END_TIME,
+                        Optional.ofNullable(reservation.getServiceEndTime())
+                                .map(ServiceEndTime::value)
+                                .orElse(null)
+                ) // 対応終了時刻
+                .set(RESERVATIONS.HOLD_START_TIME,
+                        Optional.ofNullable(reservation.getHoldStartTime())
+                                .map(HoldStartTime::value)
+                                .orElse(null)
+                ) // 保留開始時刻
                 .set(RESERVATIONS.STATUS, reservation.getStatus().getValue()) // 予約ステータス
                 .set(RESERVATIONS.NOTIFIED, reservation.getNotified().toByteValue()) // 通知フラグ
                 .set(RESERVATIONS.ARRIVED, reservation.getArrived().toByteValue()) // 到着フラグ
                 .set(RESERVATIONS.VERSION, reservation.getVersion().value()) // バージョン
-                .where(RESERVATIONS.ID.eq(reservation.getId().value())) //
+                .where(RESERVATIONS.ID.eq(reservation.getId().value()))
                 .execute();
     }
 
