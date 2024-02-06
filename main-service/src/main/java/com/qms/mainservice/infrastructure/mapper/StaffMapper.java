@@ -9,6 +9,8 @@ import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import com.qms.shared.domain.model.valueobject.UserType;
 import org.jooq.Record;
 
+import java.util.Optional;
+
 import static com.qms.mainservice.infrastructure.jooq.Tables.*;
 
 public class StaffMapper {
@@ -19,7 +21,12 @@ public class StaffMapper {
                 CompanyId.of(record.get(STAFFS.COMPANY_ID)),
                 LastName.of(record.get(STAFFS.LAST_NAME)),
                 FirstName.of(record.get(STAFFS.FIRST_NAME)),
-                CognitoUserId.of(record.get(STAFFS.COGNITO_USER_ID)),
+                Optional.ofNullable(record.get(STAFFS.IMAGE_URL))
+                        .map(ImageUrl::of)
+                        .orElse(null),
+                Optional.ofNullable(record.get(STAFFS.COGNITO_USER_ID))
+                        .map(CognitoUserId::of)
+                        .orElse(null),
                 TrackingInfo.reconstruct(
                         record.get(STAFFS.CREATED_AT),
                         record.get(STAFFS.UPDATED_AT),
@@ -37,8 +44,12 @@ public class StaffMapper {
                 StoreId.of(record.get(ACTIVE_STAFFS.STORE_ID)),
                 StaffId.of(record.get(ACTIVE_STAFFS.STAFF_ID)),
                 SortOrder.of(record.get(ACTIVE_STAFFS.SORT_ORDER)),
-                BreakStartTime.of(record.get(ACTIVE_STAFFS.BREAK_START_TIME)),
-                BreakEndTime.of(record.get(ACTIVE_STAFFS.BREAK_END_TIME)),
+                Optional.ofNullable(record.get(ACTIVE_STAFFS.BREAK_START_TIME))
+                        .map(BreakStartTime::of)
+                        .orElse(null),
+                Optional.ofNullable(record.get(ACTIVE_STAFFS.BREAK_END_TIME))
+                        .map(BreakEndTime::of)
+                        .orElse(null),
                 TrackingInfo.reconstruct(
                         record.get(ACTIVE_STAFFS.CREATED_AT),
                         record.get(ACTIVE_STAFFS.UPDATED_AT),

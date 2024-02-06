@@ -16,16 +16,20 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     // 予約一覧
     private List<Reservation> reservations;
     // スタッフの次の利用可能時間を保持する優先度キュー
-    private PriorityQueue<StaffAvailability> staffAvailability;
+    private final PriorityQueue<StaffAvailability> staffAvailability = new PriorityQueue<>();
 
     // デフォルトコンストラクタ
     private ReservationOverview() {
     }
 
 
-
     // 順番を指定して待ち時間を算出する
+    // 引数がnullの場合は最後尾の待ち時間を算出する
     public Time calcWaitTime(Position position) {
+        // スタッフの次の利用可能時間を保持する優先度キューを初期化する
+        initializeStaffAvailability();
+
+        // スタッフの次の利用可能時間を保持する優先度キューが空の場合は0分を返す
         if (staffAvailability.isEmpty()) {
             return Time.ZERO();
         }
@@ -72,13 +76,9 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
                 .getNextAvailableTime();
     }
 
-    // 最後尾の待ち時間を算出する
-    public Time calcLastWaitTime() {
-        return calcWaitTime(null);
-    }
-
-    // 案内開始時間目安を算出する(予約ID)
-    public ServiceStartTime getEstimatedServiceStartTime(Position position) {
+    // 案内開始時間目安を算出する(予約)
+    public ServiceStartTime getEstimatedServiceStartTime(Reservation reservation) {
+        Position position = getPosition(reservation);
         Time time = calcWaitTime(position);
         return ServiceStartTime.nowPlusTime(time);
     }
@@ -93,19 +93,22 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         return Count.of(activeStaffs.size());
     }
 
-    // 該当予約の順番を取得する(予約ID)
-    public Position getPosition(ReservationId reservationId) {
-        // 予約ステータスが未案内の予約一覧を取得する
+    // 該当予約の順番を取得する(予約)
+    public Position getPosition(Reservation reservation) {
         List<Reservation> waitingReservations = getWaitingReservations();
-        // 該当予約の順番を取得する
-        for (int i = 0; i < waitingReservations.size(); i++) {
-            Reservation reservation = waitingReservations.get(i);
-            if (reservation.getId().equals(reservationId)) {
-                return Position.of(i + 1);
-            }
+
+        // 予約がnullの場合、またはリスト内に予約が存在しない場合は最後尾の順番を返す
+        if (reservation == null || waitingReservations.stream()
+                .noneMatch(r -> Objects.equals(r.getId(), reservation.getId()))) {
+            return Position.of(waitingReservations.size() + 1);
         }
-        // 該当予約が見つからない場合はnullを返却する
-        return null;
+
+        // Stream APIを使用して該当予約の位置を1ベースで取得
+        return waitingReservations.stream()
+                .filter(r -> Objects.equals(r.getId(), reservation.getId()))
+                .findFirst()
+                .map(r -> Position.of(waitingReservations.indexOf(r) + 1))
+                .orElse(Position.of(waitingReservations.size() + 1)); // この行は実際には実行されないが、コンパイラの満足のために必要
     }
 
 
@@ -119,6 +122,20 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
                     return num1.compareTo(num2);
                 })
                 .toList();
+    }
+
+    // スタッフの利用可能時間を計算し、優先度キューに格納する
+    private void initializeStaffAvailability() {
+        staffAvailability.clear(); // 優先度キューをクリア
+        activeStaffs.forEach(staff -> {
+            StaffId staffId = staff.getKey().staffId();
+            List<Reservation> inProgressReservations = getReservationsByStaffId(staffId);
+            Time nextAvailableTime = inProgressReservations.stream()
+                    .map(Reservation::getTime)
+                    .reduce(Time.ZERO(), Time::add);
+
+            staffAvailability.add(StaffAvailability.create(staff, nextAvailableTime));
+        });
     }
 
 
@@ -141,11 +158,10 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
     // 予約一覧からスタッフIDに紐づく対応中の予約(複数有)を取得する
     public List<Reservation> getReservationsByStaffId(StaffId staffId) {
         return reservations.stream()
-                .filter(reservation -> reservation.getStaffId().equals(staffId))
-                .filter(reservation -> reservation.getStatus().equals(ReservationStatus.IN_PROGRESS))
+                .filter(reservation -> Objects.equals(reservation.getStaffId(), staffId))
+                .filter(reservation -> Objects.equals(reservation.getStatus(), ReservationStatus.IN_PROGRESS))
                 .toList();
     }
-
 
 
     // DBから取得したデータをドメインオブジェクトに変換する
@@ -157,24 +173,6 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
         overview.id = storeId;
         overview.activeStaffs = activeStaffs;
         overview.reservations = reservations;
-
-        // スタッフの次の利用可能時間を保持する優先度キューを初期化する
-        overview.staffAvailability = new PriorityQueue<>();
-
-        // 活動中スタッフ一覧から次の利用可能時間を算出する
-        overview.activeStaffs.forEach(staff -> {
-            StaffId staffId = staff.getKey().staffId();
-            List<Reservation> inProgressReservations = overview.getReservationsByStaffId(staffId);
-            if (!inProgressReservations.isEmpty()) {
-                // 所要時間の合計を算出する
-                Time nextAvailableTime = inProgressReservations.stream()
-                        .map(Reservation::getTime)
-                        .reduce(Time.ZERO(), Time::add);
-
-                overview.staffAvailability.add(StaffAvailability.create(staff, nextAvailableTime));
-            }
-        });
-
         return overview;
     }
 

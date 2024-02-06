@@ -9,9 +9,6 @@ import lombok.Builder;
 @Builder
 public record FetchReservationDetailOutput(
         ReservationOutput reservation, // 予約情報
-        Count waitingCount, // 待ち人数
-        Position position, // 順番
-        ReservationNumber reservationNumber, // 予約番号
-        ServiceStartTime estimatedServiceStartTime // 案内開始時間目安
+        WaitingInfoOutput waitingInfo // 待ち情報
 ) {
 }

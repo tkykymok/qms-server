@@ -1,6 +1,10 @@
 package com.qms.mainservice.application.usecase.reservation;
 
 import com.qms.mainservice.domain.model.aggregate.Reservation;
+import com.qms.mainservice.domain.model.aggregate.ReservationOverview;
+import com.qms.mainservice.domain.model.valueobject.Position;
+import com.qms.mainservice.domain.model.valueobject.ReservationNumber;
+import com.qms.mainservice.domain.model.valueobject.ServiceStartTime;
 
 public class ReservationOutputMapper {
 
@@ -28,6 +32,26 @@ public class ReservationOutputMapper {
                 .store(reservation.getStore())
                 // 顧客情報
                 .customer(reservation.getCustomer()) // 顧客情報
+                .build();
+    }
+
+    public static WaitingInfoOutput modelToWaitingInfoOutput(
+            ReservationOverview reservationOverview,
+            Reservation reservation,
+            ReservationNumber reservationNumber
+    ) {
+        Position position = reservationOverview.getPosition(reservation);
+
+        return WaitingInfoOutput.builder()
+                .waitingCount(reservationOverview.getWaitingCount()) // 待ち人数
+                .position(position) // 順番
+                .reservationNumber(reservation == null
+                        ? reservationNumber // 最後尾の予約番号
+                        : reservation.getReservationNumber() // 自分の予約番号
+                ) // 予約番号
+                .activeStaffCount(reservationOverview.getActiveStaffCount()) // 活動中スタッフ数
+                .waitTime(reservationOverview.calcWaitTime(position)) // 最後尾の待ち時間
+                .estimatedServiceStartTime(reservationOverview.getEstimatedServiceStartTime(reservation)) // 案内開始時間目安
                 .build();
     }
 

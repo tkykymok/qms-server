@@ -11,6 +11,7 @@ import org.jooq.Result;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.qms.mainservice.infrastructure.jooq.Tables.*;
 import static com.qms.mainservice.infrastructure.jooq.Tables.MENUS;
@@ -25,10 +26,18 @@ public class ReservationMapper {
                 StoreId.of(record.get(RESERVATIONS.STORE_ID)),
                 ReservationNumber.of(record.get(RESERVATIONS.RESERVATION_NUMBER)),
                 ReservedDate.of(record.get(RESERVATIONS.RESERVED_DATE)),
-                StaffId.of(record.get(RESERVATIONS.STAFF_ID)),
-                ServiceStartTime.of(record.get(RESERVATIONS.SERVICE_START_TIME)),
-                ServiceEndTime.of(record.get(RESERVATIONS.SERVICE_END_TIME)),
-                HoldStartTime.of(record.get(RESERVATIONS.HOLD_START_TIME)),
+                Optional.ofNullable(record.get(RESERVATIONS.STAFF_ID))
+                        .map(StaffId::of)
+                        .orElse(null),
+                Optional.ofNullable(record.get(RESERVATIONS.SERVICE_START_TIME))
+                        .map(ServiceStartTime::of)
+                        .orElse(null),
+                Optional.ofNullable(record.get(RESERVATIONS.SERVICE_END_TIME))
+                        .map(ServiceEndTime::of)
+                        .orElse(null),
+                Optional.ofNullable(record.get(RESERVATIONS.HOLD_START_TIME))
+                        .map(HoldStartTime::of)
+                        .orElse(null),
                 ReservationStatus.fromValue(record.get(RESERVATIONS.STATUS)),
                 Flag.fromValue(record.get(RESERVATIONS.NOTIFIED).intValue()),
                 Flag.fromValue(record.get(RESERVATIONS.ARRIVED).intValue()),

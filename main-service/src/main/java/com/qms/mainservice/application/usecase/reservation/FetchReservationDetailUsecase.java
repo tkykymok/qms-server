@@ -27,24 +27,18 @@ public class FetchReservationDetailUsecase extends Usecase<CustomerId, FetchRese
             return null;
         }
 
-        // 予約IDを取得する
-        ReservationId reservationId = reservation.getId();
         // 予約状況集約を生成する
         ReservationOverview reservationOverview =
                 reservationOverviewCreator.create(reservation.getStoreId());
-        // 予約IDから順番を取得する
-        Position position = reservationOverview.getPosition(reservationId);
-        // 予約IDから案内開始時間目安を取得する
-        ServiceStartTime serviceStartTime =
-                reservationOverview.getEstimatedServiceStartTime(position);
 
         // 予約詳細を返す
         return FetchReservationDetailOutput.builder()
                 .reservation(ReservationOutputMapper.modelToReservationOutput(reservation)) // 予約情報
-                .waitingCount(reservationOverview.getWaitingCount()) // 待ち人数
-                .position(position) // 順番
-                .reservationNumber(reservation.getReservationNumber()) // 予約番号
-                .estimatedServiceStartTime(serviceStartTime) // 案内開始時間目安
+                .waitingInfo(ReservationOutputMapper.modelToWaitingInfoOutput(
+                        reservationOverview,
+                        reservation,
+                        null
+                )) // 待ち情報
                 .build();
     }
 
