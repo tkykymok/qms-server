@@ -332,15 +332,15 @@ VALUES (1, 1, 101, 1, 1),
        (8, 1, 101, 1, 1);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `cognito_user_id`)
-VALUES (1, 1, '山田', 'cognitoA'),
-       (2, 1, '鈴木', 'cognitoB'),
-       (3, 1, '坂本', 'cognitoC'),
-       (4, 1, '田中', 'cognitoD'),
-       (5, 1, '小島', 'cognitoE'),
-       (6, 1, '後藤', 'cognitoF'),
-       (7, 2, 'ダミー1', 'cognitoG'),
-       (8, 2, 'ダミー2', 'cognitoH');
+INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `first_name`, `cognito_user_id`)
+VALUES (1, 1, '山田', '一郎', 'cognitoA'),
+       (2, 1, '鈴木', '二郎', 'cognitoB'),
+       (3, 1, '坂本', '三郎', 'cognitoC'),
+       (4, 1, '田中', '四郎', 'cognitoD'),
+       (5, 1, '小島', '五郎', 'cognitoE'),
+       (6, 1, '後藤', '六郎', 'cognitoF'),
+       (7, 2, 'ダミー1', '-', 'cognitoG'),
+       (8, 2, 'ダミー2', '-', 'cognitoH');
 
 -- store_staffテーブルへのデータ投入
 INSERT INTO `store_staffs` (`staff_id`, `store_id`)
