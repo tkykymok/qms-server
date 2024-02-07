@@ -49,9 +49,9 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
             activeStaffs.removeIf(activeStaff -> activeStaff.getKey()
                     .equals(ActiveStaffKey.of(id, staffId)));
             // 並び順を再設定する
-            sortActiveStaffs(storeStaffs.stream()
-                    .map(StoreStaff::getKey)
-                    .map(StoreStaffKey::staffId)
+            sortActiveStaffs(activeStaffs.stream()
+                    .map(ActiveStaff::getKey)
+                    .map(ActiveStaffKey::staffId)
                     .toList());
         }
     }
