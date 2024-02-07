@@ -9,6 +9,6 @@ import lombok.Builder;
 public record CreateOrRemoveActiveStaffInput(
         StoreId storeId,
         StaffId staffId,
-        Flag isActive
+        Flag isActive // 変更後の活動フラグ
 ) {
 }
