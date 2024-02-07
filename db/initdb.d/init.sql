@@ -339,8 +339,8 @@ VALUES (1, 1, '山田', '一郎', 'cognitoA'),
        (4, 1, '田中', '四郎', 'cognitoD'),
        (5, 1, '小島', '五郎', 'cognitoE'),
        (6, 1, '後藤', '六郎', 'cognitoF'),
-       (7, 2, 'ダミー1', '-', 'cognitoG'),
-       (8, 2, 'ダミー2', '-', 'cognitoH');
+       (7, 2, '立花', '七郎', 'cognitoG'),
+       (8, 2, '関口', '八郎', 'cognitoH');
 
 -- store_staffテーブルへのデータ投入
 INSERT INTO `store_staffs` (`staff_id`, `store_id`)
