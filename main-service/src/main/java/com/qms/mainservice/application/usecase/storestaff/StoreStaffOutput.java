@@ -13,6 +13,8 @@ public record StoreStaffOutput(
         ImageUrl imageUrl,
         CognitoUserId cognitoUserId,
         Flag isActive,
-        SortOrder sortOrder
+        SortOrder sortOrder,
+        BreakStartTime breakStartTime,
+        BreakEndTime breakEndTime
 ) {
 }

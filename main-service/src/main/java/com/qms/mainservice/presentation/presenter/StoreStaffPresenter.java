@@ -2,6 +2,7 @@ package com.qms.mainservice.presentation.presenter;
 
 import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsOutput;
 import com.qms.mainservice.domain.model.valueobject.ImageUrl;
+import com.qms.mainservice.domain.model.valueobject.SortOrder;
 import com.qms.mainservice.presentation.web.response.storestaff.GetStoreStaffs;
 import com.qms.mainservice.presentation.web.response.storestaff.StoreStaffResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,15 @@ public class StoreStaffPresenter {
                                         .map(ImageUrl::value)
                                         .orElse(null))
                                 .isActive(storeStaffOutput.isActive().value())
-                                .sortOrder(storeStaffOutput.sortOrder().value())
+                                .sortOrder(Optional.ofNullable(storeStaffOutput.sortOrder())
+                                        .map(SortOrder::value)
+                                        .orElse(null))
+                                .breakStartTime(Optional.ofNullable(storeStaffOutput.breakStartTime())
+                                        .map(breakStartTime -> breakStartTime.value().toString())
+                                        .orElse(null))
+                                .breakEndTime(Optional.ofNullable(storeStaffOutput.breakEndTime())
+                                        .map(breakEndTime -> breakEndTime.value().toString())
+                                        .orElse(null))
                                 .build())
                         .toList())
                 .build();

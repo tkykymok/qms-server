@@ -1,13 +1,11 @@
 package com.qms.mainservice.presentation.controller;
 
-import com.qms.mainservice.application.usecase.storestaff.CreateOrRemoveActiveStaffUsecase;
-import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsOutput;
-import com.qms.mainservice.application.usecase.storestaff.FetchStoreStaffsUsecase;
-import com.qms.mainservice.application.usecase.storestaff.SortActiveStaffsUsecase;
+import com.qms.mainservice.application.usecase.storestaff.*;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StoreStaffPresenter;
 import com.qms.mainservice.presentation.web.request.storestaff.SortActiveStaffsRequest;
 import com.qms.mainservice.presentation.web.request.storestaff.ToggleActiveStaffRequest;
+import com.qms.mainservice.presentation.web.request.storestaff.UpdateBreakTimeRequest;
 import com.qms.mainservice.presentation.web.response.storestaff.GetStoreStaffs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,7 @@ public class StoreStaffController {
     private final FetchStoreStaffsUsecase fetchStoreStaffsUsecase;
     private final SortActiveStaffsUsecase sortActiveStaffsUsecase;
     private final CreateOrRemoveActiveStaffUsecase createOrRemoveActiveStaffUsecase;
+    private final UpdateBreakTimeUsecase updateBreakTimeUsecase;
     private final StoreStaffPresenter presenter;
 
 
@@ -55,6 +54,19 @@ public class StoreStaffController {
         var input = request.toInput(storeId);
         // スタッフの活動状態を更新する
         createOrRemoveActiveStaffUsecase.execute(input);
+        return ResponseEntity.ok().build();
+    }
+
+    // 活動スタッフの休憩時間を登録する
+    @PutMapping("/update-break-time")
+    public ResponseEntity<Void> updateBreakTime(@RequestBody UpdateBreakTimeRequest request) {
+        // 店舗ID TODO tokenから取得する想定
+        StoreId storeId = StoreId.of(1L);
+        // リクエストをInputに変換する
+        var input = request.toInput(storeId);
+        // 活動スタッフの休憩時間を更新する
+        updateBreakTimeUsecase.execute(input);
+        // TODO
         return ResponseEntity.ok().build();
     }
 

@@ -38,6 +38,14 @@ public class FetchStoreStaffsUsecase extends Usecase<StoreId, FetchStoreStaffsOu
                                                 storeStaff.getKey().storeId(),
                                                 storeStaff.getKey().staffId()
                                         ))
+                                        .breakStartTime(storeStaffOverview.getBreakStartTime(
+                                                storeStaff.getKey().storeId(),
+                                                storeStaff.getKey().staffId()
+                                        ))
+                                        .breakEndTime(storeStaffOverview.getBreakEndTime(
+                                                storeStaff.getKey().storeId(),
+                                                storeStaff.getKey().staffId()
+                                        ))
                                         .build()
                                 )
                                 .toList()

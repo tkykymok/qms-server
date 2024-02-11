@@ -108,7 +108,35 @@ public class StoreStaffOverview extends AggregateRoot<StoreId> {
                 .filter(activeStaff -> activeStaff.getKey().equals(key))
                 .findFirst()
                 .map(ActiveStaff::getSortOrder)
-                .orElse(SortOrder.of(null));
+                .orElse(null);
+    }
+
+    // 店舗IDとスタッフIDを指定して該当スタッフの休憩開始時間を取得する
+    public BreakStartTime getBreakStartTime(StoreId storeId, StaffId staffId) {
+        var key = ActiveStaffKey.of(storeId, staffId);
+        return activeStaffs.stream()
+                .filter(activeStaff -> activeStaff.getKey().equals(key))
+                .findFirst()
+                .map(ActiveStaff::getBreakStartTime)
+                .orElse(null);
+    }
+
+    // 店舗IDとスタッフIDを指定して該当スタッフの休憩終了時間を取得する
+    public BreakEndTime getBreakEndTime(StoreId storeId, StaffId staffId) {
+        var key = ActiveStaffKey.of(storeId, staffId);
+        return activeStaffs.stream()
+                .filter(activeStaff -> activeStaff.getKey().equals(key))
+                .findFirst()
+                .map(ActiveStaff::getBreakEndTime)
+                .orElse(null);
+    }
+
+    // 店舗IDとスタッフIDを指定して該当スタッフの休憩時間を取得する
+    public void updateBreakTime(ActiveStaffKey activeStaffKey, BreakStartTime breakStartTime, BreakEndTime breakEndTime) {
+        activeStaffs.stream()
+                .filter(activeStaff -> activeStaff.getKey().equals(activeStaffKey))
+                .findFirst()
+                .ifPresent(activeStaff -> activeStaff.setBreakTime(breakStartTime, breakEndTime));
     }
 
     // DBから取得したレコードをActiveStaffsに変換する

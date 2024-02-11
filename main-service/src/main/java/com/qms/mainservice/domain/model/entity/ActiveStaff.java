@@ -1,6 +1,7 @@
 package com.qms.mainservice.domain.model.entity;
 
 import com.qms.mainservice.domain.model.valueobject.*;
+import com.qms.shared.domain.exception.DomainException;
 import com.qms.shared.domain.model.CompositeKeyBaseEntity;
 import com.qms.shared.domain.model.valueobject.TrackingInfo;
 import lombok.Getter;
@@ -37,6 +38,11 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
             BreakStartTime breakStartTime,
             BreakEndTime breakEndTime
     ) {
+        // 休憩開始時間が休憩終了時間より後の場合はエラー
+        if (breakStartTime.value().isAfter(breakEndTime.value())) {
+            throw new DomainException("休憩開始時間は休憩終了時間より前に設定してください");
+        }
+
         this.breakStartTime = breakStartTime;
         this.breakEndTime = breakEndTime;
     }
