@@ -8,6 +8,7 @@ public record StoreStaffResponse(
         Long storeId, // 店舗ID
         String lastName, // スタッフ姓
         String firstName, // スタッフ名
+        String imageUrl, // 画像URL
         Boolean isActive, // 活動中フラグ
         Integer sortOrder // 並び順
 ) {

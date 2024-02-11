@@ -28,6 +28,7 @@ public class FetchStoreStaffsUsecase extends Usecase<StoreId, FetchStoreStaffsOu
                                         .companyId(storeStaff.getStaff().getCompanyId())
                                         .lastName(storeStaff.getStaff().getLastName())
                                         .firstName(storeStaff.getStaff().getFirstName())
+                                        .imageUrl(storeStaff.getStaff().getImageUrl())
                                         .cognitoUserId(storeStaff.getStaff().getCognitoUserId())
                                         .isActive(storeStaffOverview.getIsActive(
                                                 storeStaff.getKey().storeId(),

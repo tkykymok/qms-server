@@ -10,6 +10,7 @@ public record StoreStaffOutput(
         CompanyId companyId,
         LastName lastName,
         FirstName firstName,
+        ImageUrl imageUrl,
         CognitoUserId cognitoUserId,
         Flag isActive,
         SortOrder sortOrder

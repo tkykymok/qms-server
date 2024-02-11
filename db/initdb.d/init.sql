@@ -332,15 +332,18 @@ VALUES (1, 1, 101, 1, 1),
        (8, 1, 101, 1, 1);
 
 -- staffsテーブルへのデータ投入
-INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `first_name`, `cognito_user_id`)
-VALUES (1, 1, '山田', '一郎', 'cognitoA'),
-       (2, 1, '鈴木', '二郎', 'cognitoB'),
-       (3, 1, '坂本', '三郎', 'cognitoC'),
-       (4, 1, '田中', '四郎', 'cognitoD'),
-       (5, 1, '小島', '五郎', 'cognitoE'),
-       (6, 1, '後藤', '六郎', 'cognitoF'),
-       (7, 2, '立花', '七郎', 'cognitoG'),
-       (8, 2, '関口', '八郎', 'cognitoH');
+INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `first_name`, `image_url`, `cognito_user_id`)
+VALUES (1, 1, '山田', '一郎', null, 'cognitoA'),
+       (2, 1, '鈴木', '二郎', null, 'cognitoB'),
+       (3, 1, '坂本', '三郎', null, 'cognitoC'),
+       (4, 1, '田中', '四郎', null, 'cognitoD'),
+       (5, 1, '小島', '五郎', null, 'cognitoE'),
+       (6, 1, '後藤', '六郎', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWTn0y94NNy4YYk6mS36cZB322w1tLr8X9tQ&usqp=CAU', 'cognitoF'),
+       (7, 2, '立花', '七郎', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBG1nlQyOMKNYug1dHSCAtxYLxRjngUPQu1Q&usqp=CAU',
+        'cognitoG'),
+       (8, 2, '関口', '八郎',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSwrE4vldRqY4brqStCQKAwmpxAcRUMqwt-g&usqp=CAU',
+        'cognitoH');
 
 -- store_staffテーブルへのデータ投入
 INSERT INTO `store_staffs` (`staff_id`, `store_id`)
