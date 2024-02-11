@@ -37,6 +37,7 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
 
     /**
      * 店舗IDとスタッフIDを指定して、活動スタッフが削除可能か判定する
+     *
      * @param storeId 店舗ID
      * @param staffId スタッフID
      * @return 削除可能な場合true
@@ -47,7 +48,10 @@ public class JooqActiveStaffRepository implements ActiveStaffRepository {
         return !dsl.fetchExists(
                 ACTIVE_STAFFS.innerJoin(RESERVATIONS)
                         .on(ACTIVE_STAFFS.STAFF_ID.eq(RESERVATIONS.STAFF_ID),
-                                ACTIVE_STAFFS.STORE_ID.eq(RESERVATIONS.STORE_ID),
+                                ACTIVE_STAFFS.STORE_ID.eq(RESERVATIONS.STORE_ID)
+
+                        )
+                        .where(ACTIVE_STAFFS.STAFF_ID.eq(staffId.value()),
                                 RESERVATIONS.RESERVED_DATE.eq(ReservedDate.now().value()),
                                 RESERVATIONS.STATUS.eq(ReservationStatus.IN_PROGRESS.getValue())
                         )
