@@ -163,7 +163,7 @@ CREATE TABLE `menus`
     `menu_name`       VARCHAR(255)   NOT NULL COMMENT 'メニュー名',
     `price`           DECIMAL(10, 0) NOT NULL COMMENT '価格',
     `time`            INT            NOT NULL DEFAULT 0 COMMENT '所要時間',
-    `tag_color`       VARCHAR(7)     NOT NULL DEFAULT '#E9E9E9' COMMENT 'タグ色',
+    `tag_color`       VARCHAR(7)     NOT NULL DEFAULT '#FFFFFF' COMMENT 'タグ色',
     `disabled`        BOOLEAN        NOT NULL DEFAULT 0 COMMENT '無効フラグ',
     `created_at`      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     `updated_at`      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新日時',
@@ -303,10 +303,10 @@ VALUES (1, 'cognito1', 'Customer A', '-', 'customerA@example.com', 1, '1990-01-0
        (10, 'cognito10', 'Customer J', '-', 'customerJ@example.com', 2, '1999-10-10');
 
 -- menuテーブルにレコードを3つ挿入
-INSERT INTO `menus` (`store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `created_by`, `updated_by`)
-VALUES (1, 101, 'カット', 3000, 15, 1, 1),
-       (1, 102, 'カラーリング', 5000, 15, 1, 1),
-       (2, 201, 'パーマ', 4500, 15, 2, 2);
+INSERT INTO `menus` (`store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `tag_color`, `created_by`, `updated_by`)
+VALUES (1, 101, 'カット', 3000, 15, '#ABD3FA', 1, 1),
+       (1, 102, 'カラーリング', 5000, 15, '#FFE8BF', 1, 1),
+       (2, 201, 'パーマ', 4500, 15, '#85FC85', 2, 2);
 
 -- reservationsテーブルにレコードを5つ挿入
 INSERT INTO `reservations` (`customer_id`, `store_id`, `staff_id`, `reservation_number`, `reserved_date`, `status`,

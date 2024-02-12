@@ -23,6 +23,7 @@ public record ReservationResponse(
         String menuName, // メニュー名
         BigDecimal price, // 価格
         Integer time, // 所要時間
+        String tagColor, // タグ色
         // 店舗情報
         String storeName, // 店舗名
         String homePageUrl, // ホームページURL

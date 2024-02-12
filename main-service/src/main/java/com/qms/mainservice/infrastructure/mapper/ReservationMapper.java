@@ -82,6 +82,7 @@ public class ReservationMapper {
                         MenuName.of(record.get(MENUS.MENU_NAME)),
                         Price.of(BigDecimal.valueOf(record.get(MENUS.PRICE))),
                         Time.of(record.get(MENUS.TIME)),
+                        TagColor.fromValue(record.get(MENUS.TAG_COLOR)),
                         Flag.fromValue(record.get(MENUS.DISABLED).intValue()),
                         TrackingInfo.reconstruct(
                                 record.get(MENUS.CREATED_AT),

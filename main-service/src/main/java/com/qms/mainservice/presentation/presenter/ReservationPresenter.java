@@ -80,6 +80,7 @@ public class ReservationPresenter {
                 .menuName(reservationOutput.menuName().value())
                 .price(reservationOutput.price().value())
                 .time(reservationOutput.time().value())
+                .tagColor(reservationOutput.tagColor().getHexCode())
                 .customerLastName(reservationOutput.customer().getLastName().value())
                 .customerFirstName(reservationOutput.customer().getFirstName().value())
                 .build();

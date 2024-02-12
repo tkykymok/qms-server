@@ -24,6 +24,7 @@ public record ReservationOutput(
         MenuName menuName, // メニュー名
         Price price, // 価格
         Time time, // 所要時間
+        TagColor tagColor, // タグ色
         // 店舗情報
         Store store,
         // 顧客情報

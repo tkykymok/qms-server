@@ -11,6 +11,7 @@ public class Menu extends CompositeKeyBaseEntity<MenuKey> {
     private MenuName menuName;
     private Price price;
     private Time time;
+    private TagColor tagColor;
     private Flag disabled;
 
     private Menu() {
@@ -23,6 +24,7 @@ public class Menu extends CompositeKeyBaseEntity<MenuKey> {
             MenuName menuName,
             Price price,
             Time time,
+            TagColor tagColor,
             Flag disabled,
             TrackingInfo trackingInfo
     ) {
@@ -31,6 +33,7 @@ public class Menu extends CompositeKeyBaseEntity<MenuKey> {
         menu.menuName = menuName;
         menu.price = price;
         menu.time = time;
+        menu.tagColor = tagColor;
         menu.disabled = disabled;
         menu.trackingInfo = trackingInfo;
         return menu;

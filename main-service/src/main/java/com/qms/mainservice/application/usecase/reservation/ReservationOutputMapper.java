@@ -4,7 +4,6 @@ import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.aggregate.ReservationOverview;
 import com.qms.mainservice.domain.model.valueobject.Position;
 import com.qms.mainservice.domain.model.valueobject.ReservationNumber;
-import com.qms.mainservice.domain.model.valueobject.ServiceStartTime;
 
 public class ReservationOutputMapper {
 
@@ -28,6 +27,7 @@ public class ReservationOutputMapper {
                 .menuName(reservation.getMenuName()) // メニュー名
                 .price(reservation.getPrice()) // 価格
                 .time(reservation.getTime()) // 所要時間
+                .tagColor(reservation.getTagColor()) // タグ色
                 // 店舗情報
                 .store(reservation.getStore())
                 // 顧客情報

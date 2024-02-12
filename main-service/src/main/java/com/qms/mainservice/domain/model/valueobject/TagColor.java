@@ -4,26 +4,36 @@ import lombok.Getter;
 
 @Getter
 public enum TagColor {
-    LightGray("#E9E9E9", "black"),
-    Gray("#C0C0C0", "black"),
-    Brown("#D29494", "black"),
-    Orange("#FFD280", "black"),
-    Yellow("#FFFF80", "black"),
-    Green("#0BFA0B", "black"),
-    Blue("#58A7F5", "black"),
-    Purple("#C080C0", "black"),
-    Pink("#FFE0E5", "black"),
-    Red("#FF8080", "black");
+    WHITE("#FFFFFF"),
+    GRAY("#DFDFDF"),
+    BROWN("#E8C9C9"),
+    ORANGE("#FFE8BF"),
+    YELLOW("#FFFFBF"),
+    GREEN("#85FC85"),
+    BLUE("#ABD3FA"),
+    PURPLE("#DFBFDF"),
+    PINK("#FFEFF2"),
+    RED("#FFBFBF");
 
     // カラーコードを格納するフィールド
     private final String hexCode;
-    // テキストカラーを格納するフィールド
-    private final String textColor;
 
     // コンストラクタでカラーコードとテキストカラーを受け取り、フィールドに格納
-    TagColor(String hexCode, String textColor) {
+    TagColor(String hexCode) {
         this.hexCode = hexCode;
-        this.textColor = textColor;
+    }
+
+    public static TagColor fromValue(String value) {
+        for (TagColor tagColor : TagColor.values()) {
+            if (tagColor.hexCode.equals(value)) {
+                return tagColor;
+            }
+        }
+        throw new IllegalArgumentException("Invalid TagColor value: " + value);
+    }
+
+    public static TagColor defaultColor() {
+        return TagColor.WHITE;
     }
 
 }

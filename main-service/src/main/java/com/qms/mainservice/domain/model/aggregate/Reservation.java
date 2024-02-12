@@ -210,6 +210,22 @@ public class Reservation extends AggregateRoot<ReservationId> {
         return menuTime;
     }
 
+    /**
+     * タグ色を取得する
+     * @return タグ色
+     */
+    public TagColor getTagColor() {
+        // 予約メニューが複数ある場合はデフォルト色を返す
+        if (this.reservationMenus.size() > 1) {
+            return TagColor.defaultColor();
+        }
+
+        return this.reservationMenus.stream()
+                .map(reservationMenu -> reservationMenu.getMenu().getTagColor())
+                .findFirst()
+                .orElse(TagColor.defaultColor());
+    }
+
     // DBから取得したデータをドメインオブジェクトに変換する
     public static Reservation reconstruct(
             ReservationId reservationId,
