@@ -29,7 +29,8 @@ public enum TagColor {
                 return tagColor;
             }
         }
-        throw new IllegalArgumentException("Invalid TagColor value: " + value);
+        // 一致するものがない場合はデフォルトカラーを返す
+        return defaultColor();
     }
 
     public static TagColor defaultColor() {
