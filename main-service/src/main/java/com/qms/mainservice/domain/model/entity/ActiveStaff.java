@@ -34,15 +34,25 @@ public class ActiveStaff extends CompositeKeyBaseEntity<ActiveStaffKey> {
     }
 
     // 休憩時間を設定する
-    public void setBreakTime(
-            BreakStartTime breakStartTime,
-            BreakEndTime breakEndTime
-    ) {
-        // 休憩開始時間が休憩終了時間より後の場合はエラー
+    public void setBreakTime(BreakStartTime breakStartTime, BreakEndTime breakEndTime) {
+        // 両方の時間がnullの場合は、休憩時間をクリアして早期リターン
+        if (breakStartTime == null && breakEndTime == null) {
+            this.breakStartTime = null;
+            this.breakEndTime = null;
+            return;
+        }
+
+        // 休憩開始時間または終了時間のいずれかがnullである場合はエラー
+        if (breakStartTime == null || breakEndTime == null) {
+            throw new DomainException("休憩開始時間と休憩終了時間は両方指定する必要があります");
+        }
+
+        // 休憩開始時間と休憩終了時間が非nullである場合のみ、時間の前後関係をチェック
         if (breakStartTime.value().isAfter(breakEndTime.value())) {
             throw new DomainException("休憩開始時間は休憩終了時間より前に設定してください");
         }
 
+        // 休憩時間の設定
         this.breakStartTime = breakStartTime;
         this.breakEndTime = breakEndTime;
     }

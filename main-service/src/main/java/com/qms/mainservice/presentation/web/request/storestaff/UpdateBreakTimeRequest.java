@@ -5,6 +5,7 @@ import com.qms.mainservice.application.usecase.storestaff.UpdateBreakTimeInput;
 import com.qms.mainservice.domain.model.valueobject.*;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
 public record UpdateBreakTimeRequest(
         Long staffId,
@@ -16,8 +17,14 @@ public record UpdateBreakTimeRequest(
         return UpdateBreakTimeInput.builder()
                 .storeId(storeId)
                 .activeStaffKey(ActiveStaffKey.of(storeId, StaffId.of(staffId)))
-                .breakStartTime(BreakStartTime.of(LocalTime.parse(breakStartTime)))
-                .breakEndTime(BreakEndTime.of(LocalTime.parse(breakEndTime)))
+                .breakStartTime(Optional.ofNullable(breakStartTime)
+                        .map(LocalTime::parse)
+                        .map(BreakStartTime::of)
+                        .orElse(null))
+                .breakEndTime(Optional.ofNullable(breakEndTime)
+                        .map(LocalTime::parse)
+                        .map(BreakEndTime::of)
+                        .orElse(null))
                 .build();
     }
 }
