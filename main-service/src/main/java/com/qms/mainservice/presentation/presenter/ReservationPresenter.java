@@ -77,10 +77,9 @@ public class ReservationPresenter {
                 .notified(reservationOutput.notified().value())
                 .arrived(reservationOutput.arrived().value())
                 .version(reservationOutput.version().value())
-                .menuName(reservationOutput.menuName().value())
-                .price(reservationOutput.price().value())
-                .time(reservationOutput.time().value())
-                .tagColor(reservationOutput.tagColor().getHexCode())
+                .reservationMenus(reservationOutput.reservationMenus().stream()
+                        .map(this::createReservationMenuResponse)
+                        .toList())
                 .customerLastName(reservationOutput.customer().getLastName().value())
                 .customerFirstName(reservationOutput.customer().getFirstName().value())
                 .build();
@@ -98,6 +97,16 @@ public class ReservationPresenter {
                 .position(Optional.ofNullable(waitingInfoOutput.position())
                         .map(Position::value)
                         .orElse(null))
+                .build();
+    }
+
+    private ReservationMenuResponse createReservationMenuResponse(ReservationMenuOutput reservationMenuOutput) {
+        return ReservationMenuResponse.builder()
+                .storeMenuId(reservationMenuOutput.storeMenuId().value())
+                .menuName(reservationMenuOutput.menuName().value())
+                .price(reservationMenuOutput.price().value())
+                .time(reservationMenuOutput.time().value())
+                .tagColor(reservationMenuOutput.tagColor().getHexCode())
                 .build();
     }
 

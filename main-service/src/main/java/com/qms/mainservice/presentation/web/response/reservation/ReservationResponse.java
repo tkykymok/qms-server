@@ -2,7 +2,7 @@ package com.qms.mainservice.presentation.web.response.reservation;
 
 import lombok.Builder;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Builder
 public record ReservationResponse(
@@ -20,10 +20,7 @@ public record ReservationResponse(
         Boolean arrived, // 到着フラグ
         Integer version, // バージョン
         // 予約メニュー
-        String menuName, // メニュー名
-        BigDecimal price, // 価格
-        Integer time, // 所要時間
-        String tagColor, // タグ色
+        List<ReservationMenuResponse> reservationMenus,
         // 店舗情報
         String storeName, // 店舗名
         String homePageUrl, // ホームページURL

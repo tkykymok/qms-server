@@ -62,7 +62,7 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
             }
 
             // スタッフの次の利用可能時間を保持する優先度キューに追加する
-            poll.addTime(waitingReservation.getTime());
+            poll.addTime(waitingReservation.getTotalTime());
             // ループ対象の予約が処理される時間がスタッフの休憩時間内の場合、次の利用可能時間に休憩終了時間を追加する
             poll.addBreakTimeIfNeeded();
             // スタッフの次の利用可能時間を保持する優先度キューに追加する
@@ -131,7 +131,7 @@ public class ReservationOverview extends AggregateRoot<StoreId> {
             StaffId staffId = staff.getKey().staffId();
             List<Reservation> inProgressReservations = getReservationsByStaffId(staffId);
             Time nextAvailableTime = inProgressReservations.stream()
-                    .map(Reservation::getTime)
+                    .map(Reservation::getTotalTime)
                     .reduce(Time.ZERO(), Time::add);
 
             staffAvailability.add(StaffAvailability.create(staff, nextAvailableTime));

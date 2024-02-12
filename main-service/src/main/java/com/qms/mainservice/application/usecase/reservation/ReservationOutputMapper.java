@@ -24,10 +24,10 @@ public class ReservationOutputMapper {
                 .arrived(reservation.getArrived()) // 到着フラグ
                 .version(reservation.getVersion()) // バージョン
                 // 予約メニュー
-                .menuName(reservation.getMenuName()) // メニュー名
-                .price(reservation.getPrice()) // 価格
-                .time(reservation.getTime()) // 所要時間
-                .tagColor(reservation.getTagColor()) // タグ色
+                .reservationMenus(reservation.getReservationMenus().stream()
+                        .map(ReservationMenuOutputMapper::modelToReservationMenuOutput)
+                        .toList()
+                )
                 // 店舗情報
                 .store(reservation.getStore())
                 // 顧客情報

@@ -5,6 +5,8 @@ import com.qms.mainservice.domain.model.entity.Customer;
 import com.qms.mainservice.domain.model.valueobject.*;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record ReservationOutput(
         ReservationId reservationId, // 予約ID
@@ -20,11 +22,8 @@ public record ReservationOutput(
         Flag notified, // 通知フラグ
         Flag arrived, // 到着フラグ
         VersionKey version, // バージョン
-        // 予約メニュー
-        MenuName menuName, // メニュー名
-        Price price, // 価格
-        Time time, // 所要時間
-        TagColor tagColor, // タグ色
+        // 予約メニューList
+        List<ReservationMenuOutput> reservationMenus,
         // 店舗情報
         Store store,
         // 顧客情報
