@@ -304,8 +304,10 @@ VALUES (1, 'cognito1', 'Customer A', '-', 'customerA@example.com', 1, '1990-01-0
 
 -- menuテーブルにレコードを3つ挿入
 INSERT INTO `menus` (`store_id`, `store_menu_id`, `menu_name`, `price`, `time`, `tag_color`, `created_by`, `updated_by`)
-VALUES (1, 101, 'カット', 3000, 15, '#ABD3FA', 1, 1),
+VALUES (1, 101, 'カットのみ', 3000, 15, '#ABD3FA', 1, 1),
        (1, 102, 'カラーリング', 5000, 15, '#FFE8BF', 1, 1),
+       (1, 103, 'パーマ', 5000, 15, '#DFBFDF', 1, 1),
+       (1, 104, 'カット + シャンプー', 5000, 15, '#FFE8BF', 1, 1),
        (2, 201, 'パーマ', 4500, 15, '#85FC85', 2, 2);
 
 -- reservationsテーブルにレコードを5つ挿入
