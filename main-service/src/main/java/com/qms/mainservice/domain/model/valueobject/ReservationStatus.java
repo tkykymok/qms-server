@@ -26,5 +26,10 @@ public enum ReservationStatus {
         }
         throw new IllegalArgumentException("Invalid value for Status: " + value);
     }
+
+    // 予約ステータスが案内済かどうかを判定する
+    public boolean isDone() {
+        return this == DONE;
+    }
 }
 
