@@ -4,16 +4,15 @@ import com.qms.mainservice.application.usecase.reservation.UpdateReservationStat
 import com.qms.mainservice.domain.model.valueobject.*;
 
 public record UpdateReservationStatusRequest(
-        Long reservationId,
         Long staffId,
         int status,
         Integer version
 ) {
     // inputクラスに変換
-    public UpdateReservationStatusInput toInput(StoreId storeId) {
+    public UpdateReservationStatusInput toInput(StoreId storeId, ReservationId reservationId) {
         return UpdateReservationStatusInput.builder()
                 .storeId(storeId)
-                .reservationId(ReservationId.of(reservationId))
+                .reservationId(reservationId)
                 .staffId(StaffId.of(staffId))
                 .status(ReservationStatus.fromValue(status))
                 .version(VersionKey.of(version))

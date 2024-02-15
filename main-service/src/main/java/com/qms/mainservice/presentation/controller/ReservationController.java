@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reservation")
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final FetchReservationsUsecase fetchReservationsUsecase;
@@ -24,18 +26,27 @@ public class ReservationController {
     private final ReservationPresenter presenter;
 
     // 予約一覧を取得する(店舗)
-    @GetMapping("/list/today")
-    public ResponseEntity<GetReservationsResponse> getTodayReservations() {
+    @GetMapping("")
+    public ResponseEntity<GetReservationsResponse> getReservations(
+            @RequestParam(value = "date", required = false) String date) {
         // 店舗ID
         StoreId storeId = StoreId.of(1L);
+        // 予約日
+        ReservedDate reservedDate = date == null ? null : ReservedDate.of(LocalDate.parse(date));
+        // inputクラスに変換
+        FetchReservationsInput input = FetchReservationsInput.builder()
+                .storeId(storeId)
+                .reservedDate(reservedDate)
+                .build();
+
         // 予約一覧を取得する
-        FetchReservationsOutput output = fetchReservationsUsecase.execute(storeId);
+        FetchReservationsOutput output = fetchReservationsUsecase.execute(input);
 
         return presenter.present(output);
     }
 
     // 予約の最後尾の待ち時間を取得する(店舗 & 顧客)
-    @GetMapping("/last-waiting-info/{storeId}")
+    @GetMapping("/{storeId}/last-waiting-info")
     public ResponseEntity<GetLastWaitingInfoResponse> getLastWaitingInfo(@PathVariable("storeId") Long storeId) {
         // 予約の最後尾の待ち時間を取得する
         FetchLastWaitTimeOutput output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
@@ -49,20 +60,20 @@ public class ReservationController {
         // 顧客ID
         CustomerId customerId = CustomerId.of(1L);
         // 予約詳細を取得する
-        FetchReservationDetailOutput output =
-                fetchReservationDetailUsecase.execute(customerId);
+        FetchReservationDetailOutput output = fetchReservationDetailUsecase.execute(customerId);
 
         return presenter.present(output);
     }
 
     // 予約ステータスを更新する(店舗)
-    @PutMapping("/update-status")
-    public ResponseEntity<?> updateReservationStatus(@RequestBody UpdateReservationStatusRequest request) {
+    @PutMapping("/{reservationId}/update-status")
+    public ResponseEntity<?> updateReservationStatus(@PathVariable("reservationId") Long reservationId,
+                                                     @RequestBody UpdateReservationStatusRequest request) {
         // 店舗ID TODO tokenから取得する想定
         StoreId storeId = StoreId.of(1L);
 
         // リクエストをinputクラスに変換
-        UpdateReservationStatusInput input = request.toInput(storeId);
+        UpdateReservationStatusInput input = request.toInput(storeId, ReservationId.of(reservationId));
 
         // 予約ステータスを更新する
         UpdateReservationStatusOutput output = updateReservationStatusUsecase.execute(input);

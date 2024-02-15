@@ -5,10 +5,8 @@ import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.ReservationRepository;
 import com.qms.mainservice.infrastructure.mapper.ReservationMapper;
 import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
+import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -78,13 +76,18 @@ public class JooqReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAllByStoreIdAndReservedDate(StoreId storeId, ReservedDate reservedDate) {
+        // 予約一覧を取得する条件を設定する
+        Condition condition = RESERVATIONS.STORE_ID.eq(storeId.value());
+        if (reservedDate != null) {
+            // 予約日が指定されている場合は条件に追加する
+            condition = condition.and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()));
+        }
         // 予約一覧を取得する
         Result<Record> reservationRecords = dsl.select()
                 .from(RESERVATIONS)
                 .innerJoin(STORES).on(RESERVATIONS.STORE_ID.eq(STORES.ID))
                 .innerJoin(CUSTOMERS).on(RESERVATIONS.CUSTOMER_ID.eq(CUSTOMERS.ID))
-                .where(RESERVATIONS.STORE_ID.eq(storeId.value()))
-                .and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value()))
+                .where(condition)
                 .fetch();
 
         // 店舗 & ReservedDateに紐づく予約メニュー一覧を取得し、予約IDをキーにMapに格納する
@@ -93,8 +96,7 @@ public class JooqReservationRepository implements ReservationRepository {
                 .innerJoin(RESERVATIONS).on(RESERVATION_MENUS.RESERVATION_ID.eq(RESERVATIONS.ID))
                 .innerJoin(MENUS).on(RESERVATION_MENUS.STORE_ID.eq(MENUS.STORE_ID)
                         .and(RESERVATION_MENUS.STORE_MENU_ID.eq(MENUS.STORE_MENU_ID)))
-                .where(RESERVATIONS.STORE_ID.eq(storeId.value()).
-                        and(RESERVATIONS.RESERVED_DATE.eq(reservedDate.value())))
+                .where(condition)
                 .fetch()
                 .intoGroups(RESERVATION_MENUS.RESERVATION_ID);
 
