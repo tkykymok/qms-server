@@ -64,6 +64,14 @@ subprojects {
                         database {
                             inputSchema = 'qms_db'
                             includes = '.*'
+                            // 強制的な型変換の設定を追加
+                            forcedTypes {
+                                forcedType {
+                                    name = 'decimal'
+                                    expression = '.*'
+                                    types = 'DECIMAL'
+                                }
+                            }
                         }
                         target {
                             packageName = "com.qms.${projectName}.infrastructure.jooq"

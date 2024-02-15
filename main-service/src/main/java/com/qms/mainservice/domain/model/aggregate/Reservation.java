@@ -167,17 +167,30 @@ public class Reservation extends AggregateRoot<ReservationId> {
     }
 
     /**
-     * 予約メニューの合計金額を取得する
-     * @return メニュー金額
+     * 予約メニューを取得する(複数の場合はカンマ区切りで返却)
+     *
+     * @return 予約メニュー
      */
-    public Price getTotalPrice() {
+    public MenuName getMenuNames() {
         return this.reservationMenus.stream()
-                .map(reservationMenu -> reservationMenu.getMenu().getPrice())
-                .reduce(Price.ZERO(), Price::add);
+                .map(reservationMenu -> reservationMenu.getMenu().getMenuName().value())
+                .collect(Collectors.collectingAndThen(Collectors.joining(","), MenuName::of));
+    }
+
+    /**
+     * 予約メニューの合計金額から売上金額を取得する
+     *
+     * @return 売上金額
+     */
+    public SalesAmount getTotalPrice() {
+        return this.reservationMenus.stream()
+                .map(reservationMenu -> SalesAmount.of(reservationMenu.getMenu().getPrice().value()))
+                .reduce(SalesAmount.ZERO(), SalesAmount::add);
     }
 
     /**
      * 予約メニューの合計所要時間を取得する
+     *
      * @return 予約の所要時間
      */
     public Time getTotalTime() {
@@ -199,6 +212,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
 
     /**
      * タグ色を取得する
+     *
      * @return タグ色
      */
     public TagColor getTagColor() {

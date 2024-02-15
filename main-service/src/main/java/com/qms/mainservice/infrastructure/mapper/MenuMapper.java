@@ -16,7 +16,7 @@ public class MenuMapper {
                 StoreId.of(record.get(MENUS.STORE_ID)),
                 StoreMenuId.of(record.get(MENUS.STORE_MENU_ID)),
                 MenuName.of(record.get(MENUS.MENU_NAME)),
-                Price.of(BigDecimal.valueOf(record.get(MENUS.PRICE))),
+                Price.of(record.get(MENUS.PRICE)),
                 Time.of(record.get(MENUS.TIME)),
                 TagColor.fromValue(record.get(MENUS.TAG_COLOR)),
                 Flag.fromValue(record.get(MENUS.DISABLED)),

@@ -6,6 +6,7 @@ import com.qms.mainservice.domain.service.SalesCreator;
 import com.qms.shared.application.usecase.Usecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class UpdateReservationStatusUsecase extends Usecase<UpdateReservationSta
     private final ReservationRepository reservationRepository;
     private final SalesCreator salesCreator;
 
+    @Transactional
     @Override
     public UpdateReservationStatusOutput execute(UpdateReservationStatusInput input) {
         // 予約IDから予約を取得する

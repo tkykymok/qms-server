@@ -9,6 +9,10 @@ public record SalesAmount(BigDecimal value) {
         return new SalesAmount(value);
     }
 
+    public static SalesAmount ZERO() {
+        return new SalesAmount(BigDecimal.ZERO);
+    }
+
     public SalesAmount add(SalesAmount other) {
         return new SalesAmount(this.value.add(other.value()));
     }
