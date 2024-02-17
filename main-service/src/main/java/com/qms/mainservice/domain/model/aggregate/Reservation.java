@@ -1,7 +1,6 @@
 package com.qms.mainservice.domain.model.aggregate;
 
 import com.qms.mainservice.domain.model.entity.Customer;
-import com.qms.mainservice.domain.model.entity.Menu;
 import com.qms.mainservice.domain.model.entity.ReservationMenu;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.shared.domain.exception.DomainException;
@@ -150,6 +149,7 @@ public class Reservation extends AggregateRoot<ReservationId> {
             throw new DomainException("対応中の予約のみ案内済にできます。");
         }
         this.status = ReservationStatus.DONE; // 予約ステータスを案内済に更新する
+
         this.serviceEndTime = ServiceEndTime.now(); // 対応終了時間を設定する
         this.version = version.increment();
     }
@@ -164,6 +164,17 @@ public class Reservation extends AggregateRoot<ReservationId> {
         }
         this.status = ReservationStatus.CANCELED;
         this.version = version.increment();
+    }
+
+    /**
+     * 予約メニューを更新する
+     *
+     * @param storeMenuIds 店舗メニューID一覧
+     */
+    public void updateReservationMenus(List<StoreMenuId> storeMenuIds) {
+        this.reservationMenus = storeMenuIds.stream()
+                .map(storeMenuId -> ReservationMenu.create(this.id, this.storeId, storeMenuId))
+                .toList();
     }
 
     /**

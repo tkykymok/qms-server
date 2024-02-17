@@ -38,11 +38,14 @@ public class ReservationMenu extends CompositeKeyBaseEntity<ReservationMenuKey> 
      * @param storeMenuId   店舗メニューID
      * @return 予約メニュー
      */
-    public static ReservationMenu create(ReservationId reservationId, StoreId storeId, StoreMenuId storeMenuId) {
+    public static ReservationMenu create(
+            ReservationId reservationId,
+            StoreId storeId,
+            StoreMenuId storeMenuId) {
         ReservationMenu reservationMenu = new ReservationMenu();
         reservationMenu.key = ReservationMenuKey.of(reservationId, storeId, storeMenuId);
+        reservationMenu.trackingInfo = TrackingInfo.create();
         return reservationMenu;
     }
-
 
 }

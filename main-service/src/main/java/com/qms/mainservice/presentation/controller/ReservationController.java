@@ -34,13 +34,13 @@ public class ReservationController {
         // 予約日
         ReservedDate reservedDate = date == null ? null : ReservedDate.of(LocalDate.parse(date));
         // inputクラスに変換
-        FetchReservationsInput input = FetchReservationsInput.builder()
+        var input = FetchReservationsInput.builder()
                 .storeId(storeId)
                 .reservedDate(reservedDate)
                 .build();
 
         // 予約一覧を取得する
-        FetchReservationsOutput output = fetchReservationsUsecase.execute(input);
+        var output = fetchReservationsUsecase.execute(input);
 
         return presenter.present(output);
     }
@@ -49,7 +49,7 @@ public class ReservationController {
     @GetMapping("/{storeId}/last-waiting-info")
     public ResponseEntity<GetLastWaitingInfoResponse> getLastWaitingInfo(@PathVariable("storeId") Long storeId) {
         // 予約の最後尾の待ち時間を取得する
-        FetchLastWaitTimeOutput output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
+        var output = fetchLastWaitTimeUsecase.execute(StoreId.of(storeId));
 
         return presenter.present(output);
     }
@@ -60,7 +60,7 @@ public class ReservationController {
         // 顧客ID
         CustomerId customerId = CustomerId.of(1L);
         // 予約詳細を取得する
-        FetchReservationDetailOutput output = fetchReservationDetailUsecase.execute(customerId);
+        var output = fetchReservationDetailUsecase.execute(customerId);
 
         return presenter.present(output);
     }
@@ -73,12 +73,12 @@ public class ReservationController {
         StoreId storeId = StoreId.of(1L);
 
         // リクエストをinputクラスに変換
-        UpdateReservationStatusInput input = request.toInput(storeId, ReservationId.of(reservationId));
+        var input = request.toInput(storeId, ReservationId.of(reservationId));
 
         // 予約ステータスを更新する
-        UpdateReservationStatusOutput output = updateReservationStatusUsecase.execute(input);
+        updateReservationStatusUsecase.execute(input);
 
-        return presenter.present(output);
+        return ResponseEntity.ok().build();
     }
 
     // 予約をキャンセルする

@@ -8,16 +8,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @RequiredArgsConstructor
-public class UpdateReservationStatusUsecase extends Usecase<UpdateReservationStatusInput, UpdateReservationStatusOutput> {
+public class UpdateReservationStatusUsecase extends Usecase<UpdateReservationStatusInput, Void> {
 
     private final ReservationRepository reservationRepository;
     private final SalesCreator salesCreator;
 
     @Transactional
     @Override
-    public UpdateReservationStatusOutput execute(UpdateReservationStatusInput input) {
+    public Void execute(UpdateReservationStatusInput input) {
         // 予約IDから予約を取得する
         Reservation reservation = reservationRepository.findById(input.reservationId());
         // バージョンをチェックする
@@ -31,14 +32,16 @@ public class UpdateReservationStatusUsecase extends Usecase<UpdateReservationSta
         // 予約を更新する
         reservationRepository.update(reservation);
 
-        // 更新後のステータスが案内済の場合、売上を作成する
+        // 更新後のステータスが案内済の場合
         if (reservation.getStatus().isDone()) {
-            salesCreator.createSales(reservation);
+            // 予約メニューを更新する
+            reservation.updateReservationMenus(input.storeMenuIds());
+            reservationRepository.updateReservationMenus(reservation);
+            // 予約IDを基に売上を作成する
+            salesCreator.create(input.reservationId());
         }
 
-        return UpdateReservationStatusOutput.builder()
-                .reservation(ReservationOutputMapper.modelToReservationOutput(reservation))
-                .build();
+        return null;
     }
 
 }
