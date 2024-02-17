@@ -4,9 +4,10 @@ import com.qms.mainservice.domain.model.aggregate.Reservation;
 import com.qms.mainservice.domain.model.valueobject.*;
 import com.qms.mainservice.domain.repository.ReservationRepository;
 import com.qms.mainservice.infrastructure.mapper.ReservationMapper;
+import com.qms.mainservice.infrastructure.mapper.ReservationMenuMapper;
 import lombok.RequiredArgsConstructor;
-import org.jooq.*;
 import org.jooq.Record;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -152,6 +153,20 @@ public class JooqReservationRepository implements ReservationRepository {
                 .set(RESERVATIONS.ARRIVED, reservation.getArrived().toByteValue()) // 到着フラグ
                 .set(RESERVATIONS.VERSION, reservation.getVersion().value()) // バージョン
                 .where(RESERVATIONS.ID.eq(reservation.getId().value()))
+                .execute();
+    }
+
+    @Override
+    public void updateReservationMenus(Reservation reservation) {
+        // 予約メニューをDELETEする
+        dsl.deleteFrom(RESERVATION_MENUS)
+                .where(RESERVATION_MENUS.RESERVATION_ID.eq(reservation.getId().value()))
+                .execute();
+
+        // 予約メニューをINSERTする
+        dsl.batchInsert(reservation.getReservationMenus().stream()
+                        .map(ReservationMenuMapper::reservationMenuToRecord)
+                        .toList())
                 .execute();
     }
 
