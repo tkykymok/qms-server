@@ -337,8 +337,8 @@ VALUES (1, 1, 101, 1, 1),
 
 -- staffsテーブルへのデータ投入
 INSERT INTO `staffs` (`id`, `company_id`, `last_name`, `first_name`, `image_url`, `cognito_user_id`)
-VALUES (1, 1, '山田', '一郎', null, 'cognitoA'),
-       (2, 1, '鈴木', '二郎', null, 'cognitoB'),
+VALUES (1, 1, '山田', '一郎', null, '67f40ab8-4011-7015-5cd8-5a52a2efd882'),
+       (2, 1, '鈴木', '二郎', null, 'f724cad8-3091-7017-6daf-aa96f0873da5'),
        (3, 1, '坂本', '三郎', null, 'cognitoC'),
        (4, 1, '田中', '四郎', null, 'cognitoD'),
        (5, 1, '小島', '五郎', null, 'cognitoE'),
@@ -354,7 +354,8 @@ VALUES (1, 1, '山田', '一郎', null, 'cognitoA'),
 
 -- store_staffテーブルへのデータ投入
 INSERT INTO `store_staffs` (`staff_id`, `store_id`)
-VALUES (1, 2),
+VALUES (1, 1),
+       (1, 2),
        (2, 2),
        (3, 2),
        (4, 2),

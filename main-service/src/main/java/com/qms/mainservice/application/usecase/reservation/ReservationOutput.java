@@ -3,6 +3,7 @@ package com.qms.mainservice.application.usecase.reservation;
 import com.qms.mainservice.domain.model.aggregate.Store;
 import com.qms.mainservice.domain.model.entity.Customer;
 import com.qms.mainservice.domain.model.valueobject.*;
+import com.qms.shared.application.usecase.BaseOutput;
 import lombok.Builder;
 
 import java.util.List;
@@ -28,5 +29,5 @@ public record ReservationOutput(
         Store store,
         // 顧客情報
         Customer customer
-) {
+) implements BaseOutput {
 }

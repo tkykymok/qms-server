@@ -1,6 +1,6 @@
 package com.qms.mainservice.presentation.exception;
 
-import com.qms.mainservice.presentation.web.response.ApiErrorResponse;
+import com.qms.shared.presentation.ApiErrorResponse;
 import com.qms.shared.domain.exception.DomainException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

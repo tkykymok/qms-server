@@ -1,4 +1,4 @@
-package com.qms.mainservice.presentation.web.response;
+package com.qms.shared.presentation;
 
 import lombok.Builder;
 

@@ -4,7 +4,7 @@ import com.qms.mainservice.application.usecase.reservation.*;
 import com.qms.mainservice.domain.model.valueobject.Position;
 import com.qms.mainservice.domain.model.valueobject.StaffId;
 import com.qms.mainservice.presentation.web.response.reservation.*;
-import com.qms.shared.presentation.Message;
+import com.qms.shared.presentation.BasePresenter;
 import com.qms.shared.utils.Formatter;
 import com.qms.shared.utils.MessageHelper;
 import lombok.RequiredArgsConstructor;
@@ -12,46 +12,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class ReservationPresenter {
+public class ReservationPresenter extends BasePresenter {
 
     private final MessageHelper messageHelper;
 
     public ResponseEntity<GetReservationsResponse> present(FetchReservationsOutput output) {
+        return ResponseEntity.ok(getReservationsResponse(output));
+    }
+    public ResponseEntity<GetLastWaitingInfoResponse> present(FetchLastWaitTimeOutput output) {
+        return ResponseEntity.ok(getLastWaitingInfoResponse(output));
+    }
+    public ResponseEntity<GetReservationDetailResponse> present(FetchReservationDetailOutput output) {
+        return ResponseEntity.ok(getReservationDetailResponse(output));
+    }
+    public ResponseEntity<UpdateReservationStatusResponse> present(UpdateReservationStatusOutput output) {
+        return ResponseEntity.ok(updateReservationStatusResponse(output));
+    }
+
+    private GetReservationsResponse getReservationsResponse(FetchReservationsOutput output) {
         var reservations = output.reservations().stream()
                 .map(this::createReservationResponse)
                 .toList();
 
-        var response = GetReservationsResponse.builder()
+        return GetReservationsResponse.builder()
                 .reservations(reservations)
-                .message(Message.of(messageHelper.getMessage(Locale.JAPAN, "S0001", "予約"))) // TODO メッセージ確認用
                 .build();
-        return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<GetLastWaitingInfoResponse> present(FetchLastWaitTimeOutput output) {
-        var response = GetLastWaitingInfoResponse.builder()
+    private GetLastWaitingInfoResponse getLastWaitingInfoResponse(FetchLastWaitTimeOutput output) {
+        return GetLastWaitingInfoResponse.builder()
                 .waitingInfo(createWaitingInfoResponse(output.waitingInfo()))
                 .build();
-        return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<GetReservationDetailResponse> present(FetchReservationDetailOutput output) {
-        var response = GetReservationDetailResponse.builder()
+    private GetReservationDetailResponse getReservationDetailResponse(FetchReservationDetailOutput output) {
+        return GetReservationDetailResponse.builder()
                 .reservation(createReservationResponse(output.reservation()))
                 .waitingInfo(createWaitingInfoResponse(output.waitingInfo()))
                 .build();
-        return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<UpdateReservationStatusResponse> present(UpdateReservationStatusOutput output) {
-        var response = UpdateReservationStatusResponse.builder()
-                .reservation(createReservationResponse(output.reservation()));
-        return ResponseEntity.ok(response.build());
+    private UpdateReservationStatusResponse updateReservationStatusResponse(UpdateReservationStatusOutput output) {
+        return UpdateReservationStatusResponse.builder()
+                .reservation(createReservationResponse(output.reservation()))
+                .build();
     }
 
     private ReservationResponse createReservationResponse(ReservationOutput reservationOutput) {
@@ -109,6 +117,5 @@ public class ReservationPresenter {
                 .tagColor(reservationMenuOutput.tagColor().getHexCode())
                 .build();
     }
-
 
 }

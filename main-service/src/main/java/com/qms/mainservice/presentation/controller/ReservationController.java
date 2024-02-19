@@ -78,7 +78,13 @@ public class ReservationController {
         // 予約ステータスを更新する
         updateReservationStatusUsecase.execute(input);
 
-        return ResponseEntity.ok().build();
+        // 案内済みの場合、案内済みメッセージを返却
+        String message = null;
+        if (input.status().equals(ReservationStatus.DONE)) {
+            message = "お会計が完了しました。";
+        }
+
+        return presenter.presentSuccess(message);
     }
 
     // 予約をキャンセルする

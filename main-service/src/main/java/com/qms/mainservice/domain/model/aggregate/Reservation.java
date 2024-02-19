@@ -172,6 +172,10 @@ public class Reservation extends AggregateRoot<ReservationId> {
      * @param storeMenuIds 店舗メニューID一覧
      */
     public void updateReservationMenus(List<StoreMenuId> storeMenuIds) {
+        // 予約メニューが選択されていない場合は例外をスローする
+        if(storeMenuIds.isEmpty()) {
+            throw new DomainException("予約メニューが選択されていません。");
+        }
         this.reservationMenus = storeMenuIds.stream()
                 .map(storeMenuId -> ReservationMenu.create(this.id, this.storeId, storeMenuId))
                 .toList();

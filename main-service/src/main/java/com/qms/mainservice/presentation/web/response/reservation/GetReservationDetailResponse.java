@@ -4,8 +4,6 @@ import com.qms.shared.presentation.BaseResponse;
 import com.qms.shared.presentation.Message;
 import lombok.Builder;
 
-import java.math.BigDecimal;
-
 @Builder
 public record GetReservationDetailResponse(
         ReservationResponse reservation, // 予約情報
