@@ -30,6 +30,12 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         runtimeOnly 'com.mysql:mysql-connector-j'
+        implementation 'software.amazon.awssdk:cognitoidentityprovider:2.24.5'
+        implementation 'com.auth0:java-jwt:4.4.0'
+        implementation 'com.auth0:jwks-rsa:0.22.1'
+
+
+
 //        implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.0'
 
         implementation 'org.locationtech.jts:jts-core:1.19.0'

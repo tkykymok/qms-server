@@ -30,6 +30,15 @@ services:
       - DATABASE_URL=${DATABASE_URL} # データベースのURL
       - MYSQL_USER=${MYSQL_USER} # データベースのユーザー名
       - MYSQL_PASSWORD=${MYSQL_PASSWORD} # ユーザーのパスワード
+      - AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID} # アクセスキー
+      - AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY} # シークレットアクセスキー
+      - AWS_REGION=${AWS_REGION} # AWSのリージョン
+      - COGNITO_STAFF_POOL_ID=${COGNITO_STAFF_POOL_ID} # CognitoのユーザープールID
+      - COGNITO_STAFF_CLIENT_ID=${COGNITO_STAFF_CLIENT_ID} # CognitoのクライアントID
+      - COGNITO_STAFF_CLIENT_SECRET=${COGNITO_STAFF_CLIENT_SECRET} # Cognitoのクライアントシークレット
+      - COGNITO_CUSTOMER_POOL_ID=${COGNITO_CUSTOMER_POOL_ID} # CognitoのユーザープールID
+      - COGNITO_CUSTOMER_CLIENT_ID=${COGNITO_CUSTOMER_CLIENT_ID} # CognitoのクライアントID
+      - COGNITO_CUSTOMER_CLIENT_SECRET=${COGNITO_CUSTOMER_CLIENT_SECRET} # Cognitoのクライアントシークレット
     tty: true # コンテナを終了させないために設定
     working_dir: /app # 作業ディレクトリを指定
     volumes: # マッピングを指定

@@ -7,6 +7,16 @@ spring:
   messages:
     encoding: UTF-8
 
+aws:
+  cognito:
+    region: ${AWS_REGION}
+    staff-pool-id: ${COGNITO_STAFF_POOL_ID}
+    staff-client-id: ${COGNITO_STAFF_CLIENT_ID}
+    staff-client-secret: ${COGNITO_STAFF_CLIENT_SECRET}
+    customer-pool-id: ${COGNITO_CUSTOMER_POOL_ID}
+    customer-client-id: ${COGNITO_CUSTOMER_CLIENT_ID}
+    customer-client-secret: ${COGNITO_CUSTOMER_CLIENT_SECRET}
+
 server:
   port: 8080
   servlet:
