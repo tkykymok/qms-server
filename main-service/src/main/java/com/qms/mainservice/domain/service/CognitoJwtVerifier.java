@@ -46,8 +46,8 @@ public class CognitoJwtVerifier {
         final String kid = decodedJWT.getKeyId();
         // トークンからissuerを取得
         final String issuer = decodedJWT.getIssuer();
-        // トークンからclientIDを取得
-        final String clientId = decodedJWT.getClaim("client_id").asString();
+        // トークンからaud(clientID)を取得
+        final String audience = decodedJWT.getAudience().getFirst();
 
         try {
             // JWKS エンドポイントから公開鍵を取得する JwkProvider を作成
@@ -60,10 +60,10 @@ public class CognitoJwtVerifier {
             Algorithm algorithm = Algorithm.RSA256(publicKey, null);
 
             // トークンの検証器を作成
-            final String targetIssuer = issuerMap.get(clientId);
+            final String targetIssuer = issuerMap.get(audience);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(targetIssuer) // issuerMapから取得したissuer
-                    .withClaim("client_id", clientId)
+                    .withAudience(audience)
                     .build();
 
             // トークンを検証
