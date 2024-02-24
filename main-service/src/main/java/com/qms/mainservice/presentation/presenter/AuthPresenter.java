@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class AuthPresenter {
     public ResponseEntity<SignInResponse> present(AuthenticateOutput output) {
         var response = SignInResponse.builder()
+                .accessToken(output.accessToken().value())
                 .idToken(output.idToken().value())
                 .refreshToken(output.refreshToken().value())
                 .expiresIn(output.expiresIn())
