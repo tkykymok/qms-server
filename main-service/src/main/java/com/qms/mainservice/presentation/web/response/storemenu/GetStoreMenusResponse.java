@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record GetStoreMenus(
+public record GetStoreMenusResponse(
         List<StoreMenuResponse> storeMenus
 ) {
 }

@@ -4,7 +4,7 @@ import com.qms.mainservice.application.usecase.storemenu.FetchStoreMenusOutput;
 import com.qms.mainservice.application.usecase.storemenu.FetchStoreMenusUsecase;
 import com.qms.mainservice.domain.model.valueobject.StoreId;
 import com.qms.mainservice.presentation.presenter.StoreMenuPresenter;
-import com.qms.mainservice.presentation.web.response.storemenu.GetStoreMenus;
+import com.qms.mainservice.presentation.web.response.storemenu.GetStoreMenusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class StoreMenuController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<GetStoreMenus> getStoreMenus() {
+    public ResponseEntity<GetStoreMenusResponse> getStoreMenus() {
         // 店舗ID TODO tokenから取得する想定
         StoreId storeId = StoreId.of(1L);
         // 店舗IDに紐づく店舗メニュー一覧を取得する
