@@ -6,16 +6,21 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.qms.mainservice.infrastructure.config.security.CustomUserDetails;
+import com.qms.shared.domain.model.valueobject.UserType;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
-public class CognitoJwtVerifier {
+public class CognitoJwtService {
 
     @Value("${aws.cognito.region}")
     private String region;
@@ -73,6 +78,57 @@ public class CognitoJwtVerifier {
         } catch (Exception e) {
             // トークン検証失敗
             return false;
+        }
+    }
+
+    /**
+     * ユーザー情報を取得
+     * @param token トークン
+     * @return ユーザー情報
+     */
+    public CustomUserDetails getUserDetails(String token) {
+        DecodedJWT decodedJWT = JWT.decode(token);
+        // cognitoユーザー名
+        String username = decodedJWT.getClaim("cognito:username").asString();
+        // 所属企業ID
+        String companyId = decodedJWT.getClaim("custom:companyId").asString();
+        // 所属店舗ID
+        String storeIds = decodedJWT.getClaim("custom:storeId").asString();
+        // 氏名
+        String name = decodedJWT.getClaim("name").asString();
+        // メールアドレス
+        String email = decodedJWT.getClaim("email").asString();
+        // 顧客 or スタッフ
+        UserType userType = getUserType(token);
+        List<SimpleGrantedAuthority> authorities =
+                Collections.singletonList(new SimpleGrantedAuthority(userType.name()));
+
+        return new CustomUserDetails(
+                username,
+                null,
+                authorities,
+                companyId,
+                storeIds,
+                name,
+                email
+        );
+    }
+
+    /**
+     * ユーザータイプを取得
+     * @param token トークン
+     * @return ユーザータイプ
+     */
+    private UserType getUserType(String token) {
+        DecodedJWT decodedJWT = JWT.decode(token);
+        final String audience = decodedJWT.getAudience().getFirst();
+
+        if (staffClientId.equals(audience)) {
+            return UserType.STAFF;
+        } else if (customerClientId.equals(audience)) {
+            return UserType.CUSTOMER;
+        } else {
+            throw new IllegalArgumentException("Invalid audience: " + audience);
         }
     }
 }
