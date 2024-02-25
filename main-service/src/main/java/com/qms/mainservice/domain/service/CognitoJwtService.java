@@ -105,7 +105,6 @@ public class CognitoJwtService {
 
         return new CustomUserDetails(
                 username,
-                null,
                 authorities,
                 companyId,
                 storeIds,

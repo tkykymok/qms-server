@@ -18,9 +18,9 @@ public class CustomUserDetails extends User {
     private String name;
     private String email;
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+    public CustomUserDetails(String username, Collection<? extends GrantedAuthority> authorities,
                              String companyId, String storeId, String name, String email) {
-        super(username, password, authorities);
+        super(username, "", authorities);
 
         this.companyId = Optional.ofNullable(companyId)
                 .map(id -> CompanyId.of(Long.valueOf(id)))
@@ -40,6 +40,12 @@ public class CustomUserDetails extends User {
                             .toList();
                 })
                 .orElse(null);
+    }
+
+    public void validateStoreId(Long storeId) {
+        if (storeIds == null || storeIds.stream().noneMatch(id -> id.value().equals(storeId))) {
+            throw new IllegalArgumentException("Invalid storeId");
+        }
     }
 
 }
