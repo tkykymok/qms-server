@@ -32,9 +32,11 @@ public class ReservationController {
     public ResponseEntity<GetReservationsResponse> getReservations(
             @PathVariable("storeId") Long storeId,
             @RequestParam(value = "date", required = false) String date) {
+        // ログインユーザー情報を取得
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
+        // 店舗IDの検証
         userDetails.validateStoreId(storeId);
 
         // 予約日
