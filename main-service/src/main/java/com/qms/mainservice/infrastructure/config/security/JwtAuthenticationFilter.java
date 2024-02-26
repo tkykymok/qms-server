@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             token = token.substring(7);
             if (cognitoJwtService.verifyToken(token)) {
                 // JWTからユーザー情報を取得
-                CustomUserDetails userDetails = cognitoJwtService.getUserDetails(token);
+                User userDetails = cognitoJwtService.getUserDetails(token);
                 // 認証トークンの作成
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails,

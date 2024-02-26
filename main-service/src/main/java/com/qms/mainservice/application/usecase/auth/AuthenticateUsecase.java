@@ -5,7 +5,10 @@ import com.qms.mainservice.domain.model.valueobject.IdToken;
 import com.qms.mainservice.domain.model.valueobject.RefreshToken;
 import com.qms.mainservice.domain.repository.CustomerAuthRepository;
 import com.qms.mainservice.domain.repository.StaffAuthRepository;
+import com.qms.mainservice.domain.service.CognitoJwtService;
+import com.qms.mainservice.infrastructure.config.security.StaffUserDetails;
 import com.qms.shared.application.usecase.Usecase;
+import com.qms.shared.domain.model.valueobject.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.InitiateAuthResponse;
@@ -17,6 +20,8 @@ public class AuthenticateUsecase extends Usecase<AuthenticateInput, Authenticate
     private final StaffAuthRepository staffAuthRepository;
     private final CustomerAuthRepository customerAuthRepository;
 
+    private final CognitoJwtService cognitoJwtService;
+
 
     @Override
     public AuthenticateOutput execute(AuthenticateInput input) {
@@ -27,14 +32,22 @@ public class AuthenticateUsecase extends Usecase<AuthenticateInput, Authenticate
             default -> throw new IllegalArgumentException("Invalid user type");
         };
 
-        if (authResponse != null) {
-            return AuthenticateOutput.builder()
-                    .accessToken(AccessToken.of(authResponse.authenticationResult().accessToken()))
-                    .refreshToken(RefreshToken.of(authResponse.authenticationResult().refreshToken()))
-                    .idToken(IdToken.of(authResponse.authenticationResult().idToken()))
-                    .expiresIn(authResponse.authenticationResult().expiresIn())
-                    .build();
-        }
+
+if (authResponse != null) {
+    var authResult = authResponse.authenticationResult();
+    var builder = AuthenticateOutput.builder()
+            .accessToken(AccessToken.of(authResult.accessToken()))
+            .refreshToken(RefreshToken.of(authResult.refreshToken()))
+            .idToken(IdToken.of(authResult.idToken()))
+            .expiresIn(authResult.expiresIn());
+
+    if (input.userType() == UserType.STAFF) {
+        var userDetails = (StaffUserDetails)cognitoJwtService.getUserDetails(authResult.idToken());
+        builder.storeIds(userDetails.getStoreIds());
+    }
+
+    return builder.build();
+}
 
         return null;
     }

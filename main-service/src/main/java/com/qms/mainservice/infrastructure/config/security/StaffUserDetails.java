@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class CustomUserDetails extends User {
+public class StaffUserDetails extends User {
     private CompanyId companyId;
     private List<StoreId> storeIds;
     private String name;
     private String email;
 
-    public CustomUserDetails(String username, Collection<? extends GrantedAuthority> authorities,
-                             String companyId, String storeId, String name, String email) {
+    public StaffUserDetails(String username, Collection<? extends GrantedAuthority> authorities,
+                            String companyId, String storeId, String name, String email) {
         super(username, "", authorities);
 
         this.companyId = Optional.ofNullable(companyId)

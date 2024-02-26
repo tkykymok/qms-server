@@ -6,11 +6,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.qms.mainservice.infrastructure.config.security.CustomUserDetails;
+import com.qms.mainservice.infrastructure.config.security.CustomerUserDetails;
+import com.qms.mainservice.infrastructure.config.security.StaffUserDetails;
 import com.qms.shared.domain.model.valueobject.UserType;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPublicKey;
@@ -83,17 +85,14 @@ public class CognitoJwtService {
 
     /**
      * ユーザー情報を取得
+     *
      * @param token トークン
      * @return ユーザー情報
      */
-    public CustomUserDetails getUserDetails(String token) {
+    public User getUserDetails(String token) {
         DecodedJWT decodedJWT = JWT.decode(token);
         // cognitoユーザー名
         String username = decodedJWT.getClaim("cognito:username").asString();
-        // 所属企業ID
-        String companyId = decodedJWT.getClaim("custom:companyId").asString();
-        // 所属店舗ID
-        String storeIds = decodedJWT.getClaim("custom:storeId").asString();
         // 氏名
         String name = decodedJWT.getClaim("name").asString();
         // メールアドレス
@@ -103,7 +102,22 @@ public class CognitoJwtService {
         List<SimpleGrantedAuthority> authorities =
                 Collections.singletonList(new SimpleGrantedAuthority(userType.name()));
 
-        return new CustomUserDetails(
+        return switch (userType) {
+            case STAFF -> getStaffUserDetails(decodedJWT, username, authorities, name, email);
+            case CUSTOMER -> getCustomerUserDetails(username, authorities, name, email);
+            default -> throw new IllegalArgumentException("Invalid userType: " + userType);
+        };
+    }
+
+    private StaffUserDetails getStaffUserDetails(DecodedJWT decodedJWT, String username,
+                                                 List<SimpleGrantedAuthority> authorities,
+                                                 String name, String email) {
+        // 所属企業ID
+        String companyId = decodedJWT.getClaim("custom:companyId").asString();
+        // 所属店舗ID
+        String storeIds = decodedJWT.getClaim("custom:storeId").asString();
+
+        return new StaffUserDetails(
                 username,
                 authorities,
                 companyId,
@@ -113,8 +127,19 @@ public class CognitoJwtService {
         );
     }
 
+    private CustomerUserDetails getCustomerUserDetails(String username, List<SimpleGrantedAuthority> authorities,
+                                                       String name, String email) {
+        return new CustomerUserDetails(
+                username,
+                authorities,
+                name,
+                email
+        );
+    }
+
     /**
      * ユーザータイプを取得
+     *
      * @param token トークン
      * @return ユーザータイプ
      */

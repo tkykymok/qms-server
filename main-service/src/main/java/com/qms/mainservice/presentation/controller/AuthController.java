@@ -3,6 +3,7 @@ package com.qms.mainservice.presentation.controller;
 import com.qms.mainservice.application.usecase.auth.AuthenticateUsecase;
 import com.qms.mainservice.presentation.presenter.AuthPresenter;
 import com.qms.mainservice.presentation.web.request.auth.SignInRequest;
+import com.qms.mainservice.presentation.web.response.auth.SignInResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +25,18 @@ public class AuthController {
     private final AuthPresenter presenter;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody SignInRequest request, HttpServletResponse response) {
+    public ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest request, HttpServletResponse response) {
         var input = request.toInput();
         var output = authenticateUsecase.execute(input);
 
         if (output != null) {
-            saveTokenInCookie("accessToken", output.accessToken().value(), response);
-            saveTokenInCookie("refreshToken", output.refreshToken().value(), response);
-            saveTokenInCookie("idToken", output.idToken().value(), response);
+            saveInCookie("accessToken", output.accessToken().value(), response);
+            saveInCookie("refreshToken", output.refreshToken().value(), response);
+            saveInCookie("idToken", output.idToken().value(), response);
+            if (output.storeIds() != null && !output.storeIds().isEmpty()) {
+                // TODO storeIdの複数対応 ひとまず最初のstoreIdを保存
+                saveInCookie("storeId", String.valueOf(output.storeIds().getFirst().value()), response);
+            }
         }
 
         return presenter.present(Objects.requireNonNull(output));
@@ -44,12 +49,13 @@ public class AuthController {
 
 
     /**
-     * Save token in cookie
-     * @param name key
-     * @param value value
+     * Save value in cookie
+     *
+     * @param name     key
+     * @param value    value
      * @param response response
      */
-    private void saveTokenInCookie(String name, String value, HttpServletResponse response) {
+    private void saveInCookie(String name, String value, HttpServletResponse response) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
